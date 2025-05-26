@@ -975,7 +975,7 @@ public class Main extends Application {
 				
 				
 
-				 PauseTransition delay = new PauseTransition(Duration.seconds(4));
+				 PauseTransition delay = new PauseTransition(Duration.seconds(3));
 					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
 			
 					 delay.setOnFinished(event -> {
@@ -1031,7 +1031,8 @@ public class Main extends Application {
 						}
 					    	if( laneManagement.getHeadingDownRightLaneList() != null) {
 					        this.laneManagement.setHeadingDownRightLaneList(((IntersectionSimCar)car));
-					        System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());}
+					       // System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());
+					    	}
 					  });
 				 delay.play();
 				

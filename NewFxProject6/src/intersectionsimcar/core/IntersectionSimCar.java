@@ -59,15 +59,15 @@ public abstract class IntersectionSimCar {
 	}
 	//***********************************************************************************************************************************************************
 	//added 12:25am 2025-05-20
-	  private IntersectionSimCar frontCar;
+	  protected IntersectionSimCar frontCar;
 	    
-	    private IntersectionSimCar rearCar;
+	    protected IntersectionSimCar rearCar;
 	    
-	    private IntersectionSimCar blindSpotCar;
+	    protected IntersectionSimCar blindSpotCar;
 	    
-	    private IntersectionSimCar frontCarOnTheOtherLane;
+	    protected IntersectionSimCar frontCarOnTheOtherLane;
 	    
-	    private IntersectionSimCar rearCarOnTheOtherLane;
+	    protected IntersectionSimCar rearCarOnTheOtherLane;
 	  
 	    public IntersectionSimCar getFrontCar() {
 			return frontCar;

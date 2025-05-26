@@ -186,7 +186,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     private int angle_Diff_Rear_Blinkers;
     private int length_For_Front_Blinkers;
     private int length_For_Rear_Blinkers;
-    private String carSkin;
+
     private int angle_Diff_Front_Corners;
     private int angle_Diff_Rear_Corners;
     private int length_For_Front_Corners;
@@ -563,14 +563,14 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		if (randomInt >=0 && randomInt < 20) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/blue-race-car.png").toExternalForm());
 		    carImage_brake_P= new Image(getClass().getResource("/car-sprite2/blue-race-car-brake.png").toExternalForm());
-		    carSkin = "blue-race-car";
+		    this.setCarSkin( "blue-race-car");
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 			this.setBlinkerLengthAndAngleAlsoCarImageViewWidth(new BlueRaceCarConfig());
 		}else if ( randomInt >=20 && randomInt < 40) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/finished-blue-byd.png").toExternalForm());
 			carImage_brake_P = new Image(getClass().getResource("/car-sprite2/finished-blue-byd-brake.png").toExternalForm());
-			carSkin = "finished-blue-byd";
+			this.setCarSkin("finished-blue-byd");
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 			
@@ -578,7 +578,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}else if (randomInt >=40 && randomInt < 60) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/red-corrolla.png").toExternalForm());
 			carImage_brake_P = new Image(getClass().getResource("/car-sprite2/red-corrolla-brake.png").toExternalForm());
-		    carSkin = "red-corrolla";
+			this.setCarSkin("red-corrolla");
 		  		carImageView_P = new ImageView(carImage_P);
 		  		carImageView_brake_P = new ImageView(carImage_brake_P);
 		  		
@@ -587,7 +587,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		  	}else if (randomInt >=60 && randomInt < 80) {
 		  		carImage_P = new Image(getClass().getResource("/car-sprite2/finished-grey2-byd.png").toExternalForm());
 			carImage_brake_P = new Image(getClass().getResource("/car-sprite2/finished-grey2-byd-brake.png").toExternalForm());
-			carSkin = "finished-grey2-byd";
+			this.setCarSkin("finished-grey2-byd");
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 		  	
@@ -595,7 +595,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}else if (randomInt >=80 && randomInt < 100) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/finished-grey-byd.png").toExternalForm());
 			carImage_brake_P = new Image(getClass().getResource("/car-sprite2/finished-grey-byd-brake.png").toExternalForm());
-		      carSkin = "finished-grey-byd";
+			this.setCarSkin("finished-grey-byd");
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 		  	
@@ -603,7 +603,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}else if (randomInt >=100 && randomInt < 120) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/finished-teal-byd2.png").toExternalForm());
 			carImage_brake_P  = new Image(getClass().getResource("/car-sprite2/finished-teal-byd2-brake.png").toExternalForm());
-		    carSkin = "finished-teal-byd2";
+			this.setCarSkin("finished-teal-byd2");
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 		  	
@@ -611,7 +611,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}else if(randomInt >=120 && randomInt < 140) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/Yellow-car-sprite3.png").toExternalForm());
 			carImage_brake_P = new Image(getClass().getResource("/car-sprite2/Yellow-car-sprite3-brake.png").toExternalForm());
-			carSkin = "Yellow car Sprite";
+			this.setCarSkin("Yellow car Sprite");
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 		  	
@@ -619,7 +619,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}else if(randomInt >=140 && randomInt < 160) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/Red-car-sprite.png").toExternalForm());
 				carImage_brake_P  = new Image(getClass().getResource("/car-sprite2/Red-car-sprite-brake.png").toExternalForm());
-		      carSkin = "Red-car-Sprite";		
+				this.setCarSkin("Red-car-Sprite");		
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 		
@@ -627,7 +627,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}else if(randomInt >=160 && randomInt < 180) {
 			carImage_P = new Image(getClass().getResource("/car-sprite2/Green-car-sprite.png").toExternalForm());
 			carImage_brake_P = new Image(getClass().getResource("/car-sprite2/Green-car-sprite-brake.png").toExternalForm());
-			carSkin = "Green-Car-Sprite";
+			this.setCarSkin("Green-Car-Sprite");
 			carImageView_P = new ImageView(carImage_P);
 			carImageView_brake_P = new ImageView(carImage_brake_P);
 		  	
@@ -869,17 +869,17 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
  	 	calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
  	 	calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
 		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
-		
+		this.positionCarCorners();
+		this.drawCircleRpCorner(carCornerCoordinate);
 		//this.setGeneralPlacementOfCar();//still need to ensure all lane are accounted for
-		//this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		this.needToDoThisEverytimeSetFrontCarAndRearCar();
 		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
 		//this.laneChangePointXSelection();// need to come up with lane change decision logic
 		//this.laneChangePointYSelection();
 		//this.carState();
 		//this.actionBaseOnCarState(carImageView_P, carImageView_brake_P);
 		this.gasGoStraight();
-		this.positionCarCorners();
-		this.drawCircleRpCorner(carCornerCoordinate);
+	
 		
 		//------------------------------------------------------------------------------------------------------------------------------------Temporary Code
 		/* 
@@ -895,16 +895,14 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 }
 		*/
 		 //--------------------------------------------------------------------------------------------------------------------------------------Temporary Code
-		/*if (laneManagement.getHeadingDownRightLaneList() != null) {
-			for (IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
+	/*
 				 System.out.println("\ntargetLaneListKey: " +this.getOnWhichLaneListKey()+ 
-		    		"\n --->this: " + car.getCarSkin() + "---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
-					"\n --->this: " + car.getCarSkin() + "---->           frontCar: " + (this.getFrontCar() == null ? null : car.getFrontCar().getCarSkin() )+
+		    		"\n --->this: " + this.getCarSkin() + "---->        OnWhichLane: " + this.getOnWhichLaneListKey() +
+		    		"\n --->this: " + this.getCarSkin() + "getObservablelistCarisOn(): " + this.laneManagement.getHashMap_For_Observablelist().get(getOnWhichLaneListKey() +
+					"\n --->this: " + this.getCarSkin() + "---->           frontCar: " + this.getFrontCar() == null ? null : this.getFrontCar().getCarSkin() )+
 					       
-					"\n --->this: " + car.getCarSkin() + "---->  rearCar " + (this.getRearCar() == null ? null : car.getRearCar().getCarSkin()));
-		 
-			 }
-		}*/
+					"\n --->this: " + this.getCarSkin() + "---->            rearCar: " + this.getRearCar() == null ? null : this.getRearCar().getCarSkin());
+	*/	 
 		
 		
 		
@@ -1097,13 +1095,13 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	    	double change_In_Y_Rear_L_Corner = Math.sin(rear_L_Corner_Angle) * length_CarPosToRearCorner;
 	    	
 	    	frontRightCornerPositionX = this.getPositionX() + change_In_X_Front_R_Corner;
-	    	frontRightCornerPositionY = this.getPositionX() + change_In_Y_Front_R_Corner;
+	    	frontRightCornerPositionY = this.getPositionY() + change_In_Y_Front_R_Corner;
 	    	frontLeftCornerPositionX = this.getPositionX() + change_In_X_Front_L_Corner;
-	    	frontLeftCornerPositionY = this.getPositionX() + change_In_Y_Front_L_Corner;
+	    	frontLeftCornerPositionY = this.getPositionY() + change_In_Y_Front_L_Corner;
 	    	rearRightCornerPositionX = this.getPositionX() + change_In_X_Rear_R_Corner;
-	    	rearRightCornerPositionY = this.getPositionX() + change_In_Y_Rear_R_Corner;
+	    	rearRightCornerPositionY = this.getPositionY() + change_In_Y_Rear_R_Corner;
 	    	rearLeftCornerPositionX = this.getPositionX() + change_In_X_Rear_L_Corner;
-	    	rearLeftCornerPositionY = this.getPositionX() + change_In_Y_Rear_L_Corner;
+	    	rearLeftCornerPositionY = this.getPositionY() + change_In_Y_Rear_L_Corner;
 	    }
 	    
 	    
@@ -1215,9 +1213,9 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		public void needToDoThisEverytimeSetFrontCarAndRearCar() {
 			this.setOnWhichLaneEnum();
 		    
-			this.setOnWhichLaneListKey(this.getOnWhichLane());
-			//this.setCustomCarLengthBaseOnCarSkin();
-			this.nearest_Front_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
+			//this.setOnWhichLaneListKey(this.getOnWhichLane());
+			this.setCustomCarLengthBaseOnCarSkin();
+		    this.nearest_Front_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
 			this.nearest_Front_Car_Base_On_DistanceHeadingLeftX = MAX_X_DISTANCE_BETWEEN_CARS;
 			this.nearest_Front_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;
 			this.nearest_Front_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;
@@ -1227,7 +1225,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			this.nearest_Rear_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;
 			this.nearest_Rear_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;
 		    
-		    this.setFrontCarAndRearCar(this.laneManagement.getHashMap_For_Observablelist().get(getOnWhichLaneListKey()));
+		    this.setFrontCarAndRearCar(this.getObservableListCarIsOn());
 		}
 	 //************************************************************************************************************************************************
 		//Do Target Lane Later 12:16AM 2025-05-20
@@ -1278,6 +1276,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 						break;
 					case OnWhichLane.HEADING_DOWN_ON_RIGHT_LANE_LIST:
 						setFrontCarRearCarHeadingDown(theListOfTheLaneTheCarIsOn);
+						
 						break;
 					case OnWhichLane.HEADING_DOWN_ON_LEFT_LANE_LIST:
 						setFrontCarRearCarHeadingDown(theListOfTheLaneTheCarIsOn);
@@ -1296,25 +1295,27 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}
 		
 		public void setFrontCarRearCarHeadingLeft(ObservableList<IntersectionSimCar> theListOfTheLaneTheCarIsOn) {
+			nearest_Front_Car_Base_On_DistanceHeadingLeftX = MAX_X_DISTANCE_BETWEEN_CARS;
+			nearest_Rear_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
 			double temp_Front_DistanceX;
 			double temp_Rear_DistanceX;
 			for(IntersectionSimCar car : theListOfTheLaneTheCarIsOn) {
 				if(this == car) {
 					continue;
 				}else {
-					if (this.getFrontLeftCornerPositionX() > car.getRearLeftCornerPositionX()) {
+					if (((IntersectionSimCar)this).getFrontLeftCornerPositionX() > ((IntersectionSimCar)car).getRearLeftCornerPositionX()) {
 				
-						temp_Front_DistanceX = Math.abs(this.getFrontLeftCornerPositionX() - car.getRearLeftCornerPositionX());
+						temp_Front_DistanceX = Math.abs(this.getFrontLeftCornerPositionX() - ((IntersectionSimCar)car).getRearLeftCornerPositionX());
 						if(temp_Front_DistanceX < nearest_Front_Car_Base_On_DistanceHeadingLeftX) {
 							nearest_Front_Car_Base_On_DistanceHeadingLeftX = temp_Front_DistanceX;
-							setFrontCar(car);
+							setFrontCar(((IntersectionSimCar)car));
 						}
 					}
-					if (this.getRearLeftCornerPositionX() < car.getFrontLeftCornerPositionX()) {
-						temp_Rear_DistanceX = Math.abs(this.getRearLeftCornerPositionX() - car.getFrontLeftCornerPositionX());
+					if (((IntersectionSimCar)this).getRearLeftCornerPositionX() < car.getFrontLeftCornerPositionX()) {
+						temp_Rear_DistanceX = Math.abs(this.getRearLeftCornerPositionX() - ((IntersectionSimCar)car).getFrontLeftCornerPositionX());
 						if(temp_Rear_DistanceX < nearest_Rear_Car_Base_On_DistanceHeadingLeftX) {
 							nearest_Rear_Car_Base_On_DistanceHeadingLeftX = temp_Rear_DistanceX;
-							setRearCar(car);
+							setRearCar(((IntersectionSimCar)car));
 						}
 					
 					}
@@ -1322,40 +1323,42 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 				
 				
 			}
-			nearest_Front_Car_Base_On_DistanceHeadingLeftX = MAX_X_DISTANCE_BETWEEN_CARS;
-			nearest_Rear_Car_Base_On_DistanceHeadingLeftX = MAX_X_DISTANCE_BETWEEN_CARS;
+			
 		}
 		
 		public void setFrontCarRearCarHeadingRight(ObservableList<IntersectionSimCar> theListOfTheLaneTheCarIsOn) {
+			nearest_Front_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
+			nearest_Rear_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
 			double temp_Front_DistanceX;
 			double temp_Rear_DistanceX;
 			for(IntersectionSimCar car : theListOfTheLaneTheCarIsOn) {
 				if(this == car) {
 					continue;
 				}else  {
-					if (this.getFrontRightCornerPositionX() < car.getRearRightCornerPositionX()) {
-						temp_Front_DistanceX = Math.abs(this.getFrontRightCornerPositionX() - car.getRearRightCornerPositionX());
+					if (((IntersectionSimCar)this).getFrontRightCornerPositionX() < ((IntersectionSimCar)car).getRearRightCornerPositionX()) {
+						temp_Front_DistanceX = Math.abs(this.getFrontRightCornerPositionX() - ((IntersectionSimCar)car).getRearRightCornerPositionX());
 						if(temp_Front_DistanceX < nearest_Front_Car_Base_On_DistanceHeadingRightX) {
 							nearest_Front_Car_Base_On_DistanceHeadingRightX = temp_Front_DistanceX;
-							setFrontCar(car);
+							setFrontCar(((IntersectionSimCar)car));
 						}
 					}
-					if (this.getRearLeftCornerPositionX() > car.getFrontLeftCornerPositionX()) {
-						temp_Rear_DistanceX = Math.abs(this.getRearLeftCornerPositionX() - car.getFrontLeftCornerPositionX());
+					if (((IntersectionSimCar)this).getRearLeftCornerPositionX() > ((IntersectionSimCar)car).getFrontLeftCornerPositionX()) {
+						temp_Rear_DistanceX = Math.abs(this.getRearLeftCornerPositionX() - ((IntersectionSimCar)car).getFrontLeftCornerPositionX());
 						if(temp_Rear_DistanceX < nearest_Rear_Car_Base_On_DistanceHeadingLeftX) {
 							nearest_Rear_Car_Base_On_DistanceHeadingRightX = temp_Rear_DistanceX;
-							setRearCar(car);
+							setRearCar(((IntersectionSimCar)car));
 						}
 					}
 				}
 				
 				
 			}
-			nearest_Front_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
-			nearest_Rear_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
+			
 		}
 		
 		public void setFrontCarRearCarHeadingUp(ObservableList<IntersectionSimCar> theListOfTheLaneTheCarIsOn) {
+			nearest_Front_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;
+			nearest_Rear_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;
 			double temp_Front_DistanceY;
 			double temp_Rear_DistanceY;
 			for(IntersectionSimCar car : theListOfTheLaneTheCarIsOn) {
@@ -1366,14 +1369,14 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 							temp_Front_DistanceY = Math.abs(this.getFrontRightCornerPositionY() - car.getRearRightCornerPositionY());
 							if(temp_Front_DistanceY < nearest_Front_Car_Base_On_DistanceHeadingUpY) {
 								nearest_Front_Car_Base_On_DistanceHeadingUpY = temp_Front_DistanceY;
-								setFrontCar(car);
+								setFrontCar(((IntersectionSimCar)car));
 							}
 					 }
 					 if (this.getRearRightCornerPositionY() < car.getFrontRightCornerPositionY()) {
 							temp_Rear_DistanceY = Math.abs(this.getRearRightCornerPositionY() - car.getFrontRightCornerPositionY());
 							if(temp_Rear_DistanceY < nearest_Rear_Car_Base_On_DistanceHeadingUpY) {
 								nearest_Rear_Car_Base_On_DistanceHeadingUpY = temp_Rear_DistanceY;
-								setRearCar(car);
+								setRearCar(((IntersectionSimCar)car));
 							}
 					 }
 				
@@ -1381,39 +1384,44 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 				
 				
 			}
-			nearest_Front_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;
-			nearest_Rear_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;
+			
 			
 		}
 		
 		public void setFrontCarRearCarHeadingDown(ObservableList<IntersectionSimCar> theListOfTheLaneTheCarIsOn) {
+			nearest_Front_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;
+			nearest_Rear_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;
 			double temp_Front_DistanceY;
 			double temp_Rear_DistanceY;
+			System.out.println("\n --->this: " + this.getCarSkin() + "getObservablelistCarisOn(): " + this.getObservableListCarIsOn());
 			for(IntersectionSimCar car : theListOfTheLaneTheCarIsOn) {
 				if(this == car) {
 					continue;
 				}else {
 					if (this.getFrontLeftCornerPositionY() < car.getRearLeftCornerPositionY()) {
-				
+				        System.out.println("setFrontCarRearCarHeadingDown: setFrontCar(...) if statement true");
 						temp_Front_DistanceY = Math.abs(this.getFrontLeftCornerPositionY() - car.getRearLeftCornerPositionY());
 						if(temp_Front_DistanceY < nearest_Front_Car_Base_On_DistanceHeadingDownY) {
 							nearest_Front_Car_Base_On_DistanceHeadingDownY = temp_Front_DistanceY;
-							setFrontCar(car);
+							setFrontCar(((IntersectionSimCar)car));
+							
 						}
 					}
 					if (this.getRearLeftCornerPositionY() > car.getFrontLeftCornerPositionY()) {
-						temp_Rear_DistanceY = Math.abs(this.getRearLeftCornerPositionY() - car.getFrontLeftCornerPositionY());
+						System.out.println("setFrontCarRearCarHeadingDown: setRearCar(...) if statement true");
+						temp_Rear_DistanceY = Math.abs(((IntersectionSimCar)this).getRearLeftCornerPositionY() - car.getFrontLeftCornerPositionY());
 						if(temp_Rear_DistanceY < nearest_Rear_Car_Base_On_DistanceHeadingDownY) {
 							nearest_Rear_Car_Base_On_DistanceHeadingDownY = temp_Rear_DistanceY;
-							setRearCar(car);
+							setRearCar(((IntersectionSimCar)car));
+							
 						}
 					}
-			
+					
 				}
 				
+				
 			}
-			nearest_Front_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;
-			nearest_Rear_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;
+			
 		}
 	    
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -1520,6 +1528,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		this.carImageView_brake_P.setFitWidth(carSkinConfig.getImage_Width());
 	}
 
+	@Override
 	public ObservableList<IntersectionSimCar> getObservableListCarIsOn(){
 		return this.laneManagement.getHashMap_For_Observablelist().get(this.getOnWhichLaneListKey());
 	}
