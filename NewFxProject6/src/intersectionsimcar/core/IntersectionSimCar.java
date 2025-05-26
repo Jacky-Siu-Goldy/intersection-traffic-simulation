@@ -5,8 +5,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import intersectionsimcar.core.HeadedDownOrigCar.CarCornerCoordinate;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 
 
 
@@ -565,7 +568,10 @@ public abstract class IntersectionSimCar {
 	
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	public static final double TOLERANCE = 18.5;
-	
+	LaneManagement laneManagement;
+	public LaneManagement getLaneManagement() {
+		return laneManagement;
+	}
 	//*****************************************************************************************************************************
 
     /**
@@ -925,18 +931,22 @@ public abstract class IntersectionSimCar {
 
 		public abstract void setFront_L_Corner_Angle(double front_L_Corner_Angle);
 		
-		public abstract LaneManagement getLaneManagement();
 		
-		public abstract ObservableList<IntersectionSimCar> getObservableListCarIsOn();
+		
+		
 		
 		public abstract void deleteCircleRpCorner(Pane root);
 		
 		public abstract void removeCarImageViewsFromRoot(Pane root);
 		
-		public abstract void carOperation(Pane root);
+		public abstract void carOperation();
 	  //*********************************************************************************************************************************
 	
-		 
+		public ObservableList<IntersectionSimCar> getObservableListCarIsOn(){
+    	    
+    		return laneManagement.getHashMap_For_Observablelist().get(this.getOnWhichLaneListKey());
+    	
+         }
 		 
 		 private TargetLane targetLaneList;
 			
@@ -988,14 +998,19 @@ public abstract class IntersectionSimCar {
      	 }
 
          
-         public IntersectionSimCar ( double positionX, double positionY) {
+         public IntersectionSimCar (LaneManagement laneManagement, double positionX, double positionY) {
 	
 	
-	
-	
+	        this.xCoordinate = 0;
+	        this.yCoordinate = 0;
+	        this.straightEndingX = 0;
+	        this.straightEndingY = 0;
+	        this.laneManagement = laneManagement;
 			rotationAngle = 270; //initial rotation angle of sprite
 			this.positionX = positionX; //where the car will spawn
 			this.positionY = positionY;   //where the car will spawn
+			this.setOnWhichLaneEnum();
+			this.setOnWhichLaneListKey(onWhichLane);
 			rise = 0;
 			run = 0 ;
 			riseOverRun = 0;
@@ -1014,7 +1029,7 @@ public abstract class IntersectionSimCar {
 	        makeARight = false;
 	
 	        makeALeft = false;
-	
+	       
 	
         	laneChangePhase1_Initiated = false;
 
@@ -1043,7 +1058,7 @@ public abstract class IntersectionSimCar {
 			afterInt_CancelRightLaneChangePhase = CancelLaneChangePhase.NONE;
 			afterInt_CancelLeftLaneChangePhase = CancelLaneChangePhase.NONE;
 	//-----------------------------------------------------------------------------------------------------------------------------------------------
-	 
+	        
 	  
 	
 
@@ -1733,5 +1748,43 @@ public abstract class IntersectionSimCar {
 				this.whereItsFacingPointOnThePerimeterY = whereItsFacingPointOnTheRadiusY;
 			}
 			//*************************************************************************************************************************************************************************************
+
+			public abstract Node getCarImageView_P();
+
+			public abstract Node getCarImageView_brake_P();
+
+			public abstract Node getFront_R_BlinkerImageView_P();
+
+			public abstract Node getRear_R_BlinkerImageView_P();
+
+			public abstract Node getFront_L_BlinkerImageView_P();
+
+			public abstract Node getRear_L_BlinkerImageView_P();
+
+			public abstract Node getFront_R_BlinkerImageView2_P();
+
+			public abstract Node getFront_L_BlinkerImageView2_P();
+
+			public abstract Node getRear_R_BlinkerImageView2_P();
+
+			public abstract Node getRear_L_BlinkerImageView2_P();
+
+			public abstract Node getFront_R_BlinkerImageView3_P();
+
+			public abstract Node getFront_L_BlinkerImageView3_P();
+
+			public abstract Node getRear_R_BlinkerImageView3_P();
+
+			public abstract Node getRear_L_BlinkerImageView3_P();
+			
+			public abstract void positionCarCorners();
+			
+			public abstract Circle[] getCarCornerCircle();
+			
+			public abstract void setCarCornerCircle();
+			
+			public abstract CarCornerCoordinate[] getCarCornerCoordinate();
+			
+			public abstract void drawCircleRpCorner (CarCornerCoordinate[] carCornerCoordinate);
 }
 

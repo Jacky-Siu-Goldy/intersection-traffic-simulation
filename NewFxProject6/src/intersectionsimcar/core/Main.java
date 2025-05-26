@@ -1,12 +1,15 @@
 package intersectionsimcar.core;
 
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -79,7 +82,7 @@ public class Main extends Application {
 	
 	public static int trafficLightCounter = 0;
 	public static boolean running = true;
-	public static LaneManagement laneManagement = new LaneManagement();
+	public LaneManagement laneManagement;
 	/*public final static ObservableList<Car> headingDownRightLaneList = FXCollections.observableArrayList();
 	public final static ObservableList<Car> headingDownLeftLaneList = FXCollections.observableArrayList();
 	public final static ObservableList<Car> headingDownLTBLaneList = FXCollections.observableArrayList();
@@ -115,8 +118,10 @@ public class Main extends Application {
 	private  ImageView trafficLightGreenImageView2;
 	private  ImageView trafficLightGreenImageView3;
 	private ImageView trafficLightGreenImageView4;
-	HeadedDownOrigCar car ; 
-	
+	//HeadedDownOrigCar car ; 
+	public Main() {
+		this.laneManagement = new LaneManagement();
+	}
 	
 	//private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 	@Override
@@ -149,10 +154,10 @@ public class Main extends Application {
 		Scene scene = new Scene (root, 1153, 768);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		car =  new HeadedDownOrigCar(root, 
+		/*car =  new HeadedDownOrigCar(root, 
 				   laneManagement,
 				   TOPTOBOTTOMCARRIGHTLANE_X, 
-				   -50);
+				   -50);*/
 		//Draw Line Map-------------------------------------------------------------------------------
 		
 		Line lineInBetweenCurbAndFirstorizontal = new Line();
@@ -466,7 +471,7 @@ public class Main extends Application {
 		//carObjectList.add(new Car(root,new Circle()));
 		//*************************************************************************************************************************************************
 		//SPAWN CAR THREAD DEAL WITH IT LATER
-		/*
+		
 		executor.submit((Runnable)() -> {
             
             while (!Thread.currentThread().isInterrupted()) {
@@ -475,7 +480,8 @@ public class Main extends Application {
 	            	Random random = new Random();
 	     		   	int randIn = random.nextInt(1400) + 1400;
 	     		   	Thread.sleep(randIn);
-	     		   	Platform.runLater((Runnable)()->{spawnCars(root, laneRegistry,
+	     		   	
+	     		   	Platform.runLater((Runnable)()->{spawnCars(root, laneManagement,
 	     		   											   TOPTOBOTTOMCARRIGHTLANE_X, 
 	     		   											   TOPTOBOTTOMCARRIGHTLANE_Y 
 	     		   											   );});
@@ -484,7 +490,7 @@ public class Main extends Application {
             		 Thread.currentThread().interrupt();
             	 }
             }
-        });*/
+        });
 		//SPAWN CAR THREAD ENDS
 		//************************************************************************************************************************************************
 		
@@ -520,22 +526,24 @@ public class Main extends Application {
         });*/
 		///********************************************************************************************************************************************
 		// Thread for Removing Cars
-		/*
+		
         executor.submit((Runnable) () -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Thread.sleep(1); // Simulate delay
-                    Platform.runLater((Runnable)() -> {
+                    
+                    Platform.runLater(()->{
+                    	deleteCar(root,laneManagement.getHeadingDownLeftLaneList());
+                	deleteCar(root,laneManagement.getHeadingDownRightLaneList());
+                	});	
                     	
-                    	deleteCar(root,laneRegistry.getHeadingDownLeftLaneList());
-                    	deleteCar(root,laneRegistry.getHeadingDownRightLaneList());
-                    });
+                    
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }
         });
-        */
+        
         //Thread for Removing Cars Ends
         //************************************************************************************************************************************************
 	
@@ -543,24 +551,24 @@ public class Main extends Application {
 			
 			//********************************************************************************************************************************************
 			//Car Operation Stuff
-			/*
-			if(!laneRegistry.getHeadingDownLeftLaneList().isEmpty()) {
-				for(DirectionBasedCar car : laneRegistry.getHeadingDownLeftLaneList()) {
-				((DirectionBasedCar)car).carOperation(root);
-				}
-			}
 			
-			if(!laneRegistry.getHeadingDownRightLaneList().isEmpty()) {
-				for(DirectionBasedCar car : laneRegistry.getHeadingDownRightLaneList()) {
-				((DirectionBasedCar)car).carOperation(root);
+			/*if(!laneManagement.getHeadingDownLeftLaneList().isEmpty()) {
+				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
+				((IntersectionSimCar)car).carOperation(root);
 				}
 			}*/
+			
+			
+				for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
+				((IntersectionSimCar)car).carOperation();
+				}
+			
 			//car.carOperation(root);
 			//Car Operation Stuff Ends
 			//**********************************************************************************************************************************************
 			
 	           
-		    car.carOperation(root);
+		   // car.carOperation(root);
 			
 			
 		}),
@@ -965,26 +973,68 @@ public class Main extends Application {
 			
 			Platform.runLater(() -> {
 				
-				IntersectionSimCar car =  new HeadedDownOrigCar(root, 
+				
+
+				 PauseTransition delay = new PauseTransition(Duration.seconds(4));
+					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
+			
+					 delay.setOnFinished(event -> {
+						 IntersectionSimCar car =  new HeadedDownOrigCar(root, 
 								   laneManagement,
 								   carLaneX, 
 								   carLaneY);
-				 if (car.getObservableListCarIsOn() == null) {
-				    throw new IllegalStateException("hashMap_For_Observablelist is null before population");
-				}
-				//if( car.getObservableListCarIsOn() != null &&  ((DirectionBasedCar) car).getObservableListCarIsOn() == laneRegistry.getHeadingDownRightLaneList() && (int) car.getObservableListCarIsOn().size() < 5) {
-					try {
-					Thread.sleep(4000);
-					((IntersectionSimCar)car).getObservableListCarIsOn().add((IntersectionSimCar)car);
-					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
-			
+				
+				   
+				 
+				  	root.getChildren().add(car.getCarImageView_P());
+					root.getChildren().add(car.getCarImageView_brake_P());
+					car.getCarImageView_brake_P().setVisible(true);
+					car.getCarImageView_P().setVisible(false);
 					
-							
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				//}
+					
+					root.getChildren().add(car.getFront_R_BlinkerImageView_P());
+					root.getChildren().add(car.getFront_L_BlinkerImageView_P());
+					root.getChildren().add(car.getRear_R_BlinkerImageView_P());
+					root.getChildren().add(car.getRear_L_BlinkerImageView_P());
+					root.getChildren().add(car.getFront_R_BlinkerImageView2_P());
+					root.getChildren().add(car.getFront_L_BlinkerImageView2_P());
+					root.getChildren().add(car.getRear_R_BlinkerImageView2_P());
+					root.getChildren().add(car.getRear_L_BlinkerImageView2_P());
+					root.getChildren().add(car.getFront_R_BlinkerImageView3_P());
+					root.getChildren().add(car.getFront_L_BlinkerImageView3_P());
+					root.getChildren().add(car.getRear_R_BlinkerImageView3_P());
+					root.getChildren().add(car.getRear_L_BlinkerImageView3_P());
+					car.getFront_R_BlinkerImageView_P().setVisible(false);
+					car.getFront_L_BlinkerImageView_P().setVisible(false);
+					car.getRear_R_BlinkerImageView_P().setVisible(false);
+					car.getRear_L_BlinkerImageView_P().setVisible(false);
+					car.getFront_R_BlinkerImageView2_P().setVisible(true);
+					car.getFront_L_BlinkerImageView2_P().setVisible(true);
+					car.getRear_R_BlinkerImageView2_P().setVisible(true);
+					car.getRear_L_BlinkerImageView2_P().setVisible(true);
+					car.getFront_R_BlinkerImageView3_P().setVisible(false);
+					car.getFront_L_BlinkerImageView3_P().setVisible(false);
+					car.getRear_R_BlinkerImageView3_P().setVisible(false);
+					car.getRear_L_BlinkerImageView3_P().setVisible(false);
+					
+					
+				
+					
+
+						car.drawCircleRpCorner(car.getCarCornerCoordinate());
+						if (car.getCarCornerCircle() != null && car.getCarCornerCircle().length == 4) {
+							for(Circle circle : car.getCarCornerCircle()) {
+								root.getChildren().add(circle);
+							}
+						}else {
+							System.out.println("SpawnCar: car.getCarCornerCircle() = null");
+						}
+					    	if( laneManagement.getHeadingDownRightLaneList() != null) {
+					        this.laneManagement.setHeadingDownRightLaneList(((IntersectionSimCar)car));
+					        System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());}
+					  });
+				 delay.play();
+				
 			});
 	
 			
@@ -997,25 +1047,23 @@ public class Main extends Application {
 	//DELETE CAR FUNCTION
 	
 	public void deleteCar(Pane root, ObservableList<IntersectionSimCar> carObjectList) {
-					
-				
+				//------------------------	
+		ObservableList<IntersectionSimCar> toBeRemovedCar = FXCollections.observableArrayList();		
 		 if(!carObjectList.isEmpty()) {
 				for (IntersectionSimCar car : carObjectList) {
 	                double carPositionX = ((IntersectionSimCar)car).getPositionX();
 	                double carPositionY = ((IntersectionSimCar)car).getPositionY();
 	                
 	               
-	                if(carPositionX < -30 || carPositionX >1153) {
-	             
-	                	Platform.runLater((Runnable)()->((IntersectionSimCar)car).removeCarImageViewsFromRoot(root));
-	                	 Platform.runLater((Runnable)()->carObjectList.remove(car));
-	                	//System.out.println("car deleted");
-	                }else if(carPositionY > 768 ) {
-	                	Platform.runLater((Runnable)()->((IntersectionSimCar)car).deleteCircleRpCorner(root));
-	                	Platform.runLater((Runnable)() -> ((IntersectionSimCar)car).removeCarImageViewsFromRoot(root));
-                	    Platform.runLater((Runnable)() -> carObjectList.remove(car));
+	                 if(carPositionY > 768 ) {
+	                	 toBeRemovedCar.add((IntersectionSimCar) car);
+	                	 ((IntersectionSimCar)car).deleteCircleRpCorner(root);
+	                 	((IntersectionSimCar)car).removeCarImageViewsFromRoot(root);
+	                 	
 	                }
 	            }
+				carObjectList.removeAll(toBeRemovedCar);
+        	    
 			}
 
 

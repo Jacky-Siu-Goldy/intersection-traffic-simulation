@@ -36,7 +36,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     private Image rear_R_BlinkerImage_P;
     private Image rear_L_BlinkerImage_P;
     
-    
+    private Pane root;
     private ImageView front_R_BlinkerImageView_P;
     
     
@@ -167,7 +167,21 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	private double targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY;
     public Circle[] carCornerCircle ;
 
-    private int blinkersCounter;
+    public Circle[] getCarCornerCircle() {
+		return carCornerCircle;
+	}
+
+
+
+	public void setCarCornerCircle() {
+		this.carCornerCircle = new Circle[4];
+		
+		carCornerCircle[0] = new Circle();
+		carCornerCircle[1] = new Circle();
+		carCornerCircle[2] = new Circle();
+		carCornerCircle[3] = new Circle();
+	}
+	private int blinkersCounter;
     private int angle_Diff_Front_Blinkers;
     private int angle_Diff_Rear_Blinkers;
     private int length_For_Front_Blinkers;
@@ -238,13 +252,11 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	}
 	}
     
-    LaneManagement laneManagement;
+    
 	
 	//Car Brain Working on Target Lane "Direction Class Dependent" -->Need to Tweak
 	  
-	 public LaneManagement getLaneManagement() {
-		return laneManagement;
-	}
+	 
 
 	 public void setTargetLaneEnum() {//this is class specific!!!!!
 		 //System.out.println("setTargetLaneEnum() ---> carIntention: " + this.carIntention);
@@ -405,23 +417,98 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 return Math.abs(HEADING_RIGHT_CENTER_OF_L_LANE_Y - this.getPositionY()) < TOLERANCE && this.getRotationAngle() == HEADING_RIGHT_CARDINAL_ANGLE;
 	 }
 	 
-	 
+	 public class CarCornerCoordinate{
+			public double coordinateX_P;
+			public double coordinateY_P;
+
+				public CarCornerCoordinate(double coordinateX, double coordinateY) {
+					this.coordinateX_P = coordinateX;
+					this.coordinateY_P = coordinateY;
+				}
+				
+				public double getCoordinateX_P() {
+					return this.coordinateX_P;
+				}
+				
+				public double getCoordinateY_P() {
+					return this.coordinateY_P;
+				}
+			}
+
+
+
+			private CarCornerCoordinate[] carCornerCoordinate;
+
+			public CarCornerCoordinate[] getCarCornerCoordinate() {
+				return carCornerCoordinate;
+			}
+
+			public void positionCarCorners() {
+
+				double frontRCornerX = this.getFrontRightCornerPositionX();
+				double frontRCornerY = this.getFrontRightCornerPositionY();
+				double frontLCornerX = this.getFrontLeftCornerPositionX();
+				double frontLCornerY = this.getFrontLeftCornerPositionY();
+				double rearRCornerX = this.getRearRightCornerPositionX();
+				double rearRCornerY = this.getRearRightCornerPositionY();
+				double rearLCornerX = this.getRearLeftCornerPositionX();
+				double rearLCornerY = this.getRearLeftCornerPositionY();
+				
+				carCornerCoordinate[0]= new CarCornerCoordinate(frontRCornerX, frontRCornerY);
+				carCornerCoordinate[1] = new CarCornerCoordinate(frontLCornerX, frontLCornerY);
+				carCornerCoordinate[2] = new CarCornerCoordinate(rearRCornerX, rearRCornerY);
+				carCornerCoordinate[3] = new CarCornerCoordinate(rearLCornerX, rearLCornerY);
+
+
+
+
+
+			}
+    @Override
+	public void drawCircleRpCorner ( CarCornerCoordinate[] carCornerCoordinate) {
+		if(this != null && carCornerCoordinate.length == 4) {
+			
+			for (int i = 0 ; i < 4; i++) {
+		    	
+		        if (this.carCornerCircle[i] != null) {
+		    		
+		    		//set properties
+		    		carCornerCircle[i].setCenterX(carCornerCoordinate[i].getCoordinateX_P());
+		    		carCornerCircle[i].setCenterY(carCornerCoordinate[i].getCoordinateY_P());
+		    		
+		    		//set circle radius
+		    		carCornerCircle[i].setRadius(2);
+		    		
+		    		//set the fill color
+		    		carCornerCircle[i].setFill(Color.RED);
+		    		
+		    		//optional: set the border (stroke)
+		    		carCornerCircle[i].setStroke(Color.BLACK);
+		    		carCornerCircle[i].setStrokeWidth(1);
+		            carCornerCircle[i].setVisible(false);//set to false to view the blinkers blinking
+		           
+		        }
+		    }
+		}
+				
+	}
 	 
 	 public HeadedDownOrigCar(Pane root, LaneManagement laneManagement, 
   		   double spawnPositionX, 
   		   double spawnPositionY) {
-  	    super( spawnPositionX, spawnPositionY);
-  	    this.laneManagement = laneManagement;
+  	    super( laneManagement, spawnPositionX, spawnPositionY);
+  	   
+  	    carCornerCoordinate = new CarCornerCoordinate[4];
+
   	    
   	    this.setGeneralPlacementOfCarBaseOnGeneralLocation();//still need to ensure all lane are accounted for
-		this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		//this.needToDoThisEverytimeSetFrontCarAndRearCar();
 		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
   	    Random random = new Random();
   	
   	   //car_P.setxCoordinateSelected(false);
   	   int randomInt = random.nextInt(180);
-  	
-  	
+  	   
   	//calculateAndSetAllBlinkersAngle(this.angle_DifferenceToFrontBlinkers, this.angle_DifferenceToRearBlinkers); remember to delete this it doesn't belong here
 		//calculateAllBlinkersPosition(this.length_CarPosToFrontBlinkers, this.length_CarPosToRearBlinkers); remember to delete this it doesn't belong here
 	    front_R_BlinkerImage_P = new Image(getClass().getResource("/Signal-lights-for-intersection-programOriginal/New-folder/Turn_Signals_002LB.png").toExternalForm());
@@ -548,53 +635,67 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}else{
 			System.out.println("Something went wrong in Car.java line 19 to line 29.");
 		}
-  	
-  	
-  	this.setxCoordinate(random.nextDouble());
-  
-  	root.getChildren().add(carImageView_P);
-  	root.getChildren().add(carImageView_brake_P);
-  	carImageView_brake_P.setVisible(true);
-  	carImageView_P.setVisible(false);
-  	
-  	
-  	root.getChildren().add(front_R_BlinkerImageView_P);
-  	root.getChildren().add(front_L_BlinkerImageView_P);
-  	root.getChildren().add(rear_R_BlinkerImageView_P);
-  	root.getChildren().add(rear_L_BlinkerImageView_P);
-  	root.getChildren().add(front_R_BlinkerImageView2_P);
-  	root.getChildren().add(front_L_BlinkerImageView2_P);
-  	root.getChildren().add(rear_R_BlinkerImageView2_P);
-  	root.getChildren().add(rear_L_BlinkerImageView2_P);
-  	root.getChildren().add(front_R_BlinkerImageView3_P);
-  	root.getChildren().add(front_L_BlinkerImageView3_P);
-  	root.getChildren().add(rear_R_BlinkerImageView3_P);
-  	root.getChildren().add(rear_L_BlinkerImageView3_P);
-  	front_R_BlinkerImageView_P.setVisible(false);
-  	front_L_BlinkerImageView_P.setVisible(false);
-  	rear_R_BlinkerImageView_P.setVisible(false);
-  	rear_L_BlinkerImageView_P.setVisible(false);
-  	front_R_BlinkerImageView2_P.setVisible(true);
-  	front_L_BlinkerImageView2_P.setVisible(true);
-  	rear_R_BlinkerImageView2_P.setVisible(true);
-  	rear_L_BlinkerImageView2_P.setVisible(true);
-  	front_R_BlinkerImageView3_P.setVisible(false);
-  	front_L_BlinkerImageView3_P.setVisible(false);
-  	rear_R_BlinkerImageView3_P.setVisible(false);
-  	rear_L_BlinkerImageView3_P.setVisible(false);
-  	
-  	initialize();
-  	carCornerCircle = new Circle[4];
-  	for (int i = 0 ; i < 4; i++) {
-	    	
-          carCornerCircle[i] = new Circle();
-          root.getChildren().add(carCornerCircle[i]);
-  	}
-  	
-  	this.positionCarCorners();
-  
-		this.drawCircleRpCorner(root, carCornerCoordinate);
+		calculateAndSetAllBlinkersAngle(this.angle_Diff_Front_Blinkers, this.angle_Diff_Rear_Blinkers);
+ 	 	calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
+ 	 	calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
+		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
+		 this.positionCarCorners();
+	  	 this.setCarCornerCircle();
+     	this.initialize();
+     	double imageViewsAngle = 0;
+		imageViewsAngle = 360 - (90 - this.getRotationAngle());
+		double normalizedImageViewAngle = (imageViewsAngle + 360) % 360;
+		imageViewsAngle = normalizedImageViewAngle;
 		
+		
+		this.carImageView_P.setPreserveRatio(true);
+		this.carImageView_brake_P.setPreserveRatio(true);
+		double fixedX2 =  this.getPositionX();
+	
+		double fixedY2 =  this.getPositionY();
+		
+		
+		
+		positionBlinkersImageView(imageViewsAngle, this.front_R_BlinkerImageView_P, this.front_L_BlinkerImageView_P, this.rear_R_BlinkerImageView_P, this.rear_L_BlinkerImageView_P);
+		positionBlinkersImageView(imageViewsAngle, this.front_R_BlinkerImageView2_P, this.front_L_BlinkerImageView2_P, this.rear_R_BlinkerImageView2_P, this.rear_L_BlinkerImageView2_P);
+		positionBlinkersImageView(imageViewsAngle, this.front_R_BlinkerImageView3_P, this.front_L_BlinkerImageView3_P, this.rear_R_BlinkerImageView3_P, this.rear_L_BlinkerImageView3_P);
+		
+		double calculatedLayoutPointForOffCenterFixedPointX = fixedX2 - this.carImageView_P.getFitWidth()/2;
+		double calculatedLayoutPointForOffCenterFixedPointY = fixedY2 - 52;
+		
+	
+		
+		
+		this.carImageView_P.setLayoutX(fixedX2);
+		this.carImageView_P.setLayoutY(fixedY2);
+
+		this.carImageView_brake_P.setLayoutX(fixedX2);
+		this.carImageView_brake_P.setLayoutY(fixedY2);
+		 //Calculate the Translation to move the pivot point to (0,0)
+		Translate translateToPivot2 = new Translate(-fixedX2, -fixedY2);
+		
+		
+		
+	
+		
+		
+		//Rotate around the center of the ImageView, now aligned with the desired fixed coordinate
+		Rotate rotate3 = new Rotate (imageViewsAngle, fixedX2, fixedY2);
+		Rotate rotate4 = new Rotate (imageViewsAngle, fixedX2, fixedY2);
+		
+		
+		//carImage2View.getTransforms().add(rotate2);
+		//Translate the ImageView back to its original position
+	
+		Translate backToPosition2 = new Translate(calculatedLayoutPointForOffCenterFixedPointX, calculatedLayoutPointForOffCenterFixedPointY);
+		
+		this.carImageView_P.getTransforms().clear();// you need to clear it so the angle return back to its original position because the previous angle matters
+		this.carImageView_P.getTransforms().addAll(translateToPivot2, rotate3, backToPosition2);
+		
+		this.carImageView_brake_P.getTransforms().clear();// you need to clear it so the angle return back to its original position because the previous angle matters
+		this.carImageView_brake_P.getTransforms().addAll(translateToPivot2, rotate4, backToPosition2);
+  	
+  	
 	
   }
   
@@ -672,7 +773,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
      /*System.out.println("this.beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_2: " + (this.beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_2) + "\n"
   		               +"remainingDistanceXab = " + remainingDistanceXab + " , distanceTraveledXaxis =" + Math.abs(distanceTraveledXaxis) + "\n"
   		               +"remainingDistanceYab = " + remainingDistanceYab + " , distanceTraveledYaxis =" + Math.abs(distanceTraveledYaxis) + "\n"); */
-     
+     /*
       
       if (  getCarIntention() == CarIntention.BI_ONLTBWANTLT && (UPLEFTTURNY - getPositionY()) < getDistanceTraveledYaxis()) {
       	//System.out.println("CircleRpCar PositionManipulationFormula");
@@ -692,51 +793,15 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
       	setDistanceTraveledYaxis ( Math.sin(normalizedRotationAngle)/ Math.abs(Math.sin(normalizedRotationAngle))*remainingDistanceYab);
       	setDistanceTraveledXaxis (Math.cos(normalizedRotationAngle)/ Math.abs(Math.cos(normalizedRotationAngle))*remainingDistanceXab);
       }
-  }
-  
-  
-	public void carOperation(Pane root) {
-  	
-		 
-  	positionManipulationFormula(this.getxCoordinate(),this.getyCoordinate(),getStraightEndingX(),getStraightEndingY());
-  	
-		
-  		calculateAndSetAllBlinkersAngle(this.angle_Diff_Front_Blinkers, this.angle_Diff_Rear_Blinkers);
- 	 	calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
- 	 	calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
+      */
+      calculateAndSetAllBlinkersAngle(this.angle_Diff_Front_Blinkers, this.angle_Diff_Rear_Blinkers);
+	 	calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
+	 	calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
 		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
-		
-		//this.setGeneralPlacementOfCar();//still need to ensure all lane are accounted for
-		//this.needToDoThisEverytimeSetFrontCarAndRearCar();
-		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
-		//this.laneChangePointXSelection();// need to come up with lane change decision logic
-		//this.laneChangePointYSelection();
-		//this.carState();
-		//this.actionBaseOnCarState(carImageView_P, carImageView_brake_P);
-		 this.gasGoStraight();
-		this.blinkersBlinks();
-		this.positionCarCorners();
-		this.drawCircleRpCorner(root, carCornerCoordinate);
-		//------------------------------------------------------------------------------------------------------------------------------------Temporary Code
-		/* 
-		if (this.getHeadingDownLeftLaneList() != null && this.getHeadingDownLeftLaneList().size() < 1) {
-			 for (Car car : this.getHeadingDownLeftLaneList()) {
-				 System.out.println("\ntargetLaneListKey: " +this.getOnWhichLaneListKey()+ 
-		    		"\n --->this: " + car.getCarSkin() + "---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
-					"\n --->this: " + car.getCarSkin() + "----> frontCarOnTheOtherLane: " + (this.getFrontCarOnTheOtherLane() == null ? null : car.getFrontCarOnTheOtherLane().getCarSkin() )+
-					"\n --->this: " + car.getCarSkin() + "---->           blindSpotCar: " + (this.getBlindSpotCar() == null ? null : car.getBlindSpotCar().getCarSkin())+
-					"\n --->this: " + car.getCarSkin() + "---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTheOtherLane() == null ? null : car.getRearCarOnTheOtherLane().getCarSkin()));
-		 
-			 }
-		 }
-		*/
-		 //--------------------------------------------------------------------------------------------------------------------------------------Temporary Code
-		
-		
-		
-		
-		
-		double imageViewsAngle = 0;
+		 this.positionCarCorners();
+	  	 //this.setCarCornerCircle();
+   	     //this.initialize();
+      double imageViewsAngle = 0;
 		imageViewsAngle = 360 - (90 - this.getRotationAngle());
 		double normalizedImageViewAngle = (imageViewsAngle + 360) % 360;
 		imageViewsAngle = normalizedImageViewAngle;
@@ -788,7 +853,65 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		
 		this.carImageView_brake_P.getTransforms().clear();// you need to clear it so the angle return back to its original position because the previous angle matters
 		this.carImageView_brake_P.getTransforms().addAll(translateToPivot2, rotate4, backToPosition2);
+      
+      blinkersBlinks();
+  		
+  }
+  
+  
+	public void carOperation() {
+  	
+		 
+  	positionManipulationFormula(this.getxCoordinate(),this.getyCoordinate(),getStraightEndingX(),getStraightEndingY());
+  	
 		
+  		calculateAndSetAllBlinkersAngle(this.angle_Diff_Front_Blinkers, this.angle_Diff_Rear_Blinkers);
+ 	 	calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
+ 	 	calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
+		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
+		
+		//this.setGeneralPlacementOfCar();//still need to ensure all lane are accounted for
+		//this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
+		//this.laneChangePointXSelection();// need to come up with lane change decision logic
+		//this.laneChangePointYSelection();
+		//this.carState();
+		//this.actionBaseOnCarState(carImageView_P, carImageView_brake_P);
+		this.gasGoStraight();
+		this.positionCarCorners();
+		this.drawCircleRpCorner(carCornerCoordinate);
+		
+		//------------------------------------------------------------------------------------------------------------------------------------Temporary Code
+		/* 
+		if (this.getHeadingDownLeftLaneList() != null && this.getHeadingDownLeftLaneList().size() < 1) {
+			 for (Car car : this.getHeadingDownLeftLaneList()) {
+				 System.out.println("\ntargetLaneListKey: " +this.getOnWhichLaneListKey()+ 
+		    		"\n --->this: " + car.getCarSkin() + "---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
+					"\n --->this: " + car.getCarSkin() + "----> frontCarOnTheOtherLane: " + (this.getFrontCarOnTheOtherLane() == null ? null : car.getFrontCarOnTheOtherLane().getCarSkin() )+
+					"\n --->this: " + car.getCarSkin() + "---->           blindSpotCar: " + (this.getBlindSpotCar() == null ? null : car.getBlindSpotCar().getCarSkin())+
+					"\n --->this: " + car.getCarSkin() + "---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTheOtherLane() == null ? null : car.getRearCarOnTheOtherLane().getCarSkin()));
+		 
+			 }
+		 }
+		*/
+		 //--------------------------------------------------------------------------------------------------------------------------------------Temporary Code
+		/*if (laneManagement.getHeadingDownRightLaneList() != null) {
+			for (IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
+				 System.out.println("\ntargetLaneListKey: " +this.getOnWhichLaneListKey()+ 
+		    		"\n --->this: " + car.getCarSkin() + "---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
+					"\n --->this: " + car.getCarSkin() + "---->           frontCar: " + (this.getFrontCar() == null ? null : car.getFrontCar().getCarSkin() )+
+					       
+					"\n --->this: " + car.getCarSkin() + "---->  rearCar " + (this.getRearCar() == null ? null : car.getRearCar().getCarSkin()));
+		 
+			 }
+		}*/
+		
+		
+		
+		
+		
+		
+		//this.blinkersBlinks();
   }
   public void calculateAndSetAllBlinkersAngle(double angle_Difference_Front_Blinkers, double angle_Difference_Back_Blinkers) {
  	 
@@ -1083,12 +1206,8 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			this.front_L_Corner_Angle = front_L_Corner_Angle;
 		}
 
-		/*public ObservableList<Car> getObservableListCarIsOn(){
-	    	    
-	    		return this.getHashMap_For_Observablelist().get(this.getOnWhichLane());
-	    	
-	    }
 		
+		/*
 		public ObservableList<Car> getTargetObservaleListOfCars(CircleRpCar.OnWhichLane TargetLane){         
 			return this.getHashMap_For_Observablelist().get(TargetLane);
 		}
@@ -1385,75 +1504,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}
 	}
 
-public class CarCornerCoordinate{
-public double coordinateX_P;
-public double coordinateY_P;
-
-	public CarCornerCoordinate(double coordinateX, double coordinateY) {
-		this.coordinateX_P = coordinateX;
-		this.coordinateY_P = coordinateY;
-	}
 	
-	public double getCoordinateX_P() {
-		return this.coordinateX_P;
-	}
-	
-	public double getCoordinateY_P() {
-		return this.coordinateY_P;
-	}
-	}
-	
-	private CarCornerCoordinate[] carCornerCoordinate = new CarCornerCoordinate[4];
-	
-	public void positionCarCorners() {
-	
-		double frontRCornerX = this.getFrontRightCornerPositionX();
-		double frontRCornerY = this.getFrontRightCornerPositionY();
-		double frontLCornerX = this.getFrontLeftCornerPositionX();
-		double frontLCornerY = this.getFrontLeftCornerPositionY();
-		double rearRCornerX = this.getRearRightCornerPositionX();
-		double rearRCornerY = this.getRearRightCornerPositionY();
-		double rearLCornerX = this.getRearLeftCornerPositionX();
-		double rearLCornerY = this.getRearLeftCornerPositionY();
-		
-		carCornerCoordinate[0]= new CarCornerCoordinate(frontRCornerX, frontRCornerY);
-		carCornerCoordinate[1] = new CarCornerCoordinate(frontLCornerX, frontLCornerY);
-		carCornerCoordinate[2] = new CarCornerCoordinate(rearRCornerX, rearRCornerY);
-		carCornerCoordinate[3] = new CarCornerCoordinate(rearLCornerX, rearLCornerY);
-	
-	
-	
-	
-	
-	}
-
-	public void drawCircleRpCorner (Pane root, CarCornerCoordinate[] carCornerCoordinate) {
-		if(this != null && carCornerCoordinate.length == 4) {
-			
-			for (int i = 0 ; i < 4; i++) {
-		    	
-		        if (this.carCornerCircle[i] != null) {
-		    		
-		    		//set properties
-		    		carCornerCircle[i].setCenterX(carCornerCoordinate[i].getCoordinateX_P());
-		    		carCornerCircle[i].setCenterY(carCornerCoordinate[i].getCoordinateY_P());
-		    		
-		    		//set circle radius
-		    		carCornerCircle[i].setRadius(2);
-		    		
-		    		//set the fill color
-		    		carCornerCircle[i].setFill(Color.RED);
-		    		
-		    		//optional: set the border (stroke)
-		    		carCornerCircle[i].setStroke(Color.BLACK);
-		    		carCornerCircle[i].setStrokeWidth(1);
-		            carCornerCircle[i].setVisible(false);//set to false to view the blinkers blinking
-		        }
-		    }
-			
-				
-		}
-	}
 
 	public void setBlinkerLengthAndAngleAlsoCarImageViewWidth (CarSkinConfig carSkinConfig) {
 		angle_Diff_Front_Blinkers = carSkinConfig.getFront_Blinker_Angle_Diff();
@@ -1491,6 +1542,331 @@ public double coordinateY_P;
 	    		carCornerCircle[i] = null;
 	    	}
 	    }
+	    
+	}
+
+
+
+	public Image getCarImage_brake_P() {
+		return carImage_brake_P;
+	}
+
+
+
+	public void setCarImage_brake_P(Image carImage_brake_P) {
+		this.carImage_brake_P = carImage_brake_P;
+	}
+
+
+
+	public ImageView getCarImageView_brake_P() {
+		return carImageView_brake_P;
+	}
+
+
+
+	public void setCarImageView_brake_P(ImageView carImageView_brake_P) {
+		this.carImageView_brake_P = carImageView_brake_P;
+	}
+
+
+
+	public Image getFront_R_BlinkerImage_P() {
+		return front_R_BlinkerImage_P;
+	}
+
+
+
+	public void setFront_R_BlinkerImage_P(Image front_R_BlinkerImage_P) {
+		this.front_R_BlinkerImage_P = front_R_BlinkerImage_P;
+	}
+
+
+
+	public Image getFront_L_BlinkerImage_P() {
+		return front_L_BlinkerImage_P;
+	}
+
+
+
+	public void setFront_L_BlinkerImage_P(Image front_L_BlinkerImage_P) {
+		this.front_L_BlinkerImage_P = front_L_BlinkerImage_P;
+	}
+
+
+
+	public Image getRear_R_BlinkerImage_P() {
+		return rear_R_BlinkerImage_P;
+	}
+
+
+
+	public void setRear_R_BlinkerImage_P(Image rear_R_BlinkerImage_P) {
+		this.rear_R_BlinkerImage_P = rear_R_BlinkerImage_P;
+	}
+
+
+
+	public Image getRear_L_BlinkerImage_P() {
+		return rear_L_BlinkerImage_P;
+	}
+
+
+
+	public void setRear_L_BlinkerImage_P(Image rear_L_BlinkerImage_P) {
+		this.rear_L_BlinkerImage_P = rear_L_BlinkerImage_P;
+	}
+
+
+
+	public ImageView getFront_R_BlinkerImageView_P() {
+		return front_R_BlinkerImageView_P;
+	}
+
+
+
+	public void setFront_R_BlinkerImageView_P(ImageView front_R_BlinkerImageView_P) {
+		this.front_R_BlinkerImageView_P = front_R_BlinkerImageView_P;
+	}
+
+
+
+	public ImageView getFront_L_BlinkerImageView_P() {
+		return front_L_BlinkerImageView_P;
+	}
+
+
+
+	public void setFront_L_BlinkerImageView_P(ImageView front_L_BlinkerImageView_P) {
+		this.front_L_BlinkerImageView_P = front_L_BlinkerImageView_P;
+	}
+
+
+
+	public ImageView getRear_R_BlinkerImageView_P() {
+		return rear_R_BlinkerImageView_P;
+	}
+
+
+
+	public void setRear_R_BlinkerImageView_P(ImageView rear_R_BlinkerImageView_P) {
+		this.rear_R_BlinkerImageView_P = rear_R_BlinkerImageView_P;
+	}
+
+
+
+	public ImageView getRear_L_BlinkerImageView_P() {
+		return rear_L_BlinkerImageView_P;
+	}
+
+
+
+	public void setRear_L_BlinkerImageView_P(ImageView rear_L_BlinkerImageView_P) {
+		this.rear_L_BlinkerImageView_P = rear_L_BlinkerImageView_P;
+	}
+
+
+
+	public Image getFront_R_BlinkerImage2_P() {
+		return front_R_BlinkerImage2_P;
+	}
+
+
+
+	public void setFront_R_BlinkerImage2_P(Image front_R_BlinkerImage2_P) {
+		this.front_R_BlinkerImage2_P = front_R_BlinkerImage2_P;
+	}
+
+
+
+	public Image getFront_L_BlinkerImage2_P() {
+		return front_L_BlinkerImage2_P;
+	}
+
+
+
+	public void setFront_L_BlinkerImage2_P(Image front_L_BlinkerImage2_P) {
+		this.front_L_BlinkerImage2_P = front_L_BlinkerImage2_P;
+	}
+
+
+
+	public Image getRear_R_BlinkerImage2_P() {
+		return rear_R_BlinkerImage2_P;
+	}
+
+
+
+	public void setRear_R_BlinkerImage2_P(Image rear_R_BlinkerImage2_P) {
+		this.rear_R_BlinkerImage2_P = rear_R_BlinkerImage2_P;
+	}
+
+
+
+	public Image getRear_L_BlinkerImage2_P() {
+		return rear_L_BlinkerImage2_P;
+	}
+
+
+
+	public void setRear_L_BlinkerImage2_P(Image rear_L_BlinkerImage2_P) {
+		this.rear_L_BlinkerImage2_P = rear_L_BlinkerImage2_P;
+	}
+
+
+
+	public ImageView getFront_R_BlinkerImageView2_P() {
+		return front_R_BlinkerImageView2_P;
+	}
+
+
+
+	public void setFront_R_BlinkerImageView2_P(ImageView front_R_BlinkerImageView2_P) {
+		this.front_R_BlinkerImageView2_P = front_R_BlinkerImageView2_P;
+	}
+
+
+
+	public ImageView getFront_L_BlinkerImageView2_P() {
+		return front_L_BlinkerImageView2_P;
+	}
+
+
+
+	public void setFront_L_BlinkerImageView2_P(ImageView front_L_BlinkerImageView2_P) {
+		this.front_L_BlinkerImageView2_P = front_L_BlinkerImageView2_P;
+	}
+
+
+
+	public ImageView getRear_R_BlinkerImageView2_P() {
+		return rear_R_BlinkerImageView2_P;
+	}
+
+
+
+	public void setRear_R_BlinkerImageView2_P(ImageView rear_R_BlinkerImageView2_P) {
+		this.rear_R_BlinkerImageView2_P = rear_R_BlinkerImageView2_P;
+	}
+
+
+
+	public ImageView getRear_L_BlinkerImageView2_P() {
+		return rear_L_BlinkerImageView2_P;
+	}
+
+
+
+	public void setRear_L_BlinkerImageView2_P(ImageView rear_L_BlinkerImageView2_P) {
+		this.rear_L_BlinkerImageView2_P = rear_L_BlinkerImageView2_P;
+	}
+
+
+
+	public Image getFront_R_BlinkerImage3_P() {
+		return front_R_BlinkerImage3_P;
+	}
+
+
+
+	public void setFront_R_BlinkerImage3_P(Image front_R_BlinkerImage3_P) {
+		this.front_R_BlinkerImage3_P = front_R_BlinkerImage3_P;
+	}
+
+
+
+	public Image getFront_L_BlinkerImage3_P() {
+		return front_L_BlinkerImage3_P;
+	}
+
+
+
+	public void setFront_L_BlinkerImage3_P(Image front_L_BlinkerImage3_P) {
+		this.front_L_BlinkerImage3_P = front_L_BlinkerImage3_P;
+	}
+
+
+
+	public Image getRear_R_BlinkerImage3_P() {
+		return rear_R_BlinkerImage3_P;
+	}
+
+
+
+	public void setRear_R_BlinkerImage3_P(Image rear_R_BlinkerImage3_P) {
+		this.rear_R_BlinkerImage3_P = rear_R_BlinkerImage3_P;
+	}
+
+
+
+	public Image getRear_L_BlinkerImage3_P() {
+		return rear_L_BlinkerImage3_P;
+	}
+
+
+
+	public void setRear_L_BlinkerImage3_P(Image rear_L_BlinkerImage3_P) {
+		this.rear_L_BlinkerImage3_P = rear_L_BlinkerImage3_P;
+	}
+
+
+
+	public ImageView getFront_R_BlinkerImageView3_P() {
+		return front_R_BlinkerImageView3_P;
+	}
+
+
+
+	public void setFront_R_BlinkerImageView3_P(ImageView front_R_BlinkerImageView3_P) {
+		this.front_R_BlinkerImageView3_P = front_R_BlinkerImageView3_P;
+	}
+
+
+
+	public ImageView getFront_L_BlinkerImageView3_P() {
+		return front_L_BlinkerImageView3_P;
+	}
+
+
+
+	public void setFront_L_BlinkerImageView3_P(ImageView front_L_BlinkerImageView3_P) {
+		this.front_L_BlinkerImageView3_P = front_L_BlinkerImageView3_P;
+	}
+
+
+
+	public ImageView getRear_R_BlinkerImageView3_P() {
+		return rear_R_BlinkerImageView3_P;
+	}
+
+
+
+	public void setRear_R_BlinkerImageView3_P(ImageView rear_R_BlinkerImageView3_P) {
+		this.rear_R_BlinkerImageView3_P = rear_R_BlinkerImageView3_P;
+	}
+
+
+
+	public ImageView getRear_L_BlinkerImageView3_P() {
+		return rear_L_BlinkerImageView3_P;
+	}
+
+
+
+	public void setRear_L_BlinkerImageView3_P(ImageView rear_L_BlinkerImageView3_P) {
+		this.rear_L_BlinkerImageView3_P = rear_L_BlinkerImageView3_P;
+	}
+
+
+
+	public double getRear_R_Blinker_Angle() {
+		return rear_R_Blinker_Angle;
+	}
+
+
+
+	public void setRear_R_Blinker_Angle(double rear_R_Blinker_Angle) {
+		this.rear_R_Blinker_Angle = rear_R_Blinker_Angle;
 	}
 	
 	
