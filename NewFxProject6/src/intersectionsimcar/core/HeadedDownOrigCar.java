@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
 
+
 import application.config.BlueRaceCarConfig;
 import application.config.CarSkinConfig;
 import application.config.FinishedBlueBydConfig;
@@ -36,7 +37,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     private Image rear_R_BlinkerImage_P;
     private Image rear_L_BlinkerImage_P;
     
-    private Pane root;
+    
     private ImageView front_R_BlinkerImageView_P;
     
     
@@ -127,7 +128,76 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
         private double rear_R_Corner_Angle;
         private double rear_L_Corner_Angle;
     	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-      
+        protected static final double LEFTTURNEXITANGLE = 180; // aligns with the rotationAngle which means the rotationAngle will be 180 degree when it exit the Left turn circle (a circular path)
+        
+        protected static final double RIGHTTURNEXITANGLE = 0; // aligns with the rotationAngle which means the rotationAngle will be 0 degree when it exit the Right turn circle (a circular path)
+        
+        public static final double R_BIRIGHT_LANE_CHANGEEXITANGLE = 282;
+    	public static final double L_BIRIGHT_LANE_CHANGEEXITANGLE = 270;
+    	
+    	 /**
+         * This constant is used for the righTurn(double exitAngle, double radius) function
+         * if you keep calling that function without doing anything for what happens when it hit that exit angle your car will basically keep going in a circle,
+         * but as it goes around in a circle it will always hit that point which matches the exit angle, the rotationAngle will always align to match the exit angle at that instance
+         * And as the name suggest this constant is used for right lane change after the car makes a left turn at the intersection. When the car's rotationAngle align with this 
+         * exitAngle, phase1 of the lane change process should end and go on to phase2
+         */
+    	public static final double R_ALTRIGHT_LANECHANGEEXITANGLE = 192;// right turn exit angle for right Lane change after left turn
+    	/**
+         * This constant is used for the leftTurn(double exitAngle, double radius) function
+         * if you keep calling that function without doing any for what happens when it hit that exit angle your car will basically keep going in a circle,
+         * but as it goes around in a circle it will always hit that point which matches the exit angle, the rotationAngle will always align to match the exit angle at that instance
+         * And as the name suggest this constant is used for right lane change after the car makes a left turn at the intersection. When the car's rotationAngle align with this 
+         * exitAngle, phase3 of the lane change process should end and you do something else for example make it go straight
+         */
+        public static final double L_ALTRIGHT_LANECHANGEEXITANGLE = 180;// left  turn exit angle for right lane change after left turn
+       
+        
+        /**
+         * see explanation for other LANCHANGEEXITANGLE
+         */
+        public static final double L_ALTLEFT_LANECHANGEEXITANGLE =  135;// left turn exit angle for left lane change after left turn
+        public static final double R_ALTLEFT_LANECHANGEEXITANGLE =  180;// right turn exit angle for left lane change after left turn
+        
+        /**
+         * Coordinate in the Y axis of when the car should start making a right turn to successfully make a right turn
+         */
+        public static final double HEADINGDOWNRIGHTTURNY = 215; //Coordinate in the Y axis of when the car should start making a right turn to successfully make a right turn
+        
+        /**
+         * Coordinate in the X axis of when the car should start making a left turn to successfully make a Left turn
+         */
+        public static final double HEADINGDOWNLEFTTURNY = 297.5;//Coordinate in the X axis of when the car should start making a left turn to successfully make a Left turn
+        
+        /**
+    	 * The exit angle for canceling lane is not a final static variable because it can be different every time
+    	 */
+    	private double r_AltCancelRight_LaneChangeExitAngle;
+    	
+    	public double getR_AltCancelRight_LaneChangeExitAngle() {
+    		return r_AltCancelRight_LaneChangeExitAngle;
+    	}
+
+
+    	public void setR_AltCancelRight_LaneChangeExitAngle() {
+    		this.r_AltCancelRight_LaneChangeExitAngle = (this.getlAltrightLanechangeexitangle() - this.getlAltrightLanechangeexitangle() - 180)*2;
+    		
+    		this.r_AltCancelRight_LaneChangeExitAngle = (this.r_AltCancelRight_LaneChangeExitAngle + 360) % 360;
+    		//System.out.println("r_ALTCANCELRIGHT_LANECHANGEEXITANGLE :" + this.getR_AltCancelRight_LaneChangeExitAngle());
+    	}
+    	
+    	private double r_BiCancelRight_LaneChangeExitAngle;
+    	
+    	public double getR_BiCancelRight_LaneChangeExitAngle() {
+    		 return r_BiCancelRight_LaneChangeExitAngle;
+    	}
+    	public void SetR_BiCancelRight_LaneChangeExitAngle() {
+    		double temp_Angle  = this.rotationAngle - (this.rotationAngle - HEADING_DOWN_CARDINAL_ANGLE)*2;
+    		
+    		this.r_BiCancelRight_LaneChangeExitAngle = temp_Angle;
+    		//System.out.println("r_BICancelRight_LaneChangeExitAngle :" + this.getR_BiCancelRight_LaneChangeExitAngle());
+    	}
+    	
 
     public void initialize() {
 			 blinkersSet1 = new ImageView[]{front_R_BlinkerImageView_P,
@@ -332,7 +402,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	 //************at this point 10:37 pm before dinner 2025-05-18
 	
 	 @Override
-	 public void setGeneralPlacementOfCarBaseOnGeneralLocation() {
+	 public void setGeneralPlacementOfCarBasedOnGeneralLocation() {
 		  
 		   double dist_from_LeftTurn_Point = Math.sqrt(Math.pow((TOP_MAKE_LEFT_POINTY - this.getPositionX()),2) + Math.pow((TOP_MAKE_LEFT_POINTY - this.getPositionY()),2));//tweak here
 		   double dist_from_RightTurn_Point = Math.sqrt(Math.pow((TOP_MAKE_RIGHT_POINTX - this.getPositionX()), 2) + Math.pow((TOP_MAKE_RIGHT_POINTY - this.getPositionY()),2));
@@ -417,6 +487,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 return Math.abs(HEADING_RIGHT_CENTER_OF_L_LANE_Y - this.getPositionY()) < TOLERANCE && this.getRotationAngle() == HEADING_RIGHT_CARDINAL_ANGLE;
 	 }
 	 
+	 
 	 public class CarCornerCoordinate{
 			public double coordinateX_P;
 			public double coordinateY_P;
@@ -497,11 +568,11 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
   		   double spawnPositionX, 
   		   double spawnPositionY) {
   	    super( laneManagement, spawnPositionX, spawnPositionY);
-  	   
+  	    this.setGeneralPlacementOfCarBasedOnGeneralLocation();
   	    carCornerCoordinate = new CarCornerCoordinate[4];
-
+  	     r_BiCancelRight_LaneChangeExitAngle = rotationAngle;
   	    
-  	    this.setGeneralPlacementOfCarBaseOnGeneralLocation();//still need to ensure all lane are accounted for
+  	    this.setGeneralPlacementOfCarBasedOnGeneralLocation();//still need to ensure all lane are accounted for
 		//this.needToDoThisEverytimeSetFrontCarAndRearCar();
 		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
   	    Random random = new Random();
@@ -723,9 +794,22 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	}
 
 
-	public void removeCarImageViewsFromRoot(Pane root) {
+	public void removeCarImagesAndImageViewsFromRoot(Pane root) {
   	
-  	
+  	    this.carImageView_P.setImage(null);
+  	    this.carImageView_brake_P.setImage(null);
+  	    this.front_R_BlinkerImageView_P.setImage(null);
+  	    this.front_L_BlinkerImageView_P.setImage(null);
+  	    this.rear_R_BlinkerImageView_P.setImage(null);
+	    this.rear_L_BlinkerImageView_P.setImage(null);
+	    this.front_R_BlinkerImageView2_P.setImage(null);
+  	    this.front_L_BlinkerImageView2_P.setImage(null);
+  	    this.rear_R_BlinkerImageView2_P.setImage(null);
+	    this.rear_L_BlinkerImageView2_P.setImage(null);
+	    this.front_R_BlinkerImageView3_P.setImage(null);
+  	    this.front_L_BlinkerImageView3_P.setImage(null);
+  	    this.rear_R_BlinkerImageView3_P.setImage(null);
+	    this.rear_L_BlinkerImageView3_P.setImage(null);
   		root.getChildren().remove(this.carImageView_P);
   		root.getChildren().remove(this.carImageView_brake_P);
   	    root.getChildren().remove(this.front_R_BlinkerImageView_P);
@@ -873,6 +957,8 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		this.drawCircleRpCorner(carCornerCoordinate);
 		//this.setGeneralPlacementOfCar();//still need to ensure all lane are accounted for
 		this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		if(this.getFrontCar() != null && this.getFrontCar().isAlive() == false)
+           this.setFrontCar(null);
 		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
 		//this.laneChangePointXSelection();// need to come up with lane change decision logic
 		//this.laneChangePointYSelection();
@@ -895,14 +981,16 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 }
 		*/
 		 //--------------------------------------------------------------------------------------------------------------------------------------Temporary Code
-	/*
-				 System.out.println("\ntargetLaneListKey: " +this.getOnWhichLaneListKey()+ 
+	
+				 System.out.println(
+				    "\ntargetLaneListKey: " +this.getOnWhichLaneListKey()+ 
 		    		"\n --->this: " + this.getCarSkin() + "---->        OnWhichLane: " + this.getOnWhichLaneListKey() +
-		    		"\n --->this: " + this.getCarSkin() + "getObservablelistCarisOn(): " + this.laneManagement.getHashMap_For_Observablelist().get(getOnWhichLaneListKey() +
-					"\n --->this: " + this.getCarSkin() + "---->           frontCar: " + this.getFrontCar() == null ? null : this.getFrontCar().getCarSkin() )+
+		    		"\n --->this: " + this.getCarSkin() + "getObservablelistCarisOn(): " + this.laneManagement.getHashMap_For_Observablelist().get(getOnWhichLaneListKey()) +
+					"\n --->this: " + this.getCarSkin() + "---->           frontCar: " + (this.getFrontCar() == null ? null : this.getFrontCar().getCarSkin()) +
 					       
-					"\n --->this: " + this.getCarSkin() + "---->            rearCar: " + this.getRearCar() == null ? null : this.getRearCar().getCarSkin());
-	*/	 
+					"\n --->this: " + this.getCarSkin() + "---->            rearCar: " + (this.getRearCar() == null ? null : this.getRearCar().getCarSkin())
+				);
+		 
 		
 		
 		
@@ -1877,6 +1965,270 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	public void setRear_R_Blinker_Angle(double rear_R_Blinker_Angle) {
 		this.rear_R_Blinker_Angle = rear_R_Blinker_Angle;
 	}
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	 /**
+     * This is supposed to be the brain function for now the selection of the lane Change X-Coordinate is randomized
+     */
+    public void laneChangePointYSelection() {
+   	   Random random = new Random();
+   		
+   		
+   		if (beforeInt_RightLaneChangePhase == LaneChangePhase.COMPLETED && carIntention == CarIntention.BI_ONLLWANTRLC && !yCoordinateSelected
+   				|| beforeInt_RightLaneChangePhase == LaneChangePhase.NONE && carIntention == CarIntention.BI_ONLLWANTRLC && !yCoordinateSelected ){//tweak here
+   			xCoordinate  = random.nextDouble(1100);
+   			if(yCoordinate >= 0 && yCoordinate < 215 && yCoordinate > this.getPositionY())//tweak here
+   			yCoordinateSelected = true;
+   			//System.out.println("laneChangePointYSelection() accessed");
+   		}else if (beforeInt_RightLaneChangePhase == LaneChangePhase.COMPLETED) {//tweak here
+   			yCoordinateSelected = false;
+   		}
+    }
+    
+    public void bI_RightLaneChangePhaseIntention() {
+   	 if(!lane_Change_Probabilities_accessed && this.generalPlacementOfCar == GeneralPlacementOfCar.BI_ONLEFTLANE 
+   			 && carIntention == CarIntention.NONE  ) {//tweak here
+   		 //System.out.println("CircleRpCar.java line: 872 accessed, isXCoordinateSelected: " + this.isxCoordinateSelected());
+   	     laneChangeProbabilities = LaneChangeProbabilities.HIGH;
+   	     laneChangeProbabilities.execute(this);
+   	    //System.out.println("CircleRpCar.java line: 851 carID: "+this+ " CarIntention: " + carIntention);
+   		//ToDo: should activate turn signal 
+   	     lane_Change_Probabilities_accessed = true;
+   	}
+    }
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    
+    public void bI_RightLaneChangePhaseState() {//tweak here
+    	//System.out.println("bI_RightLaneChangePhaseState()-->accessed, !laneChangePhase1-Initiated = " + laneChangePhase1_Initiated);
+    	if (shouldBeginBI_RLC_Phase1()) {//tweak here
+   		 
+   			beforeInt_RightLaneChangePhase = LaneChangePhase.PHASE_1;//tweak here
+   			//System.out.println("CircleRpCar.java line 893 accessed ---car ID: " +  this + " |Before intersection Phase: " + beforeInt_RightLaneChangePhase + " |  PositionX: " + positionX);
+   			laneChangePhase1_Initiated = true;
+   			
+   			//System.out.println("bI_RightLaneChangePhaseState()-->shouldBeginBI_RLC_Phase1() -->accessed");
+   		}else if(shouldBeginBI_RLC_Phase2()) {//tweak here
+   	       System.out.println("bI_RightLaneChangePhaseState() carIntention: " + this.carIntention );
+   	        beforeInt_RightLaneChangePhase = LaneChangePhase.PHASE_2;//tweak here
+   		    this.phase2CalculationBI_RLC();//tweak here
+   		   
+   		    this.SetR_BiCancelRight_LaneChangeExitAngle();
+   	        
+   	        	
+   	        
+   		}else if(shouldBeginBI_RLC_Phase3()) {//tweak here
+   			//System.out.println("CircleRpCar.java line 913: accessed");
+   			beforeInt_RightLaneChangePhase = LaneChangePhase.PHASE_3;//tweak here
+   		}else if(shouldBeginBI_RLC_PhaseCompleted()  ) {
+   			
+   		 beforeInt_RightLaneChangePhase = LaneChangePhase.COMPLETED;//tweak here
+   		 carIntention = CarIntention.NONE;
+   		
+   		 carAction = CarAction.GOSTRAIGHT;
+   		 //System.out.println("bI_RightLaneChangePhaseState: Lane Change Completed: positionX = " + this.getPositionX() + " ");
+   		 lane_Change_Probabilities_accessed = false;
+   		 laneChangePhase1_Initiated = false;
+   		}
+    }
+    
+    
+    /**
+     * If carAction says (ALT_RIGHTLANECHANGE)--meaning after Left Turn (The car is  on the left lane and It wants to do a right lane change). 
+     * laneChangePhase1_initiated has to be false because once phase1 is initiated it will not initiate phase 1 again until after the lane change is completed.
+     * It is a boolean function for if it should begin phase 1 of the After Left Turn on left lane right lane change phases  
+     * @return true or false
+     */
+    private boolean shouldBeginBI_RLC_Phase1() {//tweak here
+   	 return carAction == CarAction.BI_RIGHTLANECHANGE && !laneChangePhase1_Initiated;//tweak here
+    }
+    
+    /**
+     * After phase 1 is initiated the car will start turning until it reaches the optimum angle (right Lane Change ExitAngle
+     * A boolean function for if it should begin phase 2 of the After Left Turn on left lane right lane change phases  
+     * @return true or false
+     */
+    private boolean shouldBeginBI_RLC_Phase2() {//tweak here
+   	 return this.getRotationAngle() == this.getrBiRightLaneChangeExitAngle() && beforeInt_RightLaneChangePhase ==  LaneChangePhase.PHASE_1;//tweak here
+    }
+    
+
+    /**
+     * A boolean function for if it should begin phase 3 of the After Left Turn on left lane right lane change phases  
+     * @return true or false
+     */
+    private boolean shouldBeginBI_RLC_Phase3() {//tweak here
+   	 return this.getPositionX() == this.getStraightEndingX() && this.getPositionY() == this.getStraightEndingY() && beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_2;//tweak here
+    }
+    
+    //The function Below is the condition for canceling (after left turn) right lane change
+    /**
+     * &&&--means need to work on it
+     * For this now this function will always = true when rotationAngle is equal to the  R_ALTRIGHT_LANECHANGEEXITANGLE
+     * @return true or false
+     */
+
+    private boolean shouldBICancelRightLaneChange() {//tweak here
+   	 return (this.getRotationAngle() == 282);//tweak here
+    }
+    
+    /**
+     * A boolean function for if it should begin phase named completed of the After Left Turn on left lane right lane change phases
+     * @return true or false
+     */
+    private boolean shouldBeginBI_RLC_PhaseCompleted() {//tweak here
+   	 return this.getRotationAngle() == this.getlBiRightLaneChangeExitAngle() && beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_3;//tweak here
+    }
+    
+    /**
+     * After Left Turn on left lane right lane change calculation for phase2
+     */
+      private void phase2CalculationBI_RLC() {//tweak here
+    	this.setAngleWithRespectToTheRightTurnCircle();
+    	//System.out.println("angleWithRespectToTheRightTurnCircle = " + this.getAngleWithRespectToTheRightTurnCircle());
+       	this.positionXSnapShot = this.getPositionX();
+        this.positionYSnapShot = this.getPositionY();
+   		this.setStraightStartingX(positionXSnapShot);
+   		this.setStraightStartingY(positionYSnapShot);
+   		
+   		
+   		double startingX = this.getStraightStartingX();
+   		double startingY = this.getStraightStartingY();
+   		double laneChangeRadius = this.getLanechangeradius();
+   		double temp_AngleWithRespectToRightTurnCircle = Math.toRadians(this.angleWithRespectToTheRightTurnCircle);
+   		this.setH(startingX - Math.cos(temp_AngleWithRespectToRightTurnCircle) * laneChangeRadius) ;//h is the x coordinate of the center of the right turn circle//tweak here
+   		this.setK(startingY  - Math.sin(temp_AngleWithRespectToRightTurnCircle) * laneChangeRadius) ;//k is the y coordinate of the center of the right turn circle//tweak here
+   		double temp_H = this.getH();//tweak here
+   		//double temp_K = this.getK();//tweak here
+   		double temp_StraightEndingX = startingX + (temp_H - startingX)*2;//tweak here
+   		double temp_RotationAngle = angleNormalization(this.getRotationAngle());//tweak here
+   		this.setRise(Math.sin(temp_RotationAngle));//* orY;//update rise of the slope
+   		this.setRun(Math.cos(temp_RotationAngle));//* orX;//update run of the slope
+           double temp_Rise = this.getRise();//tweak here
+           double temp_Run = this.getRun();//tweak here
+           this.setRiseOverRun(temp_Rise/temp_Run);//tweak here
+           this.setRunOverRise(temp_Run/temp_Rise);//tweak here
+           //double temp_RiseOverRun = this.getRiseOverRun();
+           double temp_RiseOverRun = this.getRiseOverRun();//tweak here
+           double temp_StraightEndingY = temp_RiseOverRun * (temp_StraightEndingX - startingX) + startingY;//tweak here
+   		this.setStraightEndingX(temp_StraightEndingX);
+   		this.setStraightEndingY(temp_StraightEndingY);
+       }
+   	
+     
+
+	/**
+   	 * This function makes the car perform the action
+   	 */
+       public void bI_RightLaneChange() {//tweak here
+    	   
+    	   switch(beforeInt_RightLaneChangePhase) {
+    	   case LaneChangePhase.PHASE_1:
+    		   //System.out.println("BI_RightLaneChange() --> phase 1: accessed");
+    	   		 
+      			this.rightTurn(this.getrBiRightLaneChangeExitAngle(), 19.5);
+      			break;
+    	   case LaneChangePhase.PHASE_2:
+    		    //System.out.println("bI_RightLaneChange() :" + this.getR_BiCancelRight_LaneChangeExitAngle());
+	        	//bI_CancelRightLaneChangePhaseState(); ///DONE AWAY WITH CANCEL LANE CHANGE FOR NOW
+	        
+	  			//System.out.println("bI_RightLaneChang--> Phase2");
+	  			double temp_StraightEndingX = this.getStraightEndingX();
+	  			double temp_StraightEndingY = this.getStraightEndingY();
+	  			//this.positionManipulationFormula(this.getxCoordinate(),this.getyCoordinate(), temp_StraightEndingX, temp_StraightEndingY);
+	  			this.gasGoStraight();
+	  			break;
+    	   case LaneChangePhase.PHASE_3:
+    		   this.leftTurn(this.getlBiRightLaneChangeExitAngle(), 19.5);
+    		   break;
+		default:
+			break;
+    	  }
+       	/*if(beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_1) {//tweak here
+   		    //System.out.println("BI_RightLaneChange() --> phase 1: accessed");
+   		 
+   			this.rightTurn(CircleRpCar.getrBiRightLaneChangeExitAngle(), 19.5);
+   		}else if(beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_2) {//tweak here
+   			
+		
+				//System.out.println("bI_RightLaneChangePhaseState() :" + this.getR_BiCancelRight_LaneChangeExitAngle());
+	        	bI_CancelRightLaneChangePhaseState();
+	        
+   			//System.out.println("bI_RightLaneChang--> Phase2");
+   			double temp_StraightEndingX = this.getStraightEndingX();
+   			double temp_StraightEndingY = this.getStraightEndingY();
+   			this.positionManipulationFormula(this.getxCoordinate(),this.getyCoordinate(), temp_StraightEndingX, temp_StraightEndingY);
+   			this.gasGoStraight();
+   		}else if (beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_3) {//tweak here
+   		  
+   			this.leftTurn(CircleRpCar.getlBiRightLaneChangeExitAngle(), 19.5);//tweak here
+   		  ///System.out.println("BI_RightLaneChange()--> phase 3: accessed, positionX: " + this.positionX + " " );
+   			
+   		}*/
+       }
+       public void bI_CancelRightLaneChangePhaseState() {
+       	if (shouldBICancelRightLaneChange()) {
+       		//System.out.println("bI_CancelRightLaneChangePhaseState : accessed and beforeInt_RightLaneChangePhase set to CancelLaneChange Phase_1");
+       		
+           	beforeInt_CancelRightLaneChangePhase = CancelLaneChangePhase.PHASE_1;
+           	//System.out.println("Car ID: " + this + ", beforeInt_CancelRightLaneChangePhase = " + this.beforeInt_CancelRightLaneChangePhase);
+           	beforeInt_RightLaneChangePhase = LaneChangePhase.NONE;
+           	carAction = CarAction.BI_CANCELRIGHTLANECHANGE;
+         	//System.out.println("rotationAngle: "+ this.getRotationAngle());
+           }else if (rotationAngle == this.getR_BiCancelRight_LaneChangeExitAngle() && beforeInt_CancelRightLaneChangePhase == CancelLaneChangePhase.PHASE_1 ) { 
+        	   //System.out.println("bI_CancelRightLaneChangePhaseState : accessed and beforeInt_RightLaneChangePhase set to CancelLaneChange Phase_2");
+        	beforeInt_CancelRightLaneChangePhase = CancelLaneChangePhase.PHASE_2;
+           }else if(rotationAngle == 270 && BeforeIn_CancelRightLaneChangePhase == CancelLaneChangePhase.PHASE_2){
+        	beforeInt_CancelRightLaneChangePhase = CancelLaneChangePhase.COMPLETED;
+           }else if (BeforeIn_CancelRightLaneChangePhase == CancelLaneChangePhase.COMPLETED){
+        	beforeInt_CancelRightLaneChangePhase = CancelLaneChangePhase.NONE;
+           	 carIntention = CarIntention.NONE;
+       		
+       		 carAction = CarAction.GOSTRAIGHT;
+       		 lane_Change_Probabilities_accessed = false;
+       		 laneChangePhase1_Initiated = false;
+           //	System.out.println("BI_CancelRightLaneChangePhaseState(): accessed");
+           }
+       	   //System.out.println("Car ID: " + this + ", beforeInt_CancelRightLaneChangePhase = " + this.beforeInt_CancelRightLaneChangePhase);
+       	 //System.out.println("bI_CancelRightLaneChangePhaseState() accessed Car ID: "+ this + " carAction: " + carAction);
+       }
+       
+     
+
+
+	public void bI_CancelRightLaneChange(){
+       	if(beforeInt_CancelRightLaneChangePhase == CancelLaneChangePhase.PHASE_1) {//tweak here
+       		//System.out.print("BI_CancelRightLaneChange() accessed---->r_BiCancelRight_LaneChangeExitAngle :" + this.getR_BiCancelRight_LaneChangeExitAngle());
+       		this.leftTurn(this.getR_BiCancelRight_LaneChangeExitAngle(), 250);
+       		
+       	}else if(beforeInt_CancelRightLaneChangePhase == CancelLaneChangePhase.PHASE_2) {//tweak here
+       		
+       		this.rightTurn(270, LANECHANGERADIUS);
+       	}else if (beforeInt_CancelRightLaneChangePhase == CancelLaneChangePhase.COMPLETED&& rotationAngle == 270){//tweak here
+       		
+       		//System.out.println(" Bi_CancelRightLaneChange(): accessed");
+       	}
+   }
+       
+  
+
+
+	
+     //before intersection right lane change ended
+	//******************************************************************************************************************************************************************************************************************************
+    public static double getrBiRightLaneChangeExitAngle() {
+   	 return R_BIRIGHT_LANE_CHANGEEXITANGLE;
+    }
+	 public static double getlBiRightLaneChangeExitAngle() {
+		 return L_BIRIGHT_LANE_CHANGEEXITANGLE;
+	 }
+
+	 public static double getlAltrightLanechangeexitangle() {
+		 return L_ALTRIGHT_LANECHANGEEXITANGLE;
+	 }
+
+	 public static double getlAltleftLanechangeexitangle() {
+		 return L_ALTLEFT_LANECHANGEEXITANGLE;
+	 }
+	
 	
 	
 }

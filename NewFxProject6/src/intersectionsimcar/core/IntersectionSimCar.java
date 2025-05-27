@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
 
+
 import intersectionsimcar.core.HeadedDownOrigCar.CarCornerCoordinate;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -15,18 +16,18 @@ import javafx.scene.shape.Circle;
 
 public abstract class IntersectionSimCar {
 	private static int idCounter = 0;
-	private int carId;
-	private double rotationAngle; // whatever angle the sprite is facing and changes when the leftTurn() function or the rightTurn() function is called
-	private double positionX;//Position for car in the X-axis
-	private double positionY;//Position for car in the Y-axis
-	private double rise;//calculated using a formula dependent on the rotation angle in a function  for change in the Y direction
-	private double run; // calculated using a formula dependent on the rotation angle in a function  for change in the X direction
-	private double riseOverRun; // slope of the line that the car follows if it is going straight. Used in the formula to calculate distance traveled in the X axis
-	private double runOverRise; // inverse of the slope of the line that the car follows if it is going straight. Used in the formula to calculate distance traveled in the Y axis
+	protected int carId;
+	protected double rotationAngle; // whatever angle the sprite is facing and changes when the leftTurn() function or the rightTurn() function is called
+	protected double positionX;//Position for car in the X-axis
+	protected double positionY;//Position for car in the Y-axis
+	protected double rise;//calculated using a formula dependent on the rotation angle in a function  for change in the Y direction
+	protected double run; // calculated using a formula dependent on the rotation angle in a function  for change in the X direction
+	protected double riseOverRun; // slope of the line that the car follows if it is going straight. Used in the formula to calculate distance traveled in the X axis
+	protected double runOverRise; // inverse of the slope of the line that the car follows if it is going straight. Used in the formula to calculate distance traveled in the Y axis
 	
-	private double distanceTraveledXaxis;// change in the car position in the X-axis
-	private double distanceTraveledYaxis;// change in the car position in the Y-axis
-	private double distanceAdjusted; // want ever distance you want beside the constant variable DISTANCEWANTED 
+	protected double distanceTraveledXaxis;// change in the car position in the X-axis
+	protected double distanceTraveledYaxis;// change in the car position in the Y-axis
+	protected double distanceAdjusted; // want ever distance you want beside the constant variable DISTANCEWANTED 
 	//private boolean afterLT_WantRightLaneChange;//boolean for indicating there is a desire to change to the right lane, not necessarily doing it right away, have to wait for the right moment
 	//private boolean afterLT_WantLeftLaneChange;// boolean for indicating there is a desire to change to the left lane, not necessarily doing it right away, have to wait for the right moment
 	
@@ -35,7 +36,7 @@ public abstract class IntersectionSimCar {
 		this.carId = idCounter++;
 	}
 	
-	private String carSkin;
+	protected String carSkin;
 	
 	public void setCarSkin(String skin) {
 		
@@ -227,8 +228,8 @@ public abstract class IntersectionSimCar {
 	public static final double MAX_Y_DISTANCE_BETWEEN_CARS = 100000;
 	
   
-	private double xCoordinate;
-	private double yCoordinate;
+	protected double xCoordinate;
+	protected double yCoordinate;
 	/**
 	 * Identify the General placement of the car 
 	 * 
@@ -282,7 +283,7 @@ public abstract class IntersectionSimCar {
 		NONE;
 	}
 	
-	private CarIntention carIntention;
+	protected CarIntention carIntention;
 	
 	public CarIntention getCarIntention() {
 		return carIntention;
@@ -292,9 +293,14 @@ public abstract class IntersectionSimCar {
 		this.carIntention = carIntention;
 	}
 
-	private GeneralPlacementOfCar generalPlacementOfCar;
-	private boolean xCoordinateSelected;//need to write the function that make the decision on that
-	private boolean yCoordinateSelected;//need to write the function that make the decision on that
+	protected GeneralPlacementOfCar generalPlacementOfCar;
+	//************************************************************************************************************************************************************************************
+	
+	
+	
+	//*************************************************************************************************************************************************************************************	
+	protected boolean xCoordinateSelected;//need to write the function that make the decision on that
+	protected boolean yCoordinateSelected;//need to write the function that make the decision on that
 	public enum CarAction {
 		GOSTRAIGHT, LEFTTURN, RIGHTTURN, BI_RIGHTLANECHANGE, BI_CANCELRIGHTLANECHANGE, BI_LEFTLANECHANGE, BI_CANCELLEFTLANECHANGE,
 		
@@ -303,7 +309,7 @@ public abstract class IntersectionSimCar {
 		ALT_RIGHTLANECHANGE, ALT_CANCELRIGHTLANECHANGE, ALT_LEFTLANECHANGE, ALT_CANCELLEFTLANECHANGE
 	}
 	
-	private CarAction carAction;
+	protected CarAction carAction;
 	
 	public enum LaneChangeProbabilities{
 		
@@ -320,7 +326,7 @@ public abstract class IntersectionSimCar {
 		public void execute(IntersectionSimCar car) {
 			if (this == ZERO) return;
 			
-			car.setGeneralPlacementOfCarBaseOnGeneralLocation();
+			car.setGeneralPlacementOfCarBasedOnGeneralLocation();
 			
 			if(!car.lane_Change_Probabilities_accessed) {
 				Random random = new Random();
@@ -329,26 +335,17 @@ public abstract class IntersectionSimCar {
 				//
 				checkLaneChange(car, randInt);
 			}
+			
 		}
-		
-		public GeneralPlacementOfCar generalPlacementOfCar;
-		
-		public GeneralPlacementOfCar getGeneralPlacementOfCar() {
-			 return this.generalPlacementOfCar;
-		 }
-		public void setGeneralPlacementOfCar(GeneralPlacementOfCar generalPlacementOfCar) {
-				this.generalPlacementOfCar = generalPlacementOfCar;
-				
-		 }
-	
-		
 
 		
 		 
 		//************************************************************************************************************************************************************************************
 		//getGeneralPlacementOfCar() method need to be just a declaration in the abstract class
 		private void checkLaneChange(IntersectionSimCar car, int randInt) {//next to add more cases after fixing GeneralPlacementOfCar
-			switch(this.getGeneralPlacementOfCar()) {
+			
+			car.setGeneralPlacementOfCarBasedOnGeneralLocation();
+			switch(car.getGeneralPlacementOfCar()) {
 			
 			  case GeneralPlacementOfCar.BI_ONRIGHTLANE:
 				  if (randInt >= higher_Threshold) {
@@ -498,14 +495,14 @@ public abstract class IntersectionSimCar {
 		NONE,PHASE_1,PHASE_2, PHASE_3, COMPLETED;
 	}
 	
-	private LaneChangePhase afterLT_RightLaneChangePhase;
-	private LaneChangePhase afterLT_LeftLaneChangePhase;
-	private LaneChangePhase afterRT_RightLaneChangePhase;
-	private LaneChangePhase afterRT_LeftLaneChangePhase;
-	private LaneChangePhase beforeInt_RightLaneChangePhase;
-	private LaneChangePhase beforeInt_LeftLaneChangePhase;
-	private LaneChangePhase afterInt_RightLaneChangePhase;
-	private LaneChangePhase afterInt_LeftLaneChangePhase;
+	protected LaneChangePhase afterLT_RightLaneChangePhase;
+	protected LaneChangePhase afterLT_LeftLaneChangePhase;
+	protected LaneChangePhase afterRT_RightLaneChangePhase;
+	protected LaneChangePhase afterRT_LeftLaneChangePhase;
+	protected LaneChangePhase beforeInt_RightLaneChangePhase;
+	protected LaneChangePhase beforeInt_LeftLaneChangePhase;
+	protected LaneChangePhase afterInt_RightLaneChangePhase;
+	protected LaneChangePhase afterInt_LeftLaneChangePhase;
 	
 	/**
 	 * Different mode of (Cancel Lane Change Phase)
@@ -513,14 +510,14 @@ public abstract class IntersectionSimCar {
 	public enum CancelLaneChangePhase {
 		NONE, PHASE_1, PHASE_2, COMPLETED;
 	}
-	private CancelLaneChangePhase afterLT_CancelRightLaneChangePhase;
-	private CancelLaneChangePhase afterLT_CancelLeftLaneChangePhase;
-	private CancelLaneChangePhase afterRT_CancelRightLaneChangePhase;
-	private CancelLaneChangePhase afterRT_CancelLeftLaneChangePhase;
-	private CancelLaneChangePhase beforeInt_CancelRightLaneChangePhase;
-	private CancelLaneChangePhase beforeInt_CancelLeftLaneChangePhase;
-	private CancelLaneChangePhase afterInt_CancelRightLaneChangePhase;
-	private CancelLaneChangePhase afterInt_CancelLeftLaneChangePhase;
+	protected CancelLaneChangePhase afterLT_CancelRightLaneChangePhase;
+	protected CancelLaneChangePhase afterLT_CancelLeftLaneChangePhase;
+	protected CancelLaneChangePhase afterRT_CancelRightLaneChangePhase;
+	protected CancelLaneChangePhase afterRT_CancelLeftLaneChangePhase;
+	protected CancelLaneChangePhase beforeInt_CancelRightLaneChangePhase;
+	protected CancelLaneChangePhase beforeInt_CancelLeftLaneChangePhase;
+	protected CancelLaneChangePhase afterInt_CancelRightLaneChangePhase;
+	protected CancelLaneChangePhase afterInt_CancelLeftLaneChangePhase;
 	
 	
 	public static final double HEADING_UP_CARDINAL_ANGLE = 90;
@@ -569,26 +566,19 @@ public abstract class IntersectionSimCar {
 	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	public static final double TOLERANCE = 18.5;
 	LaneManagement laneManagement;
+	public void setLaneManagement(LaneManagement laneManagement) {
+		this.laneManagement = laneManagement;
+	}
+
 	public LaneManagement getLaneManagement() {
 		return laneManagement;
 	}
 	//*****************************************************************************************************************************
-
+     //common among all child class important final static double constant
     /**
      * The typical distance covered by the car
      */
     public static final double DISTANCEWANTED = 2.8; //Standard speed of the car
-    
-    /**
-     * Coordinate in the Y axis of when the car should start making a right turn to successfully make a right turn
-     */
-    public static final double UPRIGHTTURNY = 215; //Coordinate in the Y axis of when the car should start making a right turn to successfully make a right turn
-    
-    /**
-     * Coordinate in the X axis of when the car should start making a left turn to successfully make a Left turn
-     */
-    public static final double UPLEFTTURNY = 297.5;//Coordinate in the X axis of when the car should start making a left turn to successfully make a Left turn
-    
     /**
      * the radius of the circle whose perimeter represents the path that the car would be following when making a right turn
      */
@@ -620,85 +610,41 @@ public abstract class IntersectionSimCar {
 	 * radius for lane change (the diameter of this circle span the center of the lane you are changing from to the center of the lane you are changing to)
 	 */
     public static final double LANECHANGERADIUS = 19.5;    //radius for lane change
+    public double getLanechangeradius() {
+    	return LANECHANGERADIUS;
+    }
     
-   
-	public static final double R_BIRIGHT_LANECHANGEEXITANGLE = 282;
-	public static final double L_BIRIGHT_LANE_CHANGEEXITANGLE = 270;
-	/**
-	 * The exit angle for canceling lane is not a final static variable because it can be different every time
-	 */
-	private double r_AltCancelRight_LaneChangeExitAngle;
-	
-	public double getR_AltCancelRight_LaneChangeExitAngle() {
-		return r_AltCancelRight_LaneChangeExitAngle;
-	}
-
-
-	public void setR_AltCancelRight_LaneChangeExitAngle() {
-		this.r_AltCancelRight_LaneChangeExitAngle = (IntersectionSimCar.getlAltrightLanechangeexitangle() - IntersectionSimCar.getlAltrightLanechangeexitangle() - 180)*2;
-		
-		this.r_AltCancelRight_LaneChangeExitAngle = (this.r_AltCancelRight_LaneChangeExitAngle + 360) % 360;
-		//System.out.println("r_ALTCANCELRIGHT_LANECHANGEEXITANGLE :" + this.getR_AltCancelRight_LaneChangeExitAngle());
-	}
-	
-	private double r_BiCancelRight_LaneChangeExitAngle;
-	
-	public double getR_BiCancelRight_LaneChangeExitAngle() {
-		 return r_BiCancelRight_LaneChangeExitAngle;
-	}
-	public void SetR_BiCancelRight_LaneChangeExitAngle() {
-		double temp_Angle  = this.rotationAngle - (this.rotationAngle - HEADING_DOWN_CARDINAL_ANGLE)*2;
-		
-		this.r_BiCancelRight_LaneChangeExitAngle = temp_Angle;
-		//System.out.println("r_BICancelRight_LaneChangeExitAngle :" + this.getR_BiCancelRight_LaneChangeExitAngle());
-	}
-	 /**
-     * This constant is used for the righTurn(double exitAngle, double radius) function
-     * if you keep calling that function without doing anything for what happens when it hit that exit angle your car will basically keep going in a circle,
-     * but as it goes around in a circle it will always hit that point which matches the exit angle, the rotationAngle will always align to match the exit angle at that instance
-     * And as the name suggest this constant is used for right lane change after the car makes a left turn at the intersection. When the car's rotationAngle align with this 
-     * exitAngle, phase1 of the lane change process should end and go on to phase2
-     */
-	public static final double R_ALTRIGHT_LANECHANGEEXITANGLE = 192;// right turn exit angle for right Lane change after left turn
-	/**
-     * This constant is used for the leftTurn(double exitAngle, double radius) function
-     * if you keep calling that function without doing any for what happens when it hit that exit angle your car will basically keep going in a circle,
-     * but as it goes around in a circle it will always hit that point which matches the exit angle, the rotationAngle will always align to match the exit angle at that instance
-     * And as the name suggest this constant is used for right lane change after the car makes a left turn at the intersection. When the car's rotationAngle align with this 
-     * exitAngle, phase3 of the lane change process should end and you do something else for example make it go straight
-     */
-    public static final double L_ALTRIGHT_LANECHANGEEXITANGLE = 180;// left  turn exit angle for right lane change after left turn
+    //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
    
     
-    /**
-     * see explanation for other LANCHANGEEXITANGLE
-     */
-    public static final double L_ALTLEFT_LANECHANGEEXITANGLE =  135;// left turn exit angle for left lane change after left turn
-    public static final double R_ALTLEFT_LANECHANGEEXITANGLE =  180;// right turn exit angle for left lane change after left turn
+   
+    
+    
+   
+	
+	
     
     
 
-	private double straightEndingX;//phase 2's ending of going straight of any lane change (x-Coordinate)
-    private double straightEndingY;
-    private double straightStartingX;// phase 2's beginning of going straight of any lane change (x-Coordinate)
-    private double straightStartingY;
-    private double positionXSnapShot;// phase 2's  starting point in the x-axis (x-Coordinate) to be used by straightStartingX-->see it's definition right above 
-   	private double positionYSnapShot; 
-    private static final double LEFTTURNEXITANGLE = 180; // aligns with the rotationAngle which means the rotationAngle will be 180 degree when it exit the Left turn circle (a circular path)
+	protected double straightEndingX;//phase 2's ending of going straight of any lane change (x-Coordinate)
+    protected double straightEndingY;
+    protected double straightStartingX;// phase 2's beginning of going straight of any lane change (x-Coordinate)
+    protected double straightStartingY;
+    protected double positionXSnapShot;// phase 2's  starting point in the x-axis (x-Coordinate) to be used by straightStartingX-->see it's definition right above 
+   	protected double positionYSnapShot; 
     
-    private static final double RIGHTTURNEXITANGLE = 0; // aligns with the rotationAngle which means the rotationAngle will be 0 degree when it exit the Right turn circle (a circular path)
     
     private double arcLength;                              //is the change in arc distance as the car makes a right turn or a left turn following a circular path
     
-    private double angleWithRespectToTheRightTurnCircle; // what the name say
+    protected double angleWithRespectToTheRightTurnCircle; // what the name say
   
     
 
    
 	private double angleWithRespectToTheLeftTurnCircle; // what the name say
     
-	private boolean lane_Change_Probabilities_accessed ;
-	private boolean laneChangePhase1_Initiated;
+	protected boolean lane_Change_Probabilities_accessed ;
+	protected boolean laneChangePhase1_Initiated;
   
 
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -736,7 +682,7 @@ public abstract class IntersectionSimCar {
    
    
     private boolean makeALeft;//boolean used for when to start or stop calling the leftTurn() function
-	private CancelLaneChangePhase BeforeIn_CancelRightLaneChangePhase;
+	protected CancelLaneChangePhase BeforeIn_CancelRightLaneChangePhase;
     
     //********************************************************************************************************************************************************************************************************************************************
     //Car's Brain
@@ -875,8 +821,6 @@ public abstract class IntersectionSimCar {
 	  public abstract void setTargetLaneEnum();
 	  
 	 
-	  public abstract void setGeneralPlacementOfCarBaseOnGeneralLocation();
-	 
 	  public abstract double getFrontRightCornerPositionX();
 
 
@@ -937,9 +881,12 @@ public abstract class IntersectionSimCar {
 		
 		public abstract void deleteCircleRpCorner(Pane root);
 		
-		public abstract void removeCarImageViewsFromRoot(Pane root);
+		public abstract void removeCarImagesAndImageViewsFromRoot(Pane root);
 		
 		public abstract void carOperation();
+		
+
+		public abstract void setGeneralPlacementOfCarBasedOnGeneralLocation();
 	  //*********************************************************************************************************************************
 	
 		public ObservableList<IntersectionSimCar> getObservableListCarIsOn(){
@@ -1035,8 +982,8 @@ public abstract class IntersectionSimCar {
 
 			//afterLT_WantRightLaneChange = false;
 			//whichLaneTheCarIsOn = OnWhichLane.LEFTTURNBOX;
-			r_BiCancelRight_LaneChangeExitAngle = rotationAngle;
-			this.setGeneralPlacementOfCarBaseOnGeneralLocation();
+			
+			
 			carIntention = CarIntention.NONE;
 			carAction = CarAction.GOSTRAIGHT;
 	//--------------------------------------------------------------------------------------------------------------------------------------------
@@ -1072,7 +1019,7 @@ public abstract class IntersectionSimCar {
 						"\n --->this: " + this.getCarSkin() + "----> frontCarOnTheOtherLane: " + (frontCarOnTheOtherLane == null ? null : frontCarOnTheOtherLane.getCar_P().getCarSkin() )+
 						"\n --->this: " + this.getCarSkin() + "---->           blindSpotCar: " + (blindSpotCar == null ? null : blindSpotCar.getCar_P().getCarSkin())+
 						"\n --->this: " + this.getCarSkin() + "---->  rearCarOnTheOtherLane: " + (rearCarOnTheOtherLane == null ? null : rearCarOnTheOtherLane.getCar_P().getCarSkin()));*/
-			this.setR_AltCancelRight_LaneChangeExitAngle();
+			//this.setR_AltCancelRight_LaneChangeExitAngle();
 			
 			this.setxCoordinateSelected(false);
 		
@@ -1086,7 +1033,7 @@ public abstract class IntersectionSimCar {
 	
  
 }
-		 public double getPositionX() {
+		 protected double getPositionX() {
 			return positionX;
 		}
 
@@ -1094,7 +1041,7 @@ public abstract class IntersectionSimCar {
 			 this.positionX = positionX;
 		 }
 
-		 public double getPositionY() {
+		 protected double getPositionY() {
 			 return positionY;
 		 }
 
@@ -1224,18 +1171,8 @@ public abstract class IntersectionSimCar {
 		 public void setGeneralPlacementOfCar(GeneralPlacementOfCar generalPlacementOfCar) {
 			this.generalPlacementOfCar = generalPlacementOfCar;
 		 }
-
-		 public static double getlBirightLaneChangeexitangle() {
-			 return L_BIRIGHT_LANE_CHANGEEXITANGLE;
-		 }
-
-		 public static double getlAltrightLanechangeexitangle() {
-			 return L_ALTRIGHT_LANECHANGEEXITANGLE;
-		 }
-
-		 public static double getlAltleftLanechangeexitangle() {
-			 return L_ALTLEFT_LANECHANGEEXITANGLE;
-		 }
+		
+     
          //*****************************************************************************************************************************************************
 		 
 

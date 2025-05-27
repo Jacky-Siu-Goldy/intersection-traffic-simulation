@@ -478,7 +478,7 @@ public class Main extends Application {
             	 try {
                      
 	            	Random random = new Random();
-	     		   	int randIn = random.nextInt(1400) + 1400;
+	     		   	int randIn = random.nextInt(1000) + 500;
 	     		   	Thread.sleep(randIn);
 	     		   	
 	     		   	Platform.runLater((Runnable)()->{spawnCars(root, laneManagement,
@@ -534,7 +534,7 @@ public class Main extends Application {
                     
                     Platform.runLater(()->{
                     	deleteCar(root,laneManagement.getHeadingDownLeftLaneList());
-                	deleteCar(root,laneManagement.getHeadingDownRightLaneList());
+                	    deleteCar(root,laneManagement.getHeadingDownRightLaneList());
                 	});	
                     	
                     
@@ -975,10 +975,10 @@ public class Main extends Application {
 				
 				
 
-				 PauseTransition delay = new PauseTransition(Duration.seconds(3));
+				 //PauseTransition delay = new PauseTransition(Duration.seconds(3));
 					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
 			
-					 delay.setOnFinished(event -> {
+					 //delay.setOnFinished(event -> {
 						 IntersectionSimCar car =  new HeadedDownOrigCar(root, 
 								   laneManagement,
 								   carLaneX, 
@@ -1033,8 +1033,8 @@ public class Main extends Application {
 					        this.laneManagement.setHeadingDownRightLaneList(((IntersectionSimCar)car));
 					       // System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());
 					    	}
-					  });
-				 delay.play();
+					 // });
+				// delay.play();
 				
 			});
 	
@@ -1058,8 +1058,12 @@ public class Main extends Application {
 	               
 	                 if(carPositionY > 768 ) {
 	                	 toBeRemovedCar.add((IntersectionSimCar) car);
+	                	 car.setRearCar(null);
+	                	 car.setLaneManagement(null);
+	                	 car.setAlive(false);
+	                	
 	                	 ((IntersectionSimCar)car).deleteCircleRpCorner(root);
-	                 	((IntersectionSimCar)car).removeCarImageViewsFromRoot(root);
+	                 	((IntersectionSimCar)car).removeCarImagesAndImageViewsFromRoot(root);
 	                 	
 	                }
 	            }
