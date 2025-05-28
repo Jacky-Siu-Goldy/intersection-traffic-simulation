@@ -857,11 +857,11 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
      /*System.out.println("this.beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_2: " + (this.beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_2) + "\n"
   		               +"remainingDistanceXab = " + remainingDistanceXab + " , distanceTraveledXaxis =" + Math.abs(distanceTraveledXaxis) + "\n"
   		               +"remainingDistanceYab = " + remainingDistanceYab + " , distanceTraveledYaxis =" + Math.abs(distanceTraveledYaxis) + "\n"); */
-     /*
+     
       
-      if (  getCarIntention() == CarIntention.BI_ONLTBWANTLT && (UPLEFTTURNY - getPositionY()) < getDistanceTraveledYaxis()) {
+      if (  getCarIntention() == CarIntention.BI_ONLTBWANTLT && (HEADINGDOWNLEFTTURNY - getPositionY()) < getDistanceTraveledYaxis()) {
       	//System.out.println("CircleRpCar PositionManipulationFormula");
-      	setDistanceTraveledYaxis(UPLEFTTURNY - getPositionY());
+      	setDistanceTraveledYaxis(HEADINGDOWNLEFTTURNY - getPositionY());
       	setCarIntention(CarIntention.NONE);
       }else if (getCarIntention() == CarIntention.BI_ONLLWANTRLC && remainingDistanceY_Test < getDistanceTraveledYaxis()){
       	setDistanceTraveledYaxis(remainingDistanceY_Test);
@@ -877,7 +877,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
       	setDistanceTraveledYaxis ( Math.sin(normalizedRotationAngle)/ Math.abs(Math.sin(normalizedRotationAngle))*remainingDistanceYab);
       	setDistanceTraveledXaxis (Math.cos(normalizedRotationAngle)/ Math.abs(Math.cos(normalizedRotationAngle))*remainingDistanceXab);
       }
-      */
+      
       calculateAndSetAllBlinkersAngle(this.angle_Diff_Front_Blinkers, this.angle_Diff_Rear_Blinkers);
 	 	calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
 	 	calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
@@ -942,10 +942,153 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
   		
   }
   
+//****************************************************************************************************************************************************************************************************************
+  /**
+   * Manages and set the Car State
+   */
+  public void carState() {
+ 	 	
+ 	 
+ 	
+ 	   
+ 		
+ 		//this.aLT_RightLaneChangePhaseIntention();
+ 		this.bI_RightLaneChangePhaseIntention();
+ 		this.setCarActionState();
+ 		
+ 		
+ 		
+  }
   
+  public void setCarActionState() {
+		 
+		 
+		 
+		 if(this.shouldDo_AfterLeftTurn_RightLaneChange()) {
+			 
+			 //System.out.println("CircleRpCar.java line: 796 carID: "+this+ " CarIntention: " + carIntention);
+				
+				carAction = CarAction.ALT_RIGHTLANECHANGE;
+				//System.out.println("CircleRpCar.java line 801 accessed ---car ID: " +  this + " | Phase: " + afterLT_RightLaneChangePhase + " |  PositionX: " + positionX);	
+				
+		}else if(this.shouldDo_BeforeInt_RightLaneChange()) {
+		     //System.out.println("setCarActionState() --> this.shouldDo_BeforeInt_RightLaneChange()");
+			 carAction = CarAction.BI_RIGHTLANECHANGE;
+		
+		}else {
+			
+			if( this.shouldGoStraight()) {
+				carAction = CarAction.GOSTRAIGHT;
+			}
+		}
+		 this.bI_RightLaneChangePhaseState();
+		 //this.bI_CancelRightLaneChangePhaseState();//Wrong Reason Get Rid for now because of shouldCancelRightLaneChange helper function
+		 //this.aLT_RightLaneChangePhaseState();
+		 //this.aLT_CancelRightLaneChangePhaseState();
+		
+		 if(shouldLeftTurn()) {
+		 		
+				carAction = CarAction.LEFTTURN;
+		
+		 }
+		 
+		
+	 }
+  /**
+   * Decision setting the state in right lane change mode after a left turn after conditions are met
+   * condition: if car has intention for right lane change and if car reached turning point position
+   * @return boolean True/false
+   */
+  private boolean shouldDo_AfterLeftTurn_RightLaneChange() {
+ 	 return carIntention == CarIntention.ALT_ONLLWANTRLC && this.positionX == this.xCoordinate;
+  }
+  
+  /**
+   * Decision setting the state in right lane change mode before Intersection after conditions are met
+   * condition: if car has intention for right lane change and if car reached turning point position
+   * @return boolean True/false
+   */
+  private boolean shouldDo_BeforeInt_RightLaneChange() {
+ 	 //System.out.println("shouldDo_BeforeInt_RightLaneChange()--->carIntention:" + carIntention);
+ 	 return carIntention == CarIntention.BI_ONLLWANTRLC && this.positionY == this.yCoordinate;
+  }
+  
+  /**
+   * if carAction's state is not set to (after left turn right lane change) and if the car is not facing a cardinal angle 
+   * @return boolean True/false
+   */
+  private boolean shouldGoStraight() {
+ 	 
+ 	 return carAction != CarAction.ALT_RIGHTLANECHANGE && carAction != CarAction.ALT_CANCELRIGHTLANECHANGE  && (rotationAngle == 180 || rotationAngle ==270 || rotationAngle == 90 || rotationAngle == 0);
+  }
+  
+  /**
+   * need to think about it **if the car is on the leftTurnBox lane then it has to turn left
+   * need to WORK ON THIS CONDITION
+   * @return
+   */
+  private boolean shouldLeftTurn() {
+ 	 return this.getGeneralPlacementOfCar() == GeneralPlacementOfCar.LEFTTURNBOX && this.getPositionY() == 297.5;
+  }
+  /**
+   * How the car would act base on it's state
+   * @param carImageView --ImageView contained the skin associated with the CircleRpCar Object
+   * @param carImageView_brake --ImageView contained the skin (Brake Light On) associated with the CircleRpCar Object
+   */
+  public void actionBaseOnCarState(ImageView carImageView, ImageView carImageView_Brake) {//May Need tweaking here
+ 	 
+ 	 
+ 	
+ 	 carImageView.setVisible(false);
+ 	 carImageView_Brake.setVisible(true);
+ 	 System.out.println("actionBaseOnCarState: " + this.carAction);
+ 	 switch(carAction) {
+ 	 	case CarAction.LEFTTURN:
+ 	 		// makeALeftTurn(carImageView, carImageView_Brake);
+ 	 		break;
+ 	 	case CarAction.BI_RIGHTLANECHANGE:
+  		    System.out.println("actionBaseOnCarState(ImageView, ImageView) --> case carAction.BI_RIGHTLANECHANGE accessed");
+  			this.bI_RightLaneChange();
+  			break;
+ 	 	
+ 	 	case CarAction.BI_CANCELRIGHTLANECHANGE:
+ 	 		//System.out.println("actionBaseOnCarState : BI_CANCELRIGHTLANECHANGE.");
+  		    this.bI_CancelRightLaneChange();
+  		    break;
+ 	 	
+ 	 	case CarAction.ALT_RIGHTLANECHANGE:
+ 	 		    
+ 	 			//this.aLT_RightLaneChange();
+ 	 		break;
+ 	 	case CarAction.ALT_CANCELRIGHTLANECHANGE:
+ 	 		   // this.aLT_CancelRightLaneChange();
+ 	 		break;
+ 	 	
+ 	 	
+ 	 	case CarAction.GOSTRAIGHT:
+ 	 		//carImageView.setVisible(true);
+ 	    	//carImageView_Brake.setVisible(false);
+ 	 		this.gasGoStraight();
+ 	 		break;
+ 	 	default:  	
+ 			
+ 	 		break;
+ 	 }
+  }
+  public void makeALeftTurn(ImageView carImageView, ImageView carImageView_Brake) {
+ 	 carImageView.setVisible(false);
+  	 carImageView_Brake.setVisible(true);
+  	this.leftTurn(this.LEFTTURNEXITANGLE,IntersectionSimCar.LEFTTURNRADIUS );
+  }
+  
+ 
+ 
+ 
+ 
+ //**************************************************************************************************************************************************************************************************************
 	public void carOperation() {
   	
-		 
+		this.laneChangePointYSelection();
   	positionManipulationFormula(this.getxCoordinate(),this.getyCoordinate(),getStraightEndingX(),getStraightEndingY());
   	
 		
@@ -961,10 +1104,12 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
            this.setFrontCar(null);
 		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
 		//this.laneChangePointXSelection();// need to come up with lane change decision logic
-		//this.laneChangePointYSelection();
-		//this.carState();
-		//this.actionBaseOnCarState(carImageView_P, carImageView_brake_P);
-		this.gasGoStraight();
+		
+		this.carState();
+		this.actionBaseOnCarState(carImageView_P, carImageView_brake_P);
+		
+		//System.out.println("distanceAdjusted: " + this.distanceAdjusted);
+		//this.gasGoStraight();
 	
 		
 		//------------------------------------------------------------------------------------------------------------------------------------Temporary Code
@@ -981,7 +1126,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 }
 		*/
 		 //--------------------------------------------------------------------------------------------------------------------------------------Temporary Code
-	
+	      /*
 				 System.out.println(
 				    "\ntargetLaneListKey: " +this.getOnWhichLaneListKey()+ 
 		    		"\n --->this: " + this.getCarSkin() + "---->        OnWhichLane: " + this.getOnWhichLaneListKey() +
@@ -990,7 +1135,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 					       
 					"\n --->this: " + this.getCarSkin() + "---->            rearCar: " + (this.getRearCar() == null ? null : this.getRearCar().getCarSkin())
 				);
-		 
+		   */
 		
 		
 		
@@ -1481,13 +1626,13 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			nearest_Rear_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;
 			double temp_Front_DistanceY;
 			double temp_Rear_DistanceY;
-			System.out.println("\n --->this: " + this.getCarSkin() + "getObservablelistCarisOn(): " + this.getObservableListCarIsOn());
+			//System.out.println("\n --->this: " + this.getCarSkin() + "getObservablelistCarisOn(): " + this.getObservableListCarIsOn());
 			for(IntersectionSimCar car : theListOfTheLaneTheCarIsOn) {
 				if(this == car) {
 					continue;
 				}else {
 					if (this.getFrontLeftCornerPositionY() < car.getRearLeftCornerPositionY()) {
-				        System.out.println("setFrontCarRearCarHeadingDown: setFrontCar(...) if statement true");
+				       // System.out.println("setFrontCarRearCarHeadingDown: setFrontCar(...) if statement true");
 						temp_Front_DistanceY = Math.abs(this.getFrontLeftCornerPositionY() - car.getRearLeftCornerPositionY());
 						if(temp_Front_DistanceY < nearest_Front_Car_Base_On_DistanceHeadingDownY) {
 							nearest_Front_Car_Base_On_DistanceHeadingDownY = temp_Front_DistanceY;
@@ -1496,7 +1641,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 						}
 					}
 					if (this.getRearLeftCornerPositionY() > car.getFrontLeftCornerPositionY()) {
-						System.out.println("setFrontCarRearCarHeadingDown: setRearCar(...) if statement true");
+						//System.out.println("setFrontCarRearCarHeadingDown: setRearCar(...) if statement true");
 						temp_Rear_DistanceY = Math.abs(((IntersectionSimCar)this).getRearLeftCornerPositionY() - car.getFrontLeftCornerPositionY());
 						if(temp_Rear_DistanceY < nearest_Rear_Car_Base_On_DistanceHeadingDownY) {
 							nearest_Rear_Car_Base_On_DistanceHeadingDownY = temp_Rear_DistanceY;
@@ -1975,7 +2120,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
    		
    		if (beforeInt_RightLaneChangePhase == LaneChangePhase.COMPLETED && carIntention == CarIntention.BI_ONLLWANTRLC && !yCoordinateSelected
    				|| beforeInt_RightLaneChangePhase == LaneChangePhase.NONE && carIntention == CarIntention.BI_ONLLWANTRLC && !yCoordinateSelected ){//tweak here
-   			xCoordinate  = random.nextDouble(1100);
+   			yCoordinate  = random.nextDouble(1100);
    			if(yCoordinate >= 0 && yCoordinate < 215 && yCoordinate > this.getPositionY())//tweak here
    			yCoordinateSelected = true;
    			//System.out.println("laneChangePointYSelection() accessed");
@@ -2047,7 +2192,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
      * @return true or false
      */
     private boolean shouldBeginBI_RLC_Phase2() {//tweak here
-   	 return this.getRotationAngle() == this.getrBiRightLaneChangeExitAngle() && beforeInt_RightLaneChangePhase ==  LaneChangePhase.PHASE_1;//tweak here
+   	 return this.getRotationAngle() == HeadedDownOrigCar.R_BIRIGHT_LANE_CHANGEEXITANGLE && beforeInt_RightLaneChangePhase ==  LaneChangePhase.PHASE_1;//tweak here
     }
     
 
@@ -2075,7 +2220,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
      * @return true or false
      */
     private boolean shouldBeginBI_RLC_PhaseCompleted() {//tweak here
-   	 return this.getRotationAngle() == this.getlBiRightLaneChangeExitAngle() && beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_3;//tweak here
+   	 return this.getRotationAngle() == this.L_BIRIGHT_LANE_CHANGEEXITANGLE && beforeInt_RightLaneChangePhase == LaneChangePhase.PHASE_3;//tweak here
     }
     
     /**
@@ -2124,7 +2269,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     	   case LaneChangePhase.PHASE_1:
     		   //System.out.println("BI_RightLaneChange() --> phase 1: accessed");
     	   		 
-      			this.rightTurn(this.getrBiRightLaneChangeExitAngle(), 19.5);
+      			this.rightTurn(HeadedDownOrigCar.R_BIRIGHT_LANE_CHANGEEXITANGLE, 19.5);
       			break;
     	   case LaneChangePhase.PHASE_2:
     		    //System.out.println("bI_RightLaneChange() :" + this.getR_BiCancelRight_LaneChangeExitAngle());
@@ -2133,11 +2278,11 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	  			//System.out.println("bI_RightLaneChang--> Phase2");
 	  			double temp_StraightEndingX = this.getStraightEndingX();
 	  			double temp_StraightEndingY = this.getStraightEndingY();
-	  			//this.positionManipulationFormula(this.getxCoordinate(),this.getyCoordinate(), temp_StraightEndingX, temp_StraightEndingY);
+	  			this.positionManipulationFormula(this.getxCoordinate(),this.getyCoordinate(), temp_StraightEndingX, temp_StraightEndingY);
 	  			this.gasGoStraight();
 	  			break;
     	   case LaneChangePhase.PHASE_3:
-    		   this.leftTurn(this.getlBiRightLaneChangeExitAngle(), 19.5);
+    		   this.leftTurn(HeadedDownOrigCar.L_BIRIGHT_LANE_CHANGEEXITANGLE, 19.5);
     		   break;
 		default:
 			break;

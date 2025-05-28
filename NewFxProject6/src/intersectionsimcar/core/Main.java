@@ -494,7 +494,7 @@ public class Main extends Application {
 		//SPAWN CAR THREAD ENDS
 		//************************************************************************************************************************************************
 		
-		/*executor.submit((Runnable)() -> {
+		executor.submit((Runnable)() -> {
             
             while (!Thread.currentThread().isInterrupted()) {
             	 try {
@@ -502,28 +502,16 @@ public class Main extends Application {
 	            	Random random = new Random();
 	     		   	int randIn = random.nextInt(1400) + 1400;
 	     		   	Thread.sleep(randIn);
-	     		   	Platform.runLater((Runnable)()->{spawnCars(root, 
+	     		   	Platform.runLater((Runnable)()->{spawnCars(root, laneManagement,
 	     		   			                                   TOPTOBOTTOMCARLEFTLANE_X, 
-	     		   			                                   TOPTOBOTTOMCARLEFTLANE_Y, 
-	     		   			                                   headingDownRightLaneList, 
-	     		   			                                   headingDownLeftLaneList,
-		     		   			                               headingDownLTBLaneList,
-	     		   											   headingUpRightLaneList, 
-	     		   											   headingUpLeftLaneList, 
-	     		   											   headingUpLTBLaneList,
-	     		   											   headingLeftRightLaneList, 
-	     		   											   headingLeftLeftLaneList, 
-	     		   											   headingLeftLTBLaneList,
-	     		   											   headingRightRightLaneList, 
-	     		   											   headingRightLeftLaneList, 
-	     		   											   headingRightLTBLaneList,
-	     		   											   emptyList);});
+	     		   			                                   TOPTOBOTTOMCARLEFTLANE_Y 
+	     		   			                                   );});
 	            	
             	 }catch (InterruptedException e) {
             		 Thread.currentThread().interrupt();
             	 }
             }
-        });*/
+        });
 		///********************************************************************************************************************************************
 		// Thread for Removing Cars
 		

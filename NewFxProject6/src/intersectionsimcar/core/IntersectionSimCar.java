@@ -363,16 +363,17 @@ public abstract class IntersectionSimCar {
 			 
 			  case GeneralPlacementOfCar.BI_ONLEFTLANE:
 				 
-				  if (randInt >= higher_Threshold) {
+				  if (randInt >= higher_Threshold){
 					  if(car.areAllLaneChangePhasesInactiveAndLeftAndRightTurnCompleted()) {
 						  car.carIntention = CarIntention.BI_ONLLWANTRLC;
+						  System.out.println("Enum: LaneChangeProbabilities --> checkLaneChange accessed -->GeneralPlacementOfCar.BI_ONLEFTLANE. carIntention set to: " + car.carIntention);
 					  }
 					  
 					 // System.out.println("checkLaneChange(CircleRpCar, int)'s BI_ONLEFTLANE --> BI_ONLLWANTRLC accessed");
 				  }else if (randInt <=lower_Threshold ) {
 					  if(car.areAllLaneChangePhasesInactiveAndLeftAndRightTurnCompleted()) {
 						  car.carIntention = CarIntention.BI_ONLLWANTLLC;
-						  System.out.println("Enum: LaneChangeProbabilities --> checkLaneChange accessed -->GeneralPlacementOfCar.BI_ONLEFTLANE. carIntention set to: " + car.carIntention);
+						  
 					  }
 					  
 				  }
@@ -1022,7 +1023,7 @@ public abstract class IntersectionSimCar {
 			//this.setR_AltCancelRight_LaneChangeExitAngle();
 			
 			this.setxCoordinateSelected(false);
-		
+		    this.setyCoordinateSelected(false);
 			this.setStraightEndingX(0);
 			this.setStraightEndingY(0);
 			this.setStraightStartingX(0);
