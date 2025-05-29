@@ -81,6 +81,192 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     private ImageView[] blinkersSet1;
     private ImageView[] blinkersSet2;
     private ImageView[] blinkersSet3;
+    
+    private ImageView[] rightBlinkersSet;
+    private ImageView[] rightBlinkersSet2;
+    private ImageView[] rightBlinkersSet3;
+    
+    private ImageView[] leftBlinkersSet;
+    private ImageView[] leftBlinkersSet2;
+    private ImageView[] leftBlinkersSet3;
+    //*********************************************************************************************************************************************************************************************************************************
+    //Blinkers and Brake lights ON/OFF 2025-05-28 4:58pm
+    enum RightBlinkersToggle{
+    	ON, OFF
+    };
+    
+    protected RightBlinkersToggle rightBlinkersToggle;
+    
+    enum LeftBlinkersToggle{
+    	ON, OFF
+    };
+    
+    protected LeftBlinkersToggle leftBlinkersToggle;
+    
+    enum BrakeLightsToggle{
+    	ON,OFF
+    };
+    
+    protected BrakeLightsToggle brakeLightsToggle;
+    
+    enum XorY_AxisMatter{
+    	X_AXIS, Y_AXIS
+    }
+    
+    protected XorY_AxisMatter xOrY_AxisMatter;
+   
+    enum TheRightSpotToStartBlinking{
+    	GREATERTHANXSPOTSELECTED,
+    	LESSERTHANXSPOTSELECTED,
+    	GREATERTHANYSPOTSELECTED,
+    	LESSERTHANYSPOTSELECTED,
+    	DOESNTNEEDTOBLINK
+    }
+    
+   protected TheRightSpotToStartBlinking theRightSpotToStartBlinking;
+   /**
+    * Important for the laneChangePoint Selected calculation needed for when the Life or right Blinkers will start blinking
+    */
+   public void setXorY_AxisMatter(){
+	   setOnWhichLaneEnum();
+	   switch (onWhichLane) {
+	   case OnWhichLane.HEADING_LEFT_ON_RIGHT_LANE_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_LEFT_ON_LEFT_LANE_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_LEFT_IN_LEFTTURNBOX_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_RIGHT_ON_RIGHT_LANE_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_RIGHT_ON_LEFT_LANE_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_RIGHT_IN_LEFTTURNBOX_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_UP_ON_RIGHT_LANE_LIST:
+		   	   xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		   	   theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_UP_ON_LEFT_LANE_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_UP_IN_LEFTTURNBOX_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_DOWN_ON_RIGHT_LANE_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_DOWN_ON_LEFT_LANE_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED;
+		   break;
+	   case OnWhichLane.HEADING_DOWN_IN_LEFTTURNBOX_LIST:
+		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED;
+		   break;
+		   
+	   default:
+		   theRightSpotToStartBlinking = TheRightSpotToStartBlinking.DOESNTNEEDTOBLINK;
+		   System.out.print("setXorY_AxisMatter(): --->X or Y axis doesn't matter the blinkers toggle are set anyway if everything is done right\n" +
+	                        "like if the calculation is made");
+			   break;
+		   
+	   
+	  
+	   }
+   }
+   
+   /**
+    * only need this to signal for Left Lane Change when necessary STILL NEED TO DO CONDITION FOR WHEN TO TURN BLINKERS ON FOR RIGHT TURN
+    */
+   public void rightBlinkersShouldBlinkAtTheRightMoment() {
+	   if(decideWhenToStartBlinkingRB()) {
+		   rightBlinkersToggle = RightBlinkersToggle.ON;
+	   }
+   }
+   /**
+    * Helper Method for rightBlinkersShouldBlinkAtTheRightMoment
+    * @return
+    */
+   public boolean decideWhenToStartBlinkingRB() {
+	   setXorY_AxisMatter();
+	   switch(xOrY_AxisMatter) {
+		   case XorY_AxisMatter.X_AXIS:
+			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
+			  
+		   case XorY_AxisMatter.Y_AXIS:
+			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
+			   
+	   }
+	   return false;
+   }
+   /**
+    * only need this to signal for Left Lane Change when necessary STILL NEED TO DO CONDITION FOR WHEN TO TURN BLINKERS ON FOR LEFT TURN
+    */
+   public void leftBlinkersShouldBlinkAtTheRightMoment() {
+	   if(decideWhenToStartBlinkingRB()) {
+		   leftBlinkersToggle = LeftBlinkersToggle.ON;
+	   }
+   }
+   
+   /**
+    * Helper Method for leftBlinkersShouldBlinkAtTheRightMoment
+    * @return
+    */
+   public boolean decideWhenToStartBlinkingLB() {
+	   switch(xOrY_AxisMatter) {
+		   case XorY_AxisMatter.X_AXIS:
+			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
+			  
+		   case XorY_AxisMatter.Y_AXIS:
+			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
+			   
+	   }
+	   return false;
+   }
+   
+  private double actualCalculationResultOfWhenToStartBlinking() {
+	  switch (theRightSpotToStartBlinking) {
+	  	case TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED:
+	  			if(isxCoordinateSelected() && positionX > xCoordinate)
+	  			return Math.abs(positionX - xCoordinate);
+	  		break;
+	  	case TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED:
+	  		if(isxCoordinateSelected() && positionX < xCoordinate)
+	  			return Math.abs(positionX - xCoordinate);
+	  		break;
+	  	case TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED:
+	  		if(isxCoordinateSelected() && positionY > yCoordinate)
+	  			return Math.abs(positionY - yCoordinate);
+	  		break;
+	  	case TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED:
+	  		if(isxCoordinateSelected() && positionY < yCoordinate)
+	  			return Math.abs(positionY - yCoordinate);
+	  		break;
+	  	case TheRightSpotToStartBlinking.DOESNTNEEDTOBLINK:
+	  		    return -1.2;
+	  		
+	  	
+	  	
+	  }
+	  return -1.2;
+  }
+  //Blinkers and Brake Lights ON/OFF Ends there should be some related stuff on the bottom as well look for it if you have to
+  //*************************************************************************************************************************************************************************************************
    //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   	private double frontRightBlinkerPositionX;
       private double frontRightBlinkerPositionY;
@@ -199,7 +385,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     	}
     	
 
-    public void initialize() {
+    public void initializeBlinkersSetsAll4() {
 			 blinkersSet1 = new ImageView[]{front_R_BlinkerImageView_P,
 												front_L_BlinkerImageView_P,
 												rear_R_BlinkerImageView_P,
@@ -215,6 +401,30 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 												rear_R_BlinkerImageView3_P, 
 												rear_L_BlinkerImageView3_P};
     
+    }
+    
+    public void initializeRightBlinkersSets() {
+    	rightBlinkersSet = new ImageView[] {front_R_BlinkerImageView_P,
+    			                            rear_R_BlinkerImageView_P};
+    	
+    	rightBlinkersSet2 = new ImageView[] {front_R_BlinkerImageView2_P,
+    										rear_R_BlinkerImageView2_P};
+     	
+    	rightBlinkersSet3 = new ImageView[] {front_R_BlinkerImageView3_P,
+     										rear_R_BlinkerImageView3_P};
+    	
+    }
+    
+    public void initializeLeftBlinkersSets() {
+    	leftBlinkersSet = new ImageView[] {front_L_BlinkerImageView_P,
+    			                            rear_L_BlinkerImageView_P};
+    	
+    	leftBlinkersSet2 = new ImageView[] {front_L_BlinkerImageView2_P,
+    										rear_L_BlinkerImageView2_P};
+     	
+    	leftBlinkersSet3 = new ImageView[] {front_L_BlinkerImageView3_P,
+     										rear_L_BlinkerImageView3_P};
+    	
     }
 	private double nearest_Front_Car_Base_On_DistanceHeadingRightX;
 	private double nearest_Front_Car_Base_On_DistanceHeadingLeftX;
@@ -400,7 +610,17 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 return this.getCarIntention() == CarIntention.AI_ONLLWANTRLC;
 	 }
 	 //************at this point 10:37 pm before dinner 2025-05-18
-	
+	 //*****************************************************************************************************************************************************************************************************************
+	 //Left or right blinkers signal turn on will borrow from setTargetEnum() Helpers functions to determine the necessity to consider turning the blinkers on
+	 public void turnOnLeftOrRightBlinkersBasedOnCarIntention() {
+		
+		if(isBI_ONLLWANTRLC()||isBI_ONRLWANTRT()||isART_ONLLWANTRLC()||isALT_ONLLWANTRLC()||isAI_ONLLWANTRLC()) {
+			rightBlinkersShouldBlinkAtTheRightMoment();
+		}else if(isBI_ONRLWANTLLC()||isBI_ONLLWANTLLC()||isBI_ONLTBWANTLT()||isART_ONRLWANTLLC()||isALT_ONRLWANTLLC()||isAI_ONRLWANTLLC()) {
+			leftBlinkersShouldBlinkAtTheRightMoment();
+		}
+	 }
+	 //*****************************************************************************************************************************************************************************************************************
 	 @Override
 	 public void setGeneralPlacementOfCarBasedOnGeneralLocation() {
 		  
@@ -712,7 +932,11 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
 		 this.positionCarCorners();
 	  	 this.setCarCornerCircle();
-     	this.initialize();
+     	this.initializeBlinkersSetsAll4();
+     	this.initializeLeftBlinkersSets();
+     	this.initializeRightBlinkersSets();
+     	rightBlinkersToggle = RightBlinkersToggle.OFF;
+     	leftBlinkersToggle = LeftBlinkersToggle.OFF;
      	double imageViewsAngle = 0;
 		imageViewsAngle = 360 - (90 - this.getRotationAngle());
 		double normalizedImageViewAngle = (imageViewsAngle + 360) % 360;
@@ -938,7 +1162,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		this.carImageView_brake_P.getTransforms().clear();// you need to clear it so the angle return back to its original position because the previous angle matters
 		this.carImageView_brake_P.getTransforms().addAll(translateToPivot2, rotate4, backToPosition2);
       
-      blinkersBlinks();
+     
   		
   }
   
@@ -953,7 +1177,9 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
  	   
  		
  		//this.aLT_RightLaneChangePhaseIntention();
+	  
  		this.bI_RightLaneChangePhaseIntention();
+ 		turnOnLeftOrRightBlinkersBasedOnCarIntention();
  		this.setCarActionState();
  		
  		
@@ -1038,7 +1264,8 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
   public void actionBaseOnCarState(ImageView carImageView, ImageView carImageView_Brake) {//May Need tweaking here
  	 
  	 
- 	
+	 this.rightBlinkersOnOffBasedOnToggleState();
+	 this.leftBlinkersOnOffBasedOnToggleState();
  	 carImageView.setVisible(false);
  	 carImageView_Brake.setVisible(true);
  	 System.out.println("actionBaseOnCarState: " + this.carAction);
@@ -1144,6 +1371,11 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		
 		//this.blinkersBlinks();
   }
+  /**
+   * needed for initialization and continued calculation to keep blinkers in their proper place along with the car's movement
+   * @param angle_Difference_Front_Blinkers --> the fixed angle difference between the rotation angle and the angle a front blinker needs to be at
+   * @param angle_Difference_Back_Blinkers  --> the fixed angle difference between the rotation angle and the angle a rear blinker needs to be at
+   */
   public void calculateAndSetAllBlinkersAngle(double angle_Difference_Front_Blinkers, double angle_Difference_Back_Blinkers) {
  	 
   	double bN_front_R_Blinker_Angle = this.getRotationAngle() + angle_Difference_Front_Blinkers;
@@ -1157,6 +1389,11 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
   	this.rear_L_Blinker_Angle = angleNormalization(bN_rear_L_Blinker_Angle);
   }
   
+  /**
+   * need for initialization and continued calculation to keep blinkers in their proper place along with the car's movement
+   * @param length_CarPosToFrontBlinker --the fixed length between the primary reference point such as (positionX,positionY) and the front Blinker Position (blahblah....X, blahblah....Y)
+   * @param length_CarPosToRearBlinker  --the fixed length between the primary reference point such as (positionX,positionY) and the rear Blinker Position (blahblah....X, blahblah....Y)
+   */
   public void calculateAllBlinkersPosition (double length_CarPosToFrontBlinker, double length_CarPosToRearBlinker) {
   	double change_In_X_Front_R_Blinker = Math.cos(front_R_Blinker_Angle) * length_CarPosToFrontBlinker;
   	double change_In_Y_Front_R_Blinker = Math.sin(front_R_Blinker_Angle) * length_CarPosToFrontBlinker;
@@ -1443,10 +1680,16 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			return this.getHashMap_For_Observablelist().get(TargetLane);
 		}
 		*/
+		/**
+		 * setOnWhichLaneEnum() is called in there as a tag along since this function is called all the time ...it has no
+		 * affect on the this.setFrontCarAndRearCar(this.getObservableListCarIsOn()); called inside in the end because
+		 * getObservableListCarIsOn() depends the onWhichLaneListKey which is not set until a lane Change or a leftTurn or Right Turn is completed
+		 * and the car is added to the TargetLaneList. The setOnWhichLaneKey(getOnWhichLane())...self explanatory. 
+		 */
 		public void needToDoThisEverytimeSetFrontCarAndRearCar() {
 			this.setOnWhichLaneEnum();
 		    
-			//this.setOnWhichLaneListKey(this.getOnWhichLane());
+			
 			this.setCustomCarLengthBaseOnCarSkin();
 		    this.nearest_Front_Car_Base_On_DistanceHeadingRightX = MAX_X_DISTANCE_BETWEEN_CARS;
 			this.nearest_Front_Car_Base_On_DistanceHeadingLeftX = MAX_X_DISTANCE_BETWEEN_CARS;
@@ -1718,9 +1961,10 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		
 		
 		}
+//**************************************************************************************************************************************************************************************************************
+		//Other Blinkers Animation Stuff
 
-
-	private void blinkersBlinks() {
+	private void blinkersBlink() {
 	
 		blinkersCounter++;
 		if (blinkersCounter >= 0 && blinkersCounter <20) {
@@ -1738,15 +1982,89 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			blinkersCounter=0;
 		}
 	}
-
+    
+	private void rightBlinkersBlink() {
+		blinkersCounter++;
+		if (blinkersCounter >= 0 && blinkersCounter <20) {
+			setBlinkersVisible(rightBlinkersSet, true);
+		    setBlinkersVisible(rightBlinkersSet2, false);
+		    setBlinkersVisible(rightBlinkersSet3, false);
+		}else if (blinkersCounter >=20 && blinkersCounter <30) {
+			setBlinkersVisible(rightBlinkersSet, false);
+		    setBlinkersVisible(rightBlinkersSet2, true);
+		    setBlinkersVisible(rightBlinkersSet3, false);
+		}else if (blinkersCounter >= 30 && blinkersCounter <=40) {
+			setBlinkersVisible(rightBlinkersSet, false);
+		    setBlinkersVisible(rightBlinkersSet2, false);
+		    setBlinkersVisible(rightBlinkersSet3, true);
+			blinkersCounter=0;
+		}
+	}
+	
+	
+	public void rightBlinkersOff(){
+		setBlinkersVisible(rightBlinkersSet, true);
+	    setBlinkersVisible(rightBlinkersSet2, false);
+	    setBlinkersVisible(rightBlinkersSet3, false);
+	}
+	
+	private void rightBlinkersOnOffBasedOnToggleState() {
+		switch (rightBlinkersToggle) {
+		case RightBlinkersToggle.ON:
+			rightBlinkersBlink();
+			break;
+			
+		case RightBlinkersToggle.OFF:
+			rightBlinkersOff();
+			break;
+		}
+	}
+	
+	private void leftBlinkersBlink() {
+		blinkersCounter++;
+		if (blinkersCounter >= 0 && blinkersCounter <20) {
+			setBlinkersVisible(leftBlinkersSet, true);
+		    setBlinkersVisible(leftBlinkersSet2, false);
+		    setBlinkersVisible(leftBlinkersSet3, false);
+		}else if (blinkersCounter >=20 && blinkersCounter <30) {
+			setBlinkersVisible(leftBlinkersSet, false);
+		    setBlinkersVisible(leftBlinkersSet2, true);
+		    setBlinkersVisible(leftBlinkersSet3, false);
+		}else if (blinkersCounter >= 30 && blinkersCounter <=40) {
+			setBlinkersVisible(leftBlinkersSet, false);
+		    setBlinkersVisible(leftBlinkersSet2, false);
+		    setBlinkersVisible(leftBlinkersSet3, true);
+			blinkersCounter=0;
+		}
+	}
+	
+	private void leftBlinkersOnOffBasedOnToggleState() {
+		switch (leftBlinkersToggle) {
+		case LeftBlinkersToggle.ON:
+			leftBlinkersBlink();
+			break;
+			
+		case LeftBlinkersToggle.OFF:
+			leftBlinkersOff();
+			break;
+		}
+	}
+	public void leftBlinkersOff() {
+		setBlinkersVisible(leftBlinkersSet, true);
+	    setBlinkersVisible(leftBlinkersSet2, false);
+	    setBlinkersVisible(leftBlinkersSet3, false);
+	}
 	private void setBlinkersVisible(ImageView[] blinkers, boolean visible) {
 		for (ImageView blinker: blinkers) {
 			blinker.setVisible(visible);    	
 		}
 	}
-
-	
-
+     //Other Blinkers Animation Stuff Ends
+	//****************************************************************************************************************************************************************************************************************
+	/**
+	 * needed for Initialization to be put in the constructor of HeadedDownOrigCar
+	 * @param carSkinConfig --needed to get car skin information
+	 */
 	public void setBlinkerLengthAndAngleAlsoCarImageViewWidth (CarSkinConfig carSkinConfig) {
 		angle_Diff_Front_Blinkers = carSkinConfig.getFront_Blinker_Angle_Diff();
 		angle_Diff_Rear_Blinkers = carSkinConfig.getRear_Blinker_Angle_Diff();
@@ -1760,7 +2078,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		this.carImageView_P.setFitWidth(carSkinConfig.getImage_Width());
 		this.carImageView_brake_P.setFitWidth(carSkinConfig.getImage_Width());
 	}
-
+    //*****************************************************************************************************************************************************************************************************************
 	@Override
 	public ObservableList<IntersectionSimCar> getObservableListCarIsOn(){
 		return this.laneManagement.getHashMap_For_Observablelist().get(this.getOnWhichLaneListKey());
@@ -2167,7 +2485,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
    			
    		 beforeInt_RightLaneChangePhase = LaneChangePhase.COMPLETED;//tweak here
    		 carIntention = CarIntention.NONE;
-   		
+   		 rightBlinkersToggle = RightBlinkersToggle.OFF;
    		 carAction = CarAction.GOSTRAIGHT;
    		 //System.out.println("bI_RightLaneChangePhaseState: Lane Change Completed: positionX = " + this.getPositionX() + " ");
    		 lane_Change_Probabilities_accessed = false;

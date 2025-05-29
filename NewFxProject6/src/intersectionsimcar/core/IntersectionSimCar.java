@@ -916,8 +916,8 @@ public abstract class IntersectionSimCar {
 			 this.targetLaneListKey = targetLaneList;
 		 }
 		 
-		 private OnWhichLane onWhichLane;
-		 private OnWhichLane onWhichLaneListKey;
+		 protected OnWhichLane onWhichLane;
+		 protected OnWhichLane onWhichLaneListKey;
 		 
 		 public OnWhichLane getOnWhichLane() {
 			 return this.onWhichLane;
