@@ -109,11 +109,6 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     
     protected BrakeLightsToggle brakeLightsToggle;
     
-    enum XorY_AxisMatter{
-    	X_AXIS, Y_AXIS
-    }
-    
-    protected XorY_AxisMatter xOrY_AxisMatter;
    
     enum TheRightSpotToStartBlinking{
     	GREATERTHANXSPOTSELECTED,
@@ -127,61 +122,61 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
    /**
     * Important for the laneChangePoint Selected calculation needed for when the Life or right Blinkers will start blinking
     */
-   public void setXorY_AxisMatter(){
+   public void setTheRightSpotToStartBlinking(){
 	   setOnWhichLaneEnum();
 	   switch (onWhichLane) {
 	   case OnWhichLane.HEADING_LEFT_ON_RIGHT_LANE_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		      
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_LEFT_ON_LEFT_LANE_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_LEFT_IN_LEFTTURNBOX_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_RIGHT_ON_RIGHT_LANE_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		      
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_RIGHT_ON_LEFT_LANE_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		      
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_RIGHT_IN_LEFTTURNBOX_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.X_AXIS;
+		       
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_UP_ON_RIGHT_LANE_LIST:
-		   	   xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		   	  
 		   	   theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_UP_ON_LEFT_LANE_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		     
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_UP_IN_LEFTTURNBOX_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		      
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_DOWN_ON_RIGHT_LANE_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		      
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_DOWN_ON_LEFT_LANE_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		      
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED;
 		   break;
 	   case OnWhichLane.HEADING_DOWN_IN_LEFTTURNBOX_LIST:
-		       xOrY_AxisMatter = XorY_AxisMatter.Y_AXIS;
+		      
 		       theRightSpotToStartBlinking = TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED;
 		   break;
 		   
 	   default:
 		   theRightSpotToStartBlinking = TheRightSpotToStartBlinking.DOESNTNEEDTOBLINK;
-		   System.out.print("setXorY_AxisMatter(): --->X or Y axis doesn't matter the blinkers toggle are set anyway if everything is done right\n" +
+		   System.out.print("setTheRightSpotToStartBlinking(): ---> the blinkers toggle are set if everything is done right\n" +
 	                        "like if the calculation is made");
 			   break;
 		   
@@ -194,76 +189,62 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     * only need this to signal for Left Lane Change when necessary STILL NEED TO DO CONDITION FOR WHEN TO TURN BLINKERS ON FOR RIGHT TURN
     */
    public void rightBlinkersShouldBlinkAtTheRightMoment() {
-	   if(decideWhenToStartBlinkingRB()) {
+	   if(decideWhenToStartBlinking()) {
 		   rightBlinkersToggle = RightBlinkersToggle.ON;
 	   }
    }
-   /**
-    * Helper Method for rightBlinkersShouldBlinkAtTheRightMoment
-    * @return
-    */
-   public boolean decideWhenToStartBlinkingRB() {
-	   setXorY_AxisMatter();
-	   switch(xOrY_AxisMatter) {
-		   case XorY_AxisMatter.X_AXIS:
-			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
-			  
-		   case XorY_AxisMatter.Y_AXIS:
-			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
-			   
-	   }
-	   return false;
-   }
+  
+ 
    /**
     * only need this to signal for Left Lane Change when necessary STILL NEED TO DO CONDITION FOR WHEN TO TURN BLINKERS ON FOR LEFT TURN
     */
    public void leftBlinkersShouldBlinkAtTheRightMoment() {
-	   if(decideWhenToStartBlinkingRB()) {
+	   if(decideWhenToStartBlinking()) {
 		   leftBlinkersToggle = LeftBlinkersToggle.ON;
 	   }
    }
    
    /**
-    * Helper Method for leftBlinkersShouldBlinkAtTheRightMoment
+    * Helper Method for both left or right BlinkersShouldBlinkAtTheRightMoment
     * @return
     */
-   public boolean decideWhenToStartBlinkingLB() {
-	   switch(xOrY_AxisMatter) {
-		   case XorY_AxisMatter.X_AXIS:
-			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
+   public boolean decideWhenToStartBlinking() {
+	   setTheRightSpotToStartBlinking();
+	   double result = actualCalculationResultOfWhenToStartBlinking();
+	   
+			   return (0 > result && 20 > result);
 			  
-		   case XorY_AxisMatter.Y_AXIS:
-			   return (0 > actualCalculationResultOfWhenToStartBlinking() && 20 > actualCalculationResultOfWhenToStartBlinking());
+		
 			   
-	   }
-	   return false;
+			   
+	   
+	   
    }
    
   private double actualCalculationResultOfWhenToStartBlinking() {
 	  switch (theRightSpotToStartBlinking) {
 	  	case TheRightSpotToStartBlinking.GREATERTHANXSPOTSELECTED:
-	  			if(isxCoordinateSelected() && positionX > xCoordinate)
-	  			return Math.abs(positionX - xCoordinate);
-	  		break;
+	  			
+	  			return((isxCoordinateSelected() && positionX > xCoordinate)? Math.abs(positionX - xCoordinate) : -1.2);
+	  		
 	  	case TheRightSpotToStartBlinking.LESSERTHANXSPOTSELECTED:
-	  		if(isxCoordinateSelected() && positionX < xCoordinate)
-	  			return Math.abs(positionX - xCoordinate);
-	  		break;
+	  		
+  				return ((isxCoordinateSelected() && positionX < xCoordinate)? Math.abs(positionX - xCoordinate) : -1.2);
+	  		
 	  	case TheRightSpotToStartBlinking.GREATERTHANYSPOTSELECTED:
-	  		if(isxCoordinateSelected() && positionY > yCoordinate)
-	  			return Math.abs(positionY - yCoordinate);
-	  		break;
+	  		
+	  			return((isyCoordinateSelected() && positionY > yCoordinate)? Math.abs(positionY - yCoordinate): -1.2);
+	  		
 	  	case TheRightSpotToStartBlinking.LESSERTHANYSPOTSELECTED:
-	  		if(isxCoordinateSelected() && positionY < yCoordinate)
-	  			return Math.abs(positionY - yCoordinate);
-	  		break;
+	  		
+	  			return ((isyCoordinateSelected() && positionY < yCoordinate)? Math.abs(positionY - yCoordinate) : -1.2);
+	  		
 	  	case TheRightSpotToStartBlinking.DOESNTNEEDTOBLINK:
 	  		    return -1.2;
 	  		
-	  	
-	  	
+	    default:  	
+	    		return -1.2;
 	  }
-	  return -1.2;
   }
   //Blinkers and Brake Lights ON/OFF (section) Ends 
   //related stuff: check sectioned off stuff in code further down the bottom such as
