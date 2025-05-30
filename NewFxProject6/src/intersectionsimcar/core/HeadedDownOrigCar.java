@@ -265,7 +265,13 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	  }
 	  return -1.2;
   }
-  //Blinkers and Brake Lights ON/OFF Ends there should be some related stuff on the bottom as well look for it if you have to
+  //Blinkers and Brake Lights ON/OFF (section) Ends 
+  //related stuff: check sectioned off stuff in code further down the bottom such as
+  /*
+   * 1) Left or right blinkers signal turn on will borrow from setTargetEnum() Helpers functions to determine the necessity to consider turning the blinkers on (section)
+   * 
+   * 2) Other Blinkers Animation Stuff (section)
+   */
   //*************************************************************************************************************************************************************************************************
    //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   	private double frontRightBlinkerPositionX;
@@ -292,7 +298,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
   	//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       //Below: Used to determine the Car's body bounds(for keeping the car spaced out)
     //-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    	  private double frontRightCornerPositionX;
+    	private double frontRightCornerPositionX;
         private double frontRightCornerPositionY;
         private double frontLeftCornerPositionX;
         private double frontLeftCornerPositionY;
@@ -783,7 +789,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}
 				
 	}
-	 
+	 //note remember to setCarskinlength 2025-05-29 2:37am
 	 public HeadedDownOrigCar(Pane root, LaneManagement laneManagement, 
   		   double spawnPositionX, 
   		   double spawnPositionY) {
@@ -793,15 +799,14 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
   	     r_BiCancelRight_LaneChangeExitAngle = rotationAngle;
   	    
   	    this.setGeneralPlacementOfCarBasedOnGeneralLocation();//still need to ensure all lane are accounted for
-		//this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		this.needToDoThisEverytimeSetFrontCarAndRearCar();
 		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
   	    Random random = new Random();
   	
   	   //car_P.setxCoordinateSelected(false);
   	   int randomInt = random.nextInt(180);
   	   
-  	//calculateAndSetAllBlinkersAngle(this.angle_DifferenceToFrontBlinkers, this.angle_DifferenceToRearBlinkers); remember to delete this it doesn't belong here
-		//calculateAllBlinkersPosition(this.length_CarPosToFrontBlinkers, this.length_CarPosToRearBlinkers); remember to delete this it doesn't belong here
+  	
 	    front_R_BlinkerImage_P = new Image(getClass().getResource("/Signal-lights-for-intersection-programOriginal/New-folder/Turn_Signals_002LB.png").toExternalForm());
 	    front_L_BlinkerImage_P = new Image(getClass().getResource("/Signal-lights-for-intersection-programOriginal/New-folder/Turn_Signals_002LB.png").toExternalForm());
 	    rear_R_BlinkerImage_P = new Image(getClass().getResource("/Signal-lights-for-intersection-programOriginal/New-folder/Turn_Signals_002LB.png").toExternalForm());
@@ -1681,10 +1686,20 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}
 		*/
 		/**
-		 * setOnWhichLaneEnum() is called in there as a tag along since this function is called all the time ...it has no
-		 * affect on the this.setFrontCarAndRearCar(this.getObservableListCarIsOn()); called inside in the end because
-		 * getObservableListCarIsOn() depends the onWhichLaneListKey which is not set until a lane Change or a leftTurn or Right Turn is completed
-		 * and the car is added to the TargetLaneList. The setOnWhichLaneKey(getOnWhichLane())...self explanatory. 
+		 * Updates the front and rear car references. This method is called frequently, 
+		 * so setOnWhichLaneEnum() is called here as a tag-along — it has no effect on 
+		 * the getObservableListCarIsOn() result at this stage.
+		 *
+		 * Note:
+		 * - getObservableListCarIsOn() depends on `onWhichLaneListKey`, which is not 
+		 *   updated until a lane change or turn (left/right) is completed and the car 
+		 *   is officially added to the target lane list.
+		 *
+		 * - setOnWhichLaneListKey(getOnWhichLane()) must be handled separately once 
+		 *   lane change or a turn (left/right) is finalized.
+		 *
+		 * The onWhichLaneListKey resets the nearest car distances based on current car skin size and 
+		 * heading direction.
 		 */
 		public void needToDoThisEverytimeSetFrontCarAndRearCar() {
 			this.setOnWhichLaneEnum();
