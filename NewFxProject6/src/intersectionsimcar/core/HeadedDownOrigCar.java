@@ -477,7 +477,12 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
     private int angle_Diff_Rear_Corners;
     private int length_For_Front_Corners;
     private int length_For_Rear_Corners;
-    
+    /**
+     * Calculate the length of the Car from the front of the car to the back of the car
+     * should be called in the constructor to set the boundary of the car needed for use in spacing
+     * can be called again to calculate  as the car faces in the direction of a new cardinal angle
+     * to account for screen warping the dimensions
+     */
     public void setCustomCarLengthBaseOnCarSkin() {
 		double temp_customCarLengthBaseOnCarSkin = 0;
 		switch (this.getOnWhichLaneListKey()) {
@@ -627,10 +632,19 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}
 	 }
 	 //*****************************************************************************************************************************************************************************************************************
+	/**
+	 * kinda have an idea of how to keep track of the car making a right turn or a left turn 
+	 * the Center point of the left turn circle the car path is tracing is (TOP_MAKE_LEFT_POINTX + LEFTTURNRADIUS) is the X
+	 * (TOP_MAKE_LEFT_POINTY) is the Y so the Coordinate of the Center Point is (X,Y) and you can use the pythagorean theorem to calculate the point you 
+	 * want the car to pause and wait for traffic to clear, the point where the Left turning should end and the car should be going straight, and that
+	 * allows you to track and know when left turn has started and the car progress in the left turn SAME THING CAN BE DONE FOR THE RIGHT (MAKE CHANGES IN THE CODE LATER!!!!) ^^
+	 * 
+	 * CHATGPT Math.atan2(dy,dx) GODSEND ATANGENT FOR ALL QUARDRANTS BABY!!!!!!!!!!!! METHOD FROM A BRILLIANT MIND NOTHING TO DO WITH ME!!!!!
+	 */
 	 @Override
 	 public void setGeneralPlacementOfCarBasedOnGeneralLocation() {
 		  
-		   double dist_from_LeftTurn_Point = Math.sqrt(Math.pow((TOP_MAKE_LEFT_POINTY - this.getPositionX()),2) + Math.pow((TOP_MAKE_LEFT_POINTY - this.getPositionY()),2));//tweak here
+		   double dist_from_LeftTurn_Point = Math.sqrt(Math.pow((TOP_MAKE_LEFT_POINTX - this.getPositionX()),2) + Math.pow((TOP_MAKE_LEFT_POINTY - this.getPositionY()),2));//tweak here
 		   double dist_from_RightTurn_Point = Math.sqrt(Math.pow((TOP_MAKE_RIGHT_POINTX - this.getPositionX()), 2) + Math.pow((TOP_MAKE_RIGHT_POINTY - this.getPositionY()),2));
 		   
 		     if(isGoingStraightBeforeIntersection() && isOnOriginalRightLane()) {
@@ -789,7 +803,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}
 				
 	}
-	 //note remember to setCarskinlength 2025-05-29 2:37am
+	 //note remember to setCarskinlength 2025-05-29 2:37am -->DONE
 	 public HeadedDownOrigCar(Pane root, LaneManagement laneManagement, 
   		   double spawnPositionX, 
   		   double spawnPositionY) {
@@ -797,7 +811,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
   	    this.setGeneralPlacementOfCarBasedOnGeneralLocation();
   	    carCornerCoordinate = new CarCornerCoordinate[4];
   	     r_BiCancelRight_LaneChangeExitAngle = rotationAngle;
-  	    
+  	  
   	    this.setGeneralPlacementOfCarBasedOnGeneralLocation();//still need to ensure all lane are accounted for
 		this.needToDoThisEverytimeSetFrontCarAndRearCar();
 		//this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
@@ -935,6 +949,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
  	 	calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
  	 	calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
 		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
+		  this.setCustomCarLengthBaseOnCarSkin();
 		 this.positionCarCorners();
 	  	 this.setCarCornerCircle();
      	this.initializeBlinkersSetsAll4();
