@@ -43,7 +43,7 @@ public class LaneManagement {
  		this.headingRightRightLaneList = FXCollections.observableArrayList();
  		this.headingRightLeftLaneList = FXCollections.observableArrayList();
  		this.headingRightLTBLaneList = FXCollections.observableArrayList();
- 		
+ 		this.emptyList = FXCollections.observableArrayList();
  		this.populateHashMap_For_Observationalist ();
  		this.populateTLHashMap_For_Observationalist ();
  		

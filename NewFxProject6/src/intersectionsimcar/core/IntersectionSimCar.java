@@ -64,11 +64,19 @@ public abstract class IntersectionSimCar {
 	    
 	    protected IntersectionSimCar rearCar;
 	    
-	    protected IntersectionSimCar blindSpotCar;
+	    protected IntersectionSimCar primaryBlindSpotCar;
 	    
-	    protected IntersectionSimCar frontCarOnTheOtherLane;
+	    protected IntersectionSimCar frontBlindSpotCarFrontCar;
 	    
-	    protected IntersectionSimCar rearCarOnTheOtherLane;
+	    protected IntersectionSimCar frontBlindSpotCar;
+	    
+	    protected IntersectionSimCar rearBlindSpotCar;
+	    
+	    protected IntersectionSimCar rearBlindSpotCarRearCar;
+	    
+	    protected IntersectionSimCar frontCarOnTargetLaneList;
+	    
+	    protected IntersectionSimCar rearCarOnTargetLaneList;
 	  
 	    public IntersectionSimCar getFrontCar() {
 			return frontCar;
@@ -86,28 +94,62 @@ public abstract class IntersectionSimCar {
 			this.rearCar = rearCar;
 		}
 
-		public IntersectionSimCar getBlindSpotCar() {
-			return blindSpotCar;
+		public IntersectionSimCar getPrimaryBlindSpotCar() {
+			return primaryBlindSpotCar;
 		}
 
-		public void setBlindSpotCar(IntersectionSimCar blindSpotCar) {
-			this.blindSpotCar = blindSpotCar;
+		public void setPrimaryBlindSpotCar(IntersectionSimCar primaryBlindSpotCar) {
+			this.primaryBlindSpotCar = primaryBlindSpotCar;
 		}
 
-		public IntersectionSimCar getFrontCarOnTheOtherLane() {
-			return frontCarOnTheOtherLane;
+		public IntersectionSimCar getFrontBlindSpotCarFrontCar() {
+			return frontBlindSpotCarFrontCar;
 		}
 
-		public void setFrontCarOnTheOtherLane(IntersectionSimCar frontCarOnTheOtherLane) {
-			this.frontCarOnTheOtherLane = frontCarOnTheOtherLane;
+		public void setFrontBlindSpotCarFrontCar(IntersectionSimCar frontBlindSpotCarFrontCar) {
+			this.frontBlindSpotCarFrontCar = frontBlindSpotCarFrontCar;
 		}
 
-		public IntersectionSimCar getRearCarOnTheOtherLane() {
-			return rearCarOnTheOtherLane;
+		public IntersectionSimCar getFrontBlindSpotCar() {
+			return frontBlindSpotCar;
 		}
 
-		public void setRearCarOnTheOtherLane(IntersectionSimCar rearCarOnTheOtherLane) {
-			this.rearCarOnTheOtherLane = rearCarOnTheOtherLane;
+		public void setFrontBlindSpotCar(IntersectionSimCar frontBlindSpotCar) {
+			this.frontBlindSpotCar = frontBlindSpotCar;
+		}
+
+		public IntersectionSimCar getRearBlindSpotCar() {
+			return rearBlindSpotCar;
+		}
+
+		public void setRearBlindSpotCar(IntersectionSimCar rearBlindSpotCar) {
+			this.rearBlindSpotCar = rearBlindSpotCar;
+		}
+
+		public IntersectionSimCar getRearBlindSpotCarRearCar() {
+			return rearBlindSpotCarRearCar;
+		}
+
+		public void setRearBlindSpotCarRearCar(IntersectionSimCar rearBlindSpotCarRearCar) {
+			this.rearBlindSpotCarRearCar = rearBlindSpotCarRearCar;
+		}
+
+		
+
+		public IntersectionSimCar getFrontCarOnTargetLaneList() {
+			return frontCarOnTargetLaneList;
+		}
+
+		public void setFrontCarOnTargetLaneList(IntersectionSimCar frontCarOnTargetlaneList) {
+			this.frontCarOnTargetLaneList = frontCarOnTargetlaneList;
+		}
+
+		public IntersectionSimCar getRearCarOnTargetLaneList() {
+			return rearCarOnTargetLaneList;
+		}
+
+		public void setRearCarOnTargetLaneList(IntersectionSimCar rearCarOnTheOtherLane) {
+			this.rearCarOnTargetLaneList = rearCarOnTheOtherLane;
 		}
 	//***********************************************************************************************************************************************************
 	public CancelLaneChangePhase getBeforeInt_CancelRightLaneChangePhase() {
@@ -366,7 +408,7 @@ public abstract class IntersectionSimCar {
 				  if (randInt >= higher_Threshold){
 					  if(car.areAllLaneChangePhasesInactiveAndLeftAndRightTurnCompleted()) {
 						  car.carIntention = CarIntention.BI_ONLLWANTRLC;
-						  System.out.println("Enum: LaneChangeProbabilities --> checkLaneChange accessed -->GeneralPlacementOfCar.BI_ONLEFTLANE. carIntention set to: " + car.carIntention);
+						 // System.out.println("Enum: LaneChangeProbabilities --> checkLaneChange accessed -->GeneralPlacementOfCar.BI_ONLEFTLANE. carIntention set to: " + car.carIntention);
 					  }
 					  
 					 // System.out.println("checkLaneChange(CircleRpCar, int)'s BI_ONLEFTLANE --> BI_ONLLWANTRLC accessed");

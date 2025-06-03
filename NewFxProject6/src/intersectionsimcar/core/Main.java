@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
@@ -102,7 +103,7 @@ public class Main extends Application {
 	
 	//***************************************************************************************************************************************************************************************************************
 	private final ExecutorService executor = Executors.newFixedThreadPool(3);
-	
+	private final Object spawnLock = new Object();
 	private ImageView trafficLightRedImageView;
 	private  ImageView trafficLightRedImageView2;
 	private ImageView trafficLightRedImageView3;
@@ -122,6 +123,8 @@ public class Main extends Application {
 	public Main() {
 		this.laneManagement = new LaneManagement();
 	}
+	
+	
 	
 	//private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
 	@Override
@@ -502,17 +505,23 @@ public class Main extends Application {
 	            	Random random = new Random();
 	     		   	int randIn = random.nextInt(1400) + 1400;
 	     		   	Thread.sleep(randIn);
-	     		   	Platform.runLater((Runnable)()->{spawnCars(root, laneManagement,
-	     		   			                                   TOPTOBOTTOMCARLEFTLANE_X, 
-	     		   			                                   TOPTOBOTTOMCARLEFTLANE_Y 
-	     		   			                                   );});
-	            	
+	     		   	synchronized(spawnLock) {
+		     		   	Platform.runLater((Runnable)()->{
+		     		   										if( laneManagement.getHeadingDownLeftLaneList() != null && laneManagement.getHeadingDownLeftLaneList().size() < 1) {
+			     		   									
+		     		   											spawnCars(root, laneManagement,
+			     		   			                                   TOPTOBOTTOMCARLEFTLANE_X, 
+			     		   			                                   TOPTOBOTTOMCARLEFTLANE_Y 
+			     		   			                                   );
+		     		   										}
+		     		   									});
+	     		   	}
             	 }catch (InterruptedException e) {
             		 Thread.currentThread().interrupt();
             	 }
             }
         });
-		///********************************************************************************************************************************************
+		//********************************************************************************************************************************************
 		// Thread for Removing Cars
 		
         executor.submit((Runnable) () -> {
@@ -522,6 +531,7 @@ public class Main extends Application {
                     
                     Platform.runLater(()->{
                     	deleteCar(root,laneManagement.getHeadingDownLeftLaneList());
+                    	
                 	    deleteCar(root,laneManagement.getHeadingDownRightLaneList());
                 	});	
                     	
@@ -540,11 +550,11 @@ public class Main extends Application {
 			//********************************************************************************************************************************************
 			//Car Operation Stuff
 			
-			/*if(!laneManagement.getHeadingDownLeftLaneList().isEmpty()) {
+		
 				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
-				((IntersectionSimCar)car).carOperation(root);
+				((IntersectionSimCar)car).carOperation();
 				}
-			}*/
+			
 			
 			
 				for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
@@ -1017,8 +1027,8 @@ public class Main extends Application {
 						}else {
 							System.out.println("SpawnCar: car.getCarCornerCircle() = null");
 						}
-					    	if( laneManagement.getHeadingDownRightLaneList() != null) {
-					        this.laneManagement.setHeadingDownRightLaneList(((IntersectionSimCar)car));
+					    	if( car.getObservableListCarIsOn() != null) {
+					        car.getObservableListCarIsOn().add(((IntersectionSimCar)car));
 					       // System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());
 					    	}
 					 // });
