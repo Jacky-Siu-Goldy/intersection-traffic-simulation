@@ -722,8 +722,8 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			double temp_Rear_DistanceY;//Done step2
 			double lengthOfTheBlindSpotCar;
 			
-			targetLane_Nearest_Front_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;//Done step3
-			targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingUpY = MAX_Y_DISTANCE_BETWEEN_CARS;//Done step3
+			targetLane_Nearest_Front_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;//Done step3
+			targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;//Done step3
 			
 			for(IntersectionSimCar car : theListOfTheLaneTheTargetedCarIsOn) {
 				if(this.getTargetLaneList() == TargetLane.EMPTYLIST || this == car) {
@@ -737,16 +737,15 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 						this.setPrimaryBlindSpotCar(car);
 						this.setFrontCarOnTargetLaneList (this.getPrimaryBlindSpotCar().getFrontCar());
 						this.setRearCarOnTargetLaneList (this.getPrimaryBlindSpotCar().getRearCar());
-					}else  {
-						if (isFrontCar_HeadingDown(this, car)) {//Done step 5
+					}else if (isFrontCar_HeadingDown(this, car)) {//Done step 5
 							temp_Front_DistanceY = getTemp_FrontDistanceY(laneChangeDirection, car);//Done wasn't in steps
 								if(isTempFrontDistanceGreaterThanLengthOfTheBlindSpotCarAndLessThanGreatestDistanceOfTheNearestFrontCar(temp_Front_DistanceY, lengthOfTheBlindSpotCar, this.targetLane_Nearest_Front_Car_Base_On_DistanceHeadingDownY)) {
 									targetLane_Nearest_Front_Car_Base_On_DistanceHeadingDownY = temp_Front_DistanceY;//<Done step 5   //Done ^ step 5 and 6
 									this.setFrontCarOnTargetLaneList(car);
 									this.setRearCarOnTargetLaneList (this.getFrontCarOnTargetLaneList().getRearCar());
+									System.out.println("setTargetlaneFrontCarBlindSpotCarRearCarHeadingDown(blah)....isFrontCar_HeadingDown(this,car)....accessed");
 								}
-						}
-						if (isRearCar_HeadingDown(this, car)) {//Done step 5
+				    }else if (isRearCar_HeadingDown(this, car)) {//Done step 5
 							temp_Rear_DistanceY = getTemp_RearDistanceY(laneChangeDirection, car);//Done wasn't in steps
 							if(isTempRearDistanceGreaterThanLengthOfTheBlindSpotCarAndLessThanGreatestDistanceOfTheNearestRearCar(temp_Rear_DistanceY, lengthOfTheBlindSpotCar, this.targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY)) {
 								targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY = temp_Rear_DistanceY;//<Done step 5*      //Done ^ step 5 and 6*
@@ -754,19 +753,19 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 								this.setFrontCarOnTargetLaneList(this.getRearCarOnTargetLaneList().getFrontCar());
 							}
 							
-						}
 					}
-					if(this.carIntention == CarIntention.BI_ONLLWANTRLC) {
-						 System.out.println("\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
-				    		"\n --->this: " + this.getCarSkin() + "---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
-							"\n --->this: " + this.getCarSkin() + "----> frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+
-							"\n --->this: " + this.getCarSkin() + "---->           blindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+
-							"\n --->this: " + this.getCarSkin() + "---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin()));
-				         };
+					
+					
 					
 				}
 			}
-				
+			if(this.carIntention == CarIntention.BI_ONLLWANTRLC) {
+				 System.out.println("\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
+		    		"\n --->this: " + this.getCarSkin() + "---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
+					"\n --->this: " + this.getCarSkin() + "----> frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+
+					"\n --->this: " + this.getCarSkin() + "---->           blindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+
+					"\n --->this: " + this.getCarSkin() + "---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin()));
+		         };
 				
 		}
 		
@@ -797,10 +796,12 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			return (this.getRearLeftCornerPositionY() - lengthOfTheBlindSpotCar) < car.getRearLeftCornerPositionY(); // done step 2
 		}
 		private boolean isFrontCar_HeadingDown(IntersectionSimCar currentObject, IntersectionSimCar car) { // done step 3
-			return (currentObject).getFrontLeftCornerPositionY() < car.getRearLeftCornerPositionY(); //Done step 3
+			boolean isFrontCar = (currentObject).getFrontLeftCornerPositionY() > car.getRearLeftCornerPositionY();
+			//System.out.println("isFrontCar_HeadingDown(blah...) accessed: isFrontCar =" + isFrontCar);
+			return  isFrontCar;//Done step 3
 		}
 		private boolean isRearCar_HeadingDown(IntersectionSimCar currentObject, IntersectionSimCar car) { // done step 4
-			return currentObject.getRearLeftCornerPositionY() > car.getFrontLeftCornerPositionY(); // Done step 4
+			return currentObject.getRearLeftCornerPositionY() < car.getFrontLeftCornerPositionY(); // Done step 4
 			
 		}
 		
@@ -811,11 +812,14 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		//ZOMBIE: "UNIVERSAL HELPERS RIGHT HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 		// This two are helper function that are non-Direction Specific but be sure to follow instruction about tweaking it's arguments inside the setTargetLaneFrontCarBlindSpotCarRearCarHeading--Need Direction Method
 		private boolean isTempFrontDistanceGreaterThanLengthOfTheBlindSpotCarAndLessThanGreatestDistanceOfTheNearestFrontCar(double temp_Front_DistanceXorY,double lengthOfTheBlindSpotCar, double determineFrontCar_Needs_Heading) {
-			return (temp_Front_DistanceXorY > lengthOfTheBlindSpotCar && temp_Front_DistanceXorY < determineFrontCar_Needs_Heading);
+			
+			boolean isAtTheRightDistanceToBeAFrontCar =(temp_Front_DistanceXorY > 5 && temp_Front_DistanceXorY < determineFrontCar_Needs_Heading);
+			//System.out.println("isTempFrontDistanceGreaterThanLengthOfBlindSpotCarAndLessThanGreastestDistanceOfTheNearestFrontCar(Blah): isAtTheRightDistanceToBeAFrontCar:" + isAtTheRightDistanceToBeAFrontCar);
+			return isAtTheRightDistanceToBeAFrontCar;
 		}
 		
 		private boolean isTempRearDistanceGreaterThanLengthOfTheBlindSpotCarAndLessThanGreatestDistanceOfTheNearestRearCar(double temp_Rear_DistanceXorY,double lengthOfTheBlindSpotCar, double determineRearCar_Needs_Heading) {
-			return (temp_Rear_DistanceXorY > lengthOfTheBlindSpotCar && temp_Rear_DistanceXorY < determineRearCar_Needs_Heading);
+			return (temp_Rear_DistanceXorY > 5 && temp_Rear_DistanceXorY < determineRearCar_Needs_Heading);
 		}
 		/*
 		 * --------------------------------------------------------------------------------------------

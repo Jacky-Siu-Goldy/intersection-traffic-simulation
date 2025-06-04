@@ -773,7 +773,7 @@ public class Main extends Application {
 				mapCircle.setTranslateY(y);
 			}*/
 			
-			System.out.println("Cursor location: X=" + x + ", Y=" + y);
+			//System.out.println("Cursor location: X=" + x + ", Y=" + y);
 		});
 		
 		//Circle Map-------------------------------------------------------------------------------------------------
