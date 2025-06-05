@@ -619,9 +619,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		
 		
 			
-		    setPrimaryBlindSpotCar(null);
-		    setFrontCarOnTargetLaneList(null);
-		    setRearCarOnTargetLaneList(null);
+		    
 			if(theListOfTheLaneTheTargetedCarIsOn.size() > 0 ) {
 				
 					switch (this.getTargetLaneListKey()) {
@@ -721,7 +719,9 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			double temp_Front_DistanceY;//Done step2
 			double temp_Rear_DistanceY;//Done step2
 			double lengthOfTheBlindSpotCar;
-			
+			setPrimaryBlindSpotCar(null);
+		    setFrontCarOnTargetLaneList(null);
+		    setRearCarOnTargetLaneList(null);
 			targetLane_Nearest_Front_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;//Done step3
 			targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY = MAX_Y_DISTANCE_BETWEEN_CARS;//Done step3
 			
@@ -761,10 +761,10 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			}
 			if(this.carIntention == CarIntention.BI_ONLLWANTRLC) {
 				 System.out.println("\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
-		    		"\n --->this: " + this.getCarSkin() + "---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
-					"\n --->this: " + this.getCarSkin() + "----> frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+
-					"\n --->this: " + this.getCarSkin() + "---->           blindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+
-					"\n --->this: " + this.getCarSkin() + "---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin()));
+		    		"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->            OnWhichLane: " + this.getOnWhichLaneListKey() +
+					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ----> frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+ " ID: " +(this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarId())+ 
+					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->           blindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarId())+
+					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin())+ " ID: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarId()));
 		         };
 				
 		}

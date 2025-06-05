@@ -10,6 +10,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -119,9 +120,11 @@ public class Main extends Application {
 	private  ImageView trafficLightGreenImageView2;
 	private  ImageView trafficLightGreenImageView3;
 	private ImageView trafficLightGreenImageView4;
+	final SimpleBooleanProperty isToggled;
 	//HeadedDownOrigCar car ; 
 	public Main() {
 		this.laneManagement = new LaneManagement();
+		this.isToggled = new SimpleBooleanProperty(false);
 	}
 	
 	
@@ -550,7 +553,27 @@ public class Main extends Application {
 			//********************************************************************************************************************************************
 			//Car Operation Stuff
 			
-		
+			if (isToggled.get()) {
+				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
+					((IntersectionSimCar)car).setDistanceAdjusted(2.8);
+					}
+				
+				
+				
+					for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
+					((IntersectionSimCar)car).setDistanceAdjusted(2.8);
+					}
+			}else {
+				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
+					((IntersectionSimCar)car).setDistanceAdjusted(0);
+					}
+				
+				
+				
+					for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
+					((IntersectionSimCar)car).setDistanceAdjusted(0);
+					}
+			}
 				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
 				((IntersectionSimCar)car).carOperation();
 				}
@@ -561,6 +584,7 @@ public class Main extends Application {
 				((IntersectionSimCar)car).carOperation();
 				}
 			
+				
 			//car.carOperation(root);
 			//Car Operation Stuff Ends
 			//**********************************************************************************************************************************************
@@ -776,6 +800,13 @@ public class Main extends Application {
 			//System.out.println("Cursor location: X=" + x + ", Y=" + y);
 		});
 		
+		
+		scene.setOnMouseClicked((MouseEvent event)->{
+		    isToggled.set(!isToggled.get());
+			
+				
+		
+		});
 		//Circle Map-------------------------------------------------------------------------------------------------
 		
 		Circle topMakeRight = new Circle();
@@ -975,66 +1006,69 @@ public class Main extends Application {
 
 				 //PauseTransition delay = new PauseTransition(Duration.seconds(3));
 					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
-			
+			    
 					 //delay.setOnFinished(event -> {
-						 IntersectionSimCar car =  new HeadedDownOrigCar(root, 
-								   laneManagement,
-								   carLaneX, 
-								   carLaneY);
-				
-				   
-				 
-				  	root.getChildren().add(car.getCarImageView_P());
-					root.getChildren().add(car.getCarImageView_brake_P());
-					car.getCarImageView_brake_P().setVisible(true);
-					car.getCarImageView_P().setVisible(false);
+					if(isToggled.get()) {
+					 IntersectionSimCar car =  new HeadedDownOrigCar(root, 
+									   laneManagement,
+									   carLaneX, 
+									   carLaneY);
 					
+					   
+					 
+					  	root.getChildren().add(car.getCarImageView_P());
+						root.getChildren().add(car.getCarImageView_brake_P());
+						car.getCarImageView_brake_P().setVisible(true);
+						car.getCarImageView_P().setVisible(false);
+						
+						
+						root.getChildren().add(car.getFront_R_BlinkerImageView_P());
+						root.getChildren().add(car.getFront_L_BlinkerImageView_P());
+						root.getChildren().add(car.getRear_R_BlinkerImageView_P());
+						root.getChildren().add(car.getRear_L_BlinkerImageView_P());
+						root.getChildren().add(car.getFront_R_BlinkerImageView2_P());
+						root.getChildren().add(car.getFront_L_BlinkerImageView2_P());
+						root.getChildren().add(car.getRear_R_BlinkerImageView2_P());
+						root.getChildren().add(car.getRear_L_BlinkerImageView2_P());
+						root.getChildren().add(car.getFront_R_BlinkerImageView3_P());
+						root.getChildren().add(car.getFront_L_BlinkerImageView3_P());
+						root.getChildren().add(car.getRear_R_BlinkerImageView3_P());
+						root.getChildren().add(car.getRear_L_BlinkerImageView3_P());
+						car.getFront_R_BlinkerImageView_P().setVisible(false);
+						car.getFront_L_BlinkerImageView_P().setVisible(false);
+						car.getRear_R_BlinkerImageView_P().setVisible(false);
+						car.getRear_L_BlinkerImageView_P().setVisible(false);
+						car.getFront_R_BlinkerImageView2_P().setVisible(true);
+						car.getFront_L_BlinkerImageView2_P().setVisible(true);
+						car.getRear_R_BlinkerImageView2_P().setVisible(true);
+						car.getRear_L_BlinkerImageView2_P().setVisible(true);
+						car.getFront_R_BlinkerImageView3_P().setVisible(false);
+						car.getFront_L_BlinkerImageView3_P().setVisible(false);
+						car.getRear_R_BlinkerImageView3_P().setVisible(false);
+						car.getRear_L_BlinkerImageView3_P().setVisible(false);
+						
+						
 					
-					root.getChildren().add(car.getFront_R_BlinkerImageView_P());
-					root.getChildren().add(car.getFront_L_BlinkerImageView_P());
-					root.getChildren().add(car.getRear_R_BlinkerImageView_P());
-					root.getChildren().add(car.getRear_L_BlinkerImageView_P());
-					root.getChildren().add(car.getFront_R_BlinkerImageView2_P());
-					root.getChildren().add(car.getFront_L_BlinkerImageView2_P());
-					root.getChildren().add(car.getRear_R_BlinkerImageView2_P());
-					root.getChildren().add(car.getRear_L_BlinkerImageView2_P());
-					root.getChildren().add(car.getFront_R_BlinkerImageView3_P());
-					root.getChildren().add(car.getFront_L_BlinkerImageView3_P());
-					root.getChildren().add(car.getRear_R_BlinkerImageView3_P());
-					root.getChildren().add(car.getRear_L_BlinkerImageView3_P());
-					car.getFront_R_BlinkerImageView_P().setVisible(false);
-					car.getFront_L_BlinkerImageView_P().setVisible(false);
-					car.getRear_R_BlinkerImageView_P().setVisible(false);
-					car.getRear_L_BlinkerImageView_P().setVisible(false);
-					car.getFront_R_BlinkerImageView2_P().setVisible(true);
-					car.getFront_L_BlinkerImageView2_P().setVisible(true);
-					car.getRear_R_BlinkerImageView2_P().setVisible(true);
-					car.getRear_L_BlinkerImageView2_P().setVisible(true);
-					car.getFront_R_BlinkerImageView3_P().setVisible(false);
-					car.getFront_L_BlinkerImageView3_P().setVisible(false);
-					car.getRear_R_BlinkerImageView3_P().setVisible(false);
-					car.getRear_L_BlinkerImageView3_P().setVisible(false);
-					
-					
-				
-					
-
-						car.drawCircleRpCorner(car.getCarCornerCoordinate());
-						if (car.getCarCornerCircle() != null && car.getCarCornerCircle().length == 4) {
-							for(Circle circle : car.getCarCornerCircle()) {
-								root.getChildren().add(circle);
+						
+	
+							car.drawCircleRpCorner(car.getCarCornerCoordinate());
+							if (car.getCarCornerCircle() != null && car.getCarCornerCircle().length == 4) {
+								for(Circle circle : car.getCarCornerCircle()) {
+									root.getChildren().add(circle);
+								}
+							}else {
+								System.out.println("SpawnCar: car.getCarCornerCircle() = null");
 							}
-						}else {
-							System.out.println("SpawnCar: car.getCarCornerCircle() = null");
-						}
-					    	if( car.getObservableListCarIsOn() != null) {
-					        car.getObservableListCarIsOn().add(((IntersectionSimCar)car));
-					       // System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());
-					    	}
-					 // });
-				// delay.play();
-				
+						    	if( car.getObservableListCarIsOn() != null) {
+						        car.getObservableListCarIsOn().add(((IntersectionSimCar)car));
+						       // System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());
+						    	}
+						 // });
+					// delay.play();
+					car.setDistanceAdjusted(2.8);
+				}
 			});
+			
 	
 			
 	}
