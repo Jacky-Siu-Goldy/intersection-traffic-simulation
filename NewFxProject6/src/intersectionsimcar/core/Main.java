@@ -555,23 +555,23 @@ public class Main extends Application {
 			
 			if (isToggled.get()) {
 				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
-					((IntersectionSimCar)car).setDistanceAdjusted(2.8);
+					((IntersectionSimCar)car).setDistanceAdjusted(0);
 					}
 				
 				
 				
 					for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
-					((IntersectionSimCar)car).setDistanceAdjusted(2.8);
+					((IntersectionSimCar)car).setDistanceAdjusted(0);
 					}
 			}else {
 				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
-					((IntersectionSimCar)car).setDistanceAdjusted(0);
+					((IntersectionSimCar)car).setDistanceAdjusted(2.8);
 					}
 				
 				
 				
 					for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
-					((IntersectionSimCar)car).setDistanceAdjusted(0);
+					((IntersectionSimCar)car).setDistanceAdjusted(2.8);
 					}
 			}
 				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
@@ -1008,7 +1008,7 @@ public class Main extends Application {
 					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
 			    
 					 //delay.setOnFinished(event -> {
-					if(isToggled.get()) {
+					if(!isToggled.get()) {
 					 IntersectionSimCar car =  new HeadedDownOrigCar(root, 
 									   laneManagement,
 									   carLaneX, 
