@@ -60,15 +60,23 @@ public abstract class IntersectionSimCar {
 	}
 	//***********************************************************************************************************************************************************
 	//added 12:25am 2025-05-20
-	  protected IntersectionSimCar frontCar;
+	  	protected IntersectionSimCar frontCar;
 	    
 	    protected IntersectionSimCar rearCar;
 	    
+	    protected IntersectionSimCar primaryBlindSpotCarFrontCar;
+	    
 	    protected IntersectionSimCar primaryBlindSpotCar;
+	    
+	    protected IntersectionSimCar primaryBlindSpotCarRearCar;
 	    
 	    protected IntersectionSimCar frontBlindSpotCarFrontCar;
 	    
 	    protected IntersectionSimCar frontBlindSpotCar;
+	    
+	    protected IntersectionSimCar frontBlindSpotCarRearCar;
+	    
+	    protected IntersectionSimCar rearBlindSpotCarFrontCar;
 	    
 	    protected IntersectionSimCar rearBlindSpotCar;
 	    
@@ -102,6 +110,22 @@ public abstract class IntersectionSimCar {
 			this.primaryBlindSpotCar = primaryBlindSpotCar;
 		}
 
+		public IntersectionSimCar getPrimaryBlindSpotCarFrontCar() {
+			return primaryBlindSpotCarFrontCar;
+		}
+
+		public void setPrimaryBlindSpotCarFrontCar(IntersectionSimCar primaryBlindSpotCarFrontCar) {
+			this.primaryBlindSpotCarFrontCar = primaryBlindSpotCarFrontCar;
+		}
+
+		public IntersectionSimCar getPrimaryBlindSpotCarRearCar() {
+			return primaryBlindSpotCarRearCar;
+		}
+
+		public void setPrimaryBlindSpotCarRearCar(IntersectionSimCar primaryBlindSpotCarRearCar) {
+			this.primaryBlindSpotCarRearCar = primaryBlindSpotCarRearCar;
+		}
+
 		public IntersectionSimCar getFrontBlindSpotCarFrontCar() {
 			return frontBlindSpotCarFrontCar;
 		}
@@ -116,6 +140,22 @@ public abstract class IntersectionSimCar {
 
 		public void setFrontBlindSpotCar(IntersectionSimCar frontBlindSpotCar) {
 			this.frontBlindSpotCar = frontBlindSpotCar;
+		}
+
+		public IntersectionSimCar getFrontBlindSpotCarRearCar() {
+			return frontBlindSpotCarRearCar;
+		}
+
+		public void setFrontBlindSpotCarRearCar(IntersectionSimCar frontBlindSpotCarRearCar) {
+			this.frontBlindSpotCarRearCar = frontBlindSpotCarRearCar;
+		}
+
+		public IntersectionSimCar getRearBlindSpotCarFrontCar() {
+			return rearBlindSpotCarFrontCar;
+		}
+
+		public void setRearBlindSpotCarFrontCar(IntersectionSimCar rearBlindSpotCarFrontCar) {
+			this.rearBlindSpotCarFrontCar = rearBlindSpotCarFrontCar;
 		}
 
 		public IntersectionSimCar getRearBlindSpotCar() {
@@ -1396,51 +1436,9 @@ public abstract class IntersectionSimCar {
 			     }else if(this.angleWithRespectToTheRightTurnCircle >= 360){
 			        	this.angleWithRespectToTheRightTurnCircle -=360;
 			     }
-				 //*********************************************************************************************************************
-				 positionX = Math.cos( angleWithRespectToTheRightTurnCircle* (Math.PI / 180)) * radius + h;//update positionX as the car travel to a new position along the circular path
-				 positionY = Math.sin( angleWithRespectToTheRightTurnCircle* (Math.PI / 180)) * radius + k;//update positionY as the car travel to a new position along the circular path
-				 this.updateRotationAngle(angleWithRespectToTheRightTurnCircle,RIGHTTURNTOCARDIRECTIONSIGN);//updating the rotationAngle (where the car is facing) as it travel along the circular path dependent on the 
-				                                                                                          //in the equation used rotationAngle = (angleWithRespectToTheRightTurnCircle -90)
-				 rise = Math.sin(rotationAngle * (Math.PI / 180));//* orY;//update rise of the slope
-			     
-			     run = Math.cos(rotationAngle * (Math.PI / 180));//* orX;//update run of the slope
-			     
-			     //----------------------------------------------------------------------------------------------------------------------------------------------------
-			       //dependent on the rotationAngle converted to rise and run which are the x and y value of the unit circle 
-			       //dependent on run and rise value of the unit circle. basically the input = operator sign changes  in the equation needed to produce the x and y coordinate at the perimeter
-			       //to draw the line connecting them to the center of the Circle. The line representing where the car is facing.
-				 if(rise > -1 && rise < 0 && run > 0 && run < 1){ // 270 < (x,y) < 0 
-			            
-			            whereItsFacingIndicator(1, -1);
-			        }else if (rise == -1 && Math.abs(run) < 0.000001){ // (x,y) = 270
-			           
-			            whereItsFacingIndicator(0, -1);
-			        }else if (rise > -1 && rise < 0 && run > -1 && run < 0){ // 270 < (x,y) < 180
-			            
-			            whereItsFacingIndicator(-1, -1);
-			        }else if(rise == 0 & Math.abs(run) > -1 && Math.abs(run) < -0.99999999){ // (x,y) = 180
-			           
-			            whereItsFacingIndicator(0, -1);
-			        }else if (rise < 1 && rise > 0 && run > -1 && run < 0){ // 180 > (x,y) >90
-			            
-			            whereItsFacingIndicator(-1, 1);
-			        }else if (rise == 1 && Math.abs(run) < 0.000001){ // (x,y) = 90
-			            
-			            whereItsFacingIndicator(1, 0);
-			        }else if (rise < 1 && rise > 0 && run > 0 && run < 1){ // 90 > (x,y) > 0
-			            
-			            whereItsFacingIndicator(1, 1);
-			        }else if (rise == 0 && run == 1){// (x,y) = 0
-			            
-			         //   carAngle = 90 - rotationAngle;
-			            
-			            whereItsFacingIndicator(0 , 1);
-			        }else if (Math.abs(rise) < 0.00001 && run == -1){// (x,y) = 180
-			           
-			            whereItsFacingIndicator(0 , -1);
-			        }
-				//--------------------------------------------------------------------------------------------------------------------------------------------------------------
-				
+				 positionX = Math.cos( angleWithRespectToTheRightTurnCircle* (Math.PI / 180)) * radius + h;
+				 positionY = Math.sin( angleWithRespectToTheRightTurnCircle* (Math.PI / 180)) * radius + k;
+				 this.updateRotationAngle(angleWithRespectToTheRightTurnCircle,RIGHTTURNTOCARDIRECTIONSIGN);
 				
 			}
 			
@@ -1474,40 +1472,8 @@ public abstract class IntersectionSimCar {
 				 positionY = Math.sin( angleWithRespectToTheLeftTurnCircle* (Math.PI / 180)) * radius + k;
 				 this.updateRotationAngle(angleWithRespectToTheLeftTurnCircle,LEFTTURNTOCARDIRECTIONSIGN);
 				
-				 rise = Math.sin(rotationAngle * (Math.PI / 180));//* orY;
-		        
-				 run = Math.cos(rotationAngle * (Math.PI / 180));//* orX;
 		       
-				 if(rise > -1 && rise < 0 && run > 0 && run < 1){ // 270 < (x,y) < 0 
-			            
-			            whereItsFacingIndicator(1, -1);
-			        }else if (rise == -1 && Math.abs(run) < 0.000001){ // (x,y) = 270
-			           
-			            whereItsFacingIndicator(0, -1);
-			        }else if (rise > -1 && rise < 0 && run > -1 && run < 0){ // 270 < (x,y) < 180
-			            
-			            whereItsFacingIndicator(-1, -1);
-			        }else if(rise == 0 & Math.abs(run) > -1 && Math.abs(run) < -0.99999999){ // (x,y) = 180
-			           
-			            whereItsFacingIndicator(0, -1);
-			        }else if (rise < 1 && rise > 0 && run > -1 && run < 0){ // 180 > (x,y) >90
-			            
-			            whereItsFacingIndicator(-1, 1);
-			        }else if (rise == 1 && Math.abs(run) < 0.000001){ // (x,y) = 90
-			            
-			            whereItsFacingIndicator(1, 0);
-			        }else if (rise < 1 && rise > 0 && run > 0 && run < 1){ // 90 > (x,y) > 0
-			            
-			            whereItsFacingIndicator(1, 1);
-			        }else if (rise == 0 && run == 1){// (x,y) = 0
-			            
-			         //   carAngle = 90 - rotationAngle;
-			            
-			            whereItsFacingIndicator(0 , 1);
-			        }else if (Math.abs(rise) < 0.00001 && run == -1){// (x,y) = 180
-			           
-			            whereItsFacingIndicator(0 , -1);
-			        }
+				
 		    }
 		    
 		   

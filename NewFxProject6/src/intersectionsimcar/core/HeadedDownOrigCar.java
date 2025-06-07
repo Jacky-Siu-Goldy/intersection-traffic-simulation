@@ -740,32 +740,38 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 						
 						if (isPrimaryBlindSpotCar(car)) {
 							this.setPrimaryBlindSpotCar(car);
-							this.setFrontCarOnTargetLaneList (this.getPrimaryBlindSpotCar().getFrontCar());
-							this.setRearCarOnTargetLaneList (this.getPrimaryBlindSpotCar().getRearCar());
+							this.setPrimaryBlindSpotCarFrontCar((IntersectionSimCar) primaryBlindSpotCar == null? null: primaryBlindSpotCar.getFrontCar());
+							this.setPrimaryBlindSpotCarRearCar((IntersectionSimCar) primaryBlindSpotCar == null? null: primaryBlindSpotCar.getRearCar());
+							
+							this.setRearCarOnTargetLaneList ((IntersectionSimCar) primaryBlindSpotCarRearCar == null? null: primaryBlindSpotCarRearCar.getRearCar());
 							
 						}else if(isFrontBlindSpotCar(car) || isRearBlindSpotCar(car)) {
 							 if(isFrontBlindSpotCar(car)) {
 								this.setFrontBlindSpotCar(car);
 								this.setFrontBlindSpotCarFrontCar(frontBlindSpotCar.getFrontCar());
+								
 								if(isRearBlindSpotCar ((IntersectionSimCar)frontBlindSpotCar.getRearCar())) {
 									this.setRearBlindSpotCar((IntersectionSimCar)frontBlindSpotCar.getRearCar());
-									this.setRearBlindSpotCarRearCar((IntersectionSimCar) rearBlindSpotCar.getRearCar());
-									this.setRearCarOnTargetLaneList((rearBlindSpotCarRearCar == null? null : rearBlindSpotCarRearCar.getRearCar()));
+									this.setRearBlindSpotCarRearCar((IntersectionSimCar) rearBlindSpotCar == null? null : (IntersectionSimCar) rearBlindSpotCar.getRearCar());
+									//this.setRearCarOnTargetLaneList((IntersectionSimCar) rearBlindSpotCarRearCar == null? null :(IntersectionSimCar) rearBlindSpotCarRearCar.getRearCar());
 								}else {
-									this.setRearCarOnTargetLaneList(frontBlindSpotCar.getRearCar());
-									this.setFrontCarOnTargetLaneList((frontBlindSpotCarFrontCar == null? null : frontBlindSpotCarFrontCar.getFrontCar()));
+									this.setFrontBlindSpotCarRearCar((IntersectionSimCar)frontBlindSpotCar.getRearCar() == null? null :(IntersectionSimCar)frontBlindSpotCar.getRearCar());
+									this.setRearCarOnTargetLaneList((IntersectionSimCar) frontBlindSpotCarRearCar == null? null : (IntersectionSimCar)frontBlindSpotCarRearCar.getRearCar());
+									//this.setFrontCarOnTargetLaneList((IntersectionSimCar)frontBlindSpotCarFrontCar == null? null :(IntersectionSimCar) frontBlindSpotCarFrontCar.getFrontCar());
 								}
 							 }	
 							 if(isRearBlindSpotCar(car)) {
 								this.setRearBlindSpotCar(car);
 								this.setRearBlindSpotCarRearCar(rearBlindSpotCar.getRearCar());
+								
 								if(isFrontBlindSpotCar ((IntersectionSimCar)rearBlindSpotCar.getFrontCar())) {
 									this.setFrontBlindSpotCar((IntersectionSimCar)rearBlindSpotCar.getFrontCar());
 									this.setFrontBlindSpotCarFrontCar((IntersectionSimCar) frontBlindSpotCar.getFrontCar());
-									this.setFrontCarOnTargetLaneList((frontBlindSpotCarFrontCar == null? null : frontBlindSpotCarFrontCar.getFrontCar()));
+									//this.setFrontCarOnTargetLaneList((frontBlindSpotCarFrontCar == null? null : frontBlindSpotCarFrontCar.getFrontCar()));
 								}else {
-									this.setFrontCarOnTargetLaneList(rearBlindSpotCar.getFrontCar());
-									this.setRearCarOnTargetLaneList((rearBlindSpotCarRearCar == null? null: rearBlindSpotCarRearCar.getRearCar()));
+									this.setRearBlindSpotCarFrontCar((IntersectionSimCar) rearBlindSpotCar == null? null : (IntersectionSimCar) rearBlindSpotCar.getFrontCar());
+									this.setFrontCarOnTargetLaneList((IntersectionSimCar) rearBlindSpotCarFrontCar == null? null:(IntersectionSimCar) rearBlindSpotCarFrontCar.getFrontCar());
+									//this.setRearCarOnTargetLaneList((IntersectionSimCar)  rearBlindSpotCarRearCar == null? null:(IntersectionSimCar) rearBlindSpotCarRearCar.getRearCar());
 								}
 							 }
 							 
@@ -778,24 +784,35 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 										this.setFrontCarOnTargetLaneList(car);
 										IntersectionSimCar temp_RearCar = ((this.getFrontCarOnTargetLaneList().getRearCar() == rearBlindSpotCar)? (rearBlindSpotCar == null? null: rearBlindSpotCar.getRearCar()):
 																			this.getFrontCarOnTargetLaneList().getRearCar());
-									                       temp_RearCar = (temp_RearCar == rearBlindSpotCarRearCar? (rearBlindSpotCarRearCar == null? null: rearBlindSpotCarRearCar.getRearCar()):
-									                    	               temp_RearCar);
+														   temp_RearCar = (temp_RearCar == (IntersectionSimCar)frontBlindSpotCar?(frontBlindSpotCar == null? null :(IntersectionSimCar) frontBlindSpotCar.getRearCar()):
+															               null);
+														   temp_RearCar = (temp_RearCar == (IntersectionSimCar)frontBlindSpotCarRearCar?(frontBlindSpotCarRearCar == null? null : (IntersectionSimCar) frontBlindSpotCarRearCar.getRearCar()):
+															   				null);
+														   temp_RearCar = (temp_RearCar == (IntersectionSimCar)rearBlindSpotCar?(rearBlindSpotCar == null? null : (IntersectionSimCar) rearBlindSpotCar.getRearCar()):
+															               null);
+									                       temp_RearCar = (temp_RearCar == (IntersectionSimCar)rearBlindSpotCarRearCar? (rearBlindSpotCarRearCar == null? null: (IntersectionSimCar) rearBlindSpotCarRearCar.getRearCar()):
+									                    	               null);
+									                       temp_RearCar = (temp_RearCar == (IntersectionSimCar) primaryBlindSpotCarRearCar ? (primaryBlindSpotCarRearCar == null? null: (IntersectionSimCar) primaryBlindSpotCarRearCar.getFrontCar()):
+						                    	                           null);
 														   
 										this.setRearCarOnTargetLaneList (temp_RearCar);
 										//System.out.println("setTargetlaneFrontCarBlindSpotCarRearCarHeadingDown(blah)....isFrontCar_HeadingDown(this,car)....accessed");if(this.carIntention == CarIntention.BI_ONLLWANTRLC) {
 										 System.out.println("\n\n--------------------------------------------------------------------------------------------------------------------------------------------------------------"+
-										            "\n isFrontCar accessed"+  
+										            "\n isFrontCar_HeadingDown(blah) accessed"+  
 												    "\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
-										    		"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->               OnWhichLane: " + this.getOnWhichLaneListKey() +
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+ " ID: " +(this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ----> frontBlindSpotCarFrontCar: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->         frontblindSpotCar: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->       primaryblindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->          rearblindSpotCar: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->   rearblindSpotCarRearCar: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarId())+
-													
+										    		"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->                 OnWhichLane: " + this.getOnWhichLaneListKey() +
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->      frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+ " ID: " +(this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->   frontBlindSpotCarFrontCar: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->           frontblindSpotCar: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    frontBlindSpotCarRearCar: " + (this.getFrontBlindSpotCarRearCar() == null ? null : this.getFrontBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarRearCar() == null ? null : this.getFrontBlindSpotCarRearCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ----> primaryblindSpotCarFrontCar: " + (this.getPrimaryBlindSpotCarFrontCar() == null ? null : this.getPrimaryBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCarFrontCar() == null ? null : this.getPrimaryBlindSpotCarFrontCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->         primaryblindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  primaryblindSpotCarRearCar: " + (this.getPrimaryBlindSpotCarRearCar() == null ? null : this.getPrimaryBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCarRearCar() == null ? null : this.getPrimaryBlindSpotCarRearCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    rearblindSpotCarFrontCar: " + (this.getRearBlindSpotCarFrontCar() == null ? null : this.getRearBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarFrontCar() == null ? null : this.getRearBlindSpotCarFrontCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->            rearblindSpotCar: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->     rearblindSpotCarRearCar: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarId())+
 													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin())+ " ID: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarId())
-										            +"\n isFrontCar End---------------------------------------------------------------------------------------------------------------------------------------------------------------");
+										            +"\n isFrontCar_HeadingDown(blah) End---------------------------------------------------------------------------------------------------------------------------------------------------------------");
 									           }
 												
 										
@@ -809,27 +826,35 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 										
 										IntersectionSimCar temp_FrontCar = (this.getRearCarOnTargetLaneList().getFrontCar() == frontBlindSpotCar? (frontBlindSpotCar == null? null:frontBlindSpotCar.getFrontCar()) :
 																	        this.getRearCarOnTargetLaneList().getFrontCar());
-									                       temp_FrontCar = (temp_FrontCar == rearBlindSpotCar? (rearBlindSpotCar == null? null: rearBlindSpotCar.getFrontCar()):
+									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) rearBlindSpotCar? (rearBlindSpotCar == null? null: (IntersectionSimCar) rearBlindSpotCar.getFrontCar()):
 									                    	                 temp_FrontCar);
-									                       temp_FrontCar = (temp_FrontCar == frontBlindSpotCar? (frontBlindSpotCar == null? null : frontBlindSpotCar.getFrontCar()):
+									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) rearBlindSpotCarFrontCar? (rearBlindSpotCarFrontCar == null? null : (IntersectionSimCar) rearBlindSpotCarFrontCar.getFrontCar()):
+									                    	   				 temp_FrontCar);
+									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) frontBlindSpotCar? (frontBlindSpotCar == null? null : (IntersectionSimCar) frontBlindSpotCar.getFrontCar()):
 									                    	                 temp_FrontCar);
-									                       temp_FrontCar = (temp_FrontCar == frontBlindSpotCarFrontCar? (frontBlindSpotCarFrontCar == null? null: frontBlindSpotCarFrontCar.getFrontCar()):
+									                      
+									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) frontBlindSpotCarFrontCar? (frontBlindSpotCarFrontCar == null? null:(IntersectionSimCar) frontBlindSpotCarFrontCar.getFrontCar()):
+									                    	                 temp_FrontCar);
+									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) primaryBlindSpotCarFrontCar ? (primaryBlindSpotCarFrontCar == null? null: (IntersectionSimCar) primaryBlindSpotCarFrontCar.getFrontCar()):
 									                    	                 temp_FrontCar);
 										                 
 										this.setFrontCarOnTargetLaneList(temp_FrontCar);
 										 System.out.println("\n\n--------------------------------------------------------------------------------------------------------------------------------------------------------------"+
-										            "\n isRearCar accessed"+  
+										            "\n isRearCar_HeadingDown(blah) accessed"+  
 												    "\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
-										    		"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->               OnWhichLane: " + this.getOnWhichLaneListKey() +
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+ " ID: " +(this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ----> frontBlindSpotCarFrontCar: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->         frontblindSpotCar: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->       primaryblindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->          rearblindSpotCar: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarId())+
-													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->   rearblindSpotCarRearCar: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarId())+
-													
+										    		"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->                 OnWhichLane: " + this.getOnWhichLaneListKey() +
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->      frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+ " ID: " +(this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->   frontBlindSpotCarFrontCar: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->           frontblindSpotCar: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    frontBlindSpotCarRearCar: " + (this.getFrontBlindSpotCarRearCar() == null ? null : this.getFrontBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarRearCar() == null ? null : this.getFrontBlindSpotCarRearCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ----> primaryblindSpotCarFrontCar: " + (this.getPrimaryBlindSpotCarFrontCar() == null ? null : this.getPrimaryBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCarFrontCar() == null ? null : this.getPrimaryBlindSpotCarFrontCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->         primaryblindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  primaryblindSpotCarRearCar: " + (this.getPrimaryBlindSpotCarRearCar() == null ? null : this.getPrimaryBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCarRearCar() == null ? null : this.getPrimaryBlindSpotCarRearCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    rearblindSpotCarFrontCar: " + (this.getRearBlindSpotCarFrontCar() == null ? null : this.getRearBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarFrontCar() == null ? null : this.getRearBlindSpotCarFrontCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->            rearblindSpotCar: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarId())+
+													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->     rearblindSpotCarRearCar: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarId())+
 													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin())+ " ID: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarId())
-										            +"\n isRearCar End---------------------------------------------------------------------------------------------------------------------------------------------------------------");
+										            +"\n  isRearCar_HeadingDown(blah) End---------------------------------------------------------------------------------------------------------------------------------------------------------------");
 									           }
 									}
 							  }
@@ -842,17 +867,23 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			    
 			
 			if(this.carIntention == CarIntention.BI_ONLLWANTRLC) {
-				 System.out.println("\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
-		    		"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->               OnWhichLane: " + this.getOnWhichLaneListKey() +
-					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+ " ID: " +(this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarId())+
-					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ----> frontBlindSpotCarFrontCar: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarId())+
-					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->         frontblindSpotCar: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarId())+
-					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->       primaryblindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarId())+
-					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->          rearblindSpotCar: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarId())+
-					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->   rearblindSpotCarRearCar: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarId())+
-					
-					"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin())+ " ID: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarId()));
-		         }
+				 System.out.println("\n\n--------------------------------------------------------------------------------------------------------------------------------------------------------------"+
+				            "\n outside For Loop accessed"+  
+						    "\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
+				    		"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->                 OnWhichLane: " + this.getOnWhichLaneListKey() +
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->      frontCarOnTheOtherLane: " + (this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarSkin() )+ " ID: " +(this.getFrontCarOnTargetLaneList() == null ? null : this.getFrontCarOnTargetLaneList().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->   frontBlindSpotCarFrontCar: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarFrontCar() == null ? null : this.getFrontBlindSpotCarFrontCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->           frontblindSpotCar: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCar() == null ? null : this.getFrontBlindSpotCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    frontBlindSpotCarRearCar: " + (this.getFrontBlindSpotCarRearCar() == null ? null : this.getFrontBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getFrontBlindSpotCarRearCar() == null ? null : this.getFrontBlindSpotCarRearCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ----> primaryblindSpotCarFrontCar: " + (this.getPrimaryBlindSpotCarFrontCar() == null ? null : this.getPrimaryBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCarFrontCar() == null ? null : this.getPrimaryBlindSpotCarFrontCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->         primaryblindSpotCar: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCar() == null ? null : this.getPrimaryBlindSpotCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  primaryblindSpotCarRearCar: " + (this.getPrimaryBlindSpotCarRearCar() == null ? null : this.getPrimaryBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getPrimaryBlindSpotCarRearCar() == null ? null : this.getPrimaryBlindSpotCarRearCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->    rearblindSpotCarFrontCar: " + (this.getRearBlindSpotCarFrontCar() == null ? null : this.getRearBlindSpotCarFrontCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarFrontCar() == null ? null : this.getRearBlindSpotCarFrontCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->            rearblindSpotCar: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCar() == null ? null : this.getRearBlindSpotCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->     rearblindSpotCarRearCar: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarSkin())+ " ID: " + (this.getRearBlindSpotCarRearCar() == null ? null : this.getRearBlindSpotCarRearCar().getCarId())+
+							"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin())+ " ID: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarId())
+				            +"\n outside For Loop End---------------------------------------------------------------------------------------------------------------------------------------------------------------");
+			           }
 				
 		}
 		
