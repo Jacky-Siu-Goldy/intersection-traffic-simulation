@@ -744,58 +744,81 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 							this.setPrimaryBlindSpotCarRearCar((IntersectionSimCar) primaryBlindSpotCar == null? null: primaryBlindSpotCar.getRearCar());
 							
 							this.setRearCarOnTargetLaneList ((IntersectionSimCar) primaryBlindSpotCarRearCar == null? null: primaryBlindSpotCarRearCar.getRearCar());
+							this.setFrontCarOnTargetLaneList((IntersectionSimCar) primaryBlindSpotCarFrontCar == null? null: primaryBlindSpotCarFrontCar.getFrontCar());
 							
 						}else if(isFrontBlindSpotCar(car) || isRearBlindSpotCar(car)) {
 							 if(isFrontBlindSpotCar(car)) {
 								this.setFrontBlindSpotCar(car);
 								this.setFrontBlindSpotCarFrontCar(frontBlindSpotCar.getFrontCar());
-								
-								if(isRearBlindSpotCar ((IntersectionSimCar)frontBlindSpotCar.getRearCar())) {
+								this.setFrontBlindSpotCarRearCar((IntersectionSimCar)frontBlindSpotCar.getRearCar() == null? null :(IntersectionSimCar)frontBlindSpotCar.getRearCar());
+								this.setRearCarOnTargetLaneList((IntersectionSimCar) frontBlindSpotCarRearCar == null? null : (IntersectionSimCar)frontBlindSpotCarRearCar.getRearCar());
+								/*if(isRearBlindSpotCar ((IntersectionSimCar)frontBlindSpotCar.getRearCar())) {
 									this.setRearBlindSpotCar((IntersectionSimCar)frontBlindSpotCar.getRearCar());
 									this.setRearBlindSpotCarRearCar((IntersectionSimCar) rearBlindSpotCar == null? null : (IntersectionSimCar) rearBlindSpotCar.getRearCar());
 									//this.setRearCarOnTargetLaneList((IntersectionSimCar) rearBlindSpotCarRearCar == null? null :(IntersectionSimCar) rearBlindSpotCarRearCar.getRearCar());
 								}else {
-									this.setFrontBlindSpotCarRearCar((IntersectionSimCar)frontBlindSpotCar.getRearCar() == null? null :(IntersectionSimCar)frontBlindSpotCar.getRearCar());
-									this.setRearCarOnTargetLaneList((IntersectionSimCar) frontBlindSpotCarRearCar == null? null : (IntersectionSimCar)frontBlindSpotCarRearCar.getRearCar());
-									//this.setFrontCarOnTargetLaneList((IntersectionSimCar)frontBlindSpotCarFrontCar == null? null :(IntersectionSimCar) frontBlindSpotCarFrontCar.getFrontCar());
-								}
+									
+								   
+								}*/
 							 }	
 							 if(isRearBlindSpotCar(car)) {
 								this.setRearBlindSpotCar(car);
 								this.setRearBlindSpotCarRearCar(rearBlindSpotCar.getRearCar());
-								
-								if(isFrontBlindSpotCar ((IntersectionSimCar)rearBlindSpotCar.getFrontCar())) {
+								this.setRearBlindSpotCarFrontCar((IntersectionSimCar) rearBlindSpotCar == null? null : (IntersectionSimCar) rearBlindSpotCar.getFrontCar());
+								this.setFrontCarOnTargetLaneList((IntersectionSimCar) rearBlindSpotCarFrontCar == null? null:(IntersectionSimCar) rearBlindSpotCarFrontCar.getFrontCar());
+							/*	if(isFrontBlindSpotCar ((IntersectionSimCar)rearBlindSpotCar.getFrontCar())) {
 									this.setFrontBlindSpotCar((IntersectionSimCar)rearBlindSpotCar.getFrontCar());
 									this.setFrontBlindSpotCarFrontCar((IntersectionSimCar) frontBlindSpotCar.getFrontCar());
 									//this.setFrontCarOnTargetLaneList((frontBlindSpotCarFrontCar == null? null : frontBlindSpotCarFrontCar.getFrontCar()));
 								}else {
-									this.setRearBlindSpotCarFrontCar((IntersectionSimCar) rearBlindSpotCar == null? null : (IntersectionSimCar) rearBlindSpotCar.getFrontCar());
-									this.setFrontCarOnTargetLaneList((IntersectionSimCar) rearBlindSpotCarFrontCar == null? null:(IntersectionSimCar) rearBlindSpotCarFrontCar.getFrontCar());
-									//this.setRearCarOnTargetLaneList((IntersectionSimCar)  rearBlindSpotCarRearCar == null? null:(IntersectionSimCar) rearBlindSpotCarRearCar.getRearCar());
-								}
+									
+									
+								}*/
 							 }
 							 
 						}else if(isFrontCar_HeadingDown(car) ||isRearCar_HeadingDown(car) ) {
 						
 							  if(isFrontCar_HeadingDown(car)) {
-									temp_Front_DistanceY = getTemp_FrontDistanceY(laneChangeDirection, car, temp_Front_DistanceY);//Done wasn't in steps
+								/*	temp_Front_DistanceY = getTemp_FrontDistanceY(laneChangeDirection, car, temp_Front_DistanceY);//Done wasn't in steps
 									if(isTempFrontDistanceGreaterThanLengthOfTheBlindSpotCarAndLessThanGreatestDistanceOfTheNearestFrontCar(temp_Front_DistanceY,lengthOfTheBlindSpotCar, this.targetLane_Nearest_Front_Car_Base_On_DistanceHeadingDownY)) {
-										targetLane_Nearest_Front_Car_Base_On_DistanceHeadingDownY = temp_Front_DistanceY;//<Done step 5   //Done ^ step 5 and 6
-										this.setFrontCarOnTargetLaneList(car);
-										IntersectionSimCar temp_RearCar = ((this.getFrontCarOnTargetLaneList().getRearCar() == rearBlindSpotCar)? (rearBlindSpotCar == null? null: rearBlindSpotCar.getRearCar()):
-																			this.getFrontCarOnTargetLaneList().getRearCar());
-														   temp_RearCar = (temp_RearCar == (IntersectionSimCar)frontBlindSpotCar?(frontBlindSpotCar == null? null :(IntersectionSimCar) frontBlindSpotCar.getRearCar()):
-															               null);
-														   temp_RearCar = (temp_RearCar == (IntersectionSimCar)frontBlindSpotCarRearCar?(frontBlindSpotCarRearCar == null? null : (IntersectionSimCar) frontBlindSpotCarRearCar.getRearCar()):
-															   				null);
-														   temp_RearCar = (temp_RearCar == (IntersectionSimCar)rearBlindSpotCar?(rearBlindSpotCar == null? null : (IntersectionSimCar) rearBlindSpotCar.getRearCar()):
-															               null);
-									                       temp_RearCar = (temp_RearCar == (IntersectionSimCar)rearBlindSpotCarRearCar? (rearBlindSpotCarRearCar == null? null: (IntersectionSimCar) rearBlindSpotCarRearCar.getRearCar()):
-									                    	               null);
-									                       temp_RearCar = (temp_RearCar == (IntersectionSimCar) primaryBlindSpotCarRearCar ? (primaryBlindSpotCarRearCar == null? null: (IntersectionSimCar) primaryBlindSpotCarRearCar.getFrontCar()):
-						                    	                           null);
+										targetLane_Nearest_Front_Car_Base_On_DistanceHeadingDownY = temp_Front_DistanceY;//<Done step 5   //Done ^ step 5 and 6*/
+								  
+								  /*
+								  ⚠️ WARNING: This code contains a highly condensed and extremely unreadable ternary expression.
+								  It works. It works *beautifully*. But it should never, under any circumstances, be written like this again.
+								  
+								  This is here for historical preservation only. Refactor pending.
+								  See commit [YOUR_COMMIT_HASH] for reference.
+
+								  Written during peak brainstorming + stubbornness mode. 
+								  R.I.P. readability. Long live the logic.
+								 */
+										this.setFrontCarOnTargetLaneList(rearBlindSpotCarFrontCar != null? (frontCarOnTargetLaneList == rearBlindSpotCarFrontCar.getFrontCar()? frontCarOnTargetLaneList :
+											                            (frontCarOnTargetLaneList == frontBlindSpotCarFrontCar? (frontBlindSpotCarFrontCar != null? frontBlindSpotCarFrontCar.getFrontCar(): 
+						                                                (frontCarOnTargetLaneList == primaryBlindSpotCarFrontCar? (primaryBlindSpotCarFrontCar != null? primaryBlindSpotCarFrontCar.getFrontCar():
+						                                                (frontCarOnTargetLaneList == rearBlindSpotCarFrontCar? (rearBlindSpotCarFrontCar != null? rearBlindSpotCarFrontCar.getFrontCar(): null):null)):null)):  frontCarOnTargetLaneList)): 
+						                                                (car != null? (car.getFrontCar() == null && car != primaryBlindSpotCar && car != frontBlindSpotCar && car != rearBlindSpotCar 
+						                                    					 && car!= primaryBlindSpotCarFrontCar && car !=frontBlindSpotCarFrontCar && car!= rearBlindSpotCarFrontCar? car: (car != null? ((car == primaryBlindSpotCar || car == primaryBlindSpotCar || car == frontBlindSpotCar
+												                            		|| car== primaryBlindSpotCarFrontCar || car ==frontBlindSpotCarFrontCar || car== rearBlindSpotCarFrontCar)? null: car.getFrontCar())
+														                            		: car)): null ));
+									/*	IntersectionSimCar temp_RearCar = (car.getRearCar()  == frontBlindSpotCar? (frontBlindSpotCar == null? null : frontBlindSpotCar.getRearCar()):
+																			car.getRearCar());
+														 
+														             
+														   temp_RearCar = (temp_RearCar == frontBlindSpotCarRearCar?(frontBlindSpotCarRearCar == null? null :  frontBlindSpotCarRearCar.getRearCar()):
+														   			     	temp_RearCar);
+														   temp_RearCar = (temp_RearCar == primaryBlindSpotCarRearCar ? (primaryBlindSpotCarRearCar == null? null:  primaryBlindSpotCarRearCar.getRearCar()):
+			                    	   				                        temp_RearCar);
+														   temp_RearCar = (temp_RearCar == rearBlindSpotCar?(rearBlindSpotCar == null? null :  rearBlindSpotCar.getRearCar()):
+															   				temp_RearCar);
 														   
-										this.setRearCarOnTargetLaneList (temp_RearCar);
+									                       temp_RearCar = (temp_RearCar == rearBlindSpotCarRearCar? (rearBlindSpotCarRearCar == null? null:  rearBlindSpotCarRearCar.getRearCar()):
+									                    	   				temp_RearCar);
+									                       
+									                    
+														   
+										this.setRearCarOnTargetLaneList (temp_RearCar == null ? null: (temp_RearCar.getRearCar() == null? temp_RearCar : null));*/
+										
 										//System.out.println("setTargetlaneFrontCarBlindSpotCarRearCarHeadingDown(blah)....isFrontCar_HeadingDown(this,car)....accessed");if(this.carIntention == CarIntention.BI_ONLLWANTRLC) {
 										 System.out.println("\n\n--------------------------------------------------------------------------------------------------------------------------------------------------------------"+
 										            "\n isFrontCar_HeadingDown(blah) accessed"+  
@@ -817,28 +840,46 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 												
 										
 									}
-							  }
-							  if (isRearCar_HeadingDown(car)) {//Done step 5{
-									temp_Rear_DistanceY = getTemp_RearDistanceY(laneChangeDirection, car , temp_Rear_DistanceY);//Done wasn't in steps
+							  
+							  if (isRearCar_HeadingDown(car)) {
+									/*temp_Rear_DistanceY = getTemp_RearDistanceY(laneChangeDirection, car , temp_Rear_DistanceY);
 									if(isTempRearDistanceGreaterThanLengthOfTheBlindSpotCarAndLessThanGreatestDistanceOfTheNearestRearCar(temp_Rear_DistanceY,lengthOfTheBlindSpotCar, this.targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY)) {
-										targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY = temp_Rear_DistanceY;//<Done step 5*      //Done ^ step 5 and 6*
-										this.setRearCarOnTargetLaneList(car);
+										targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY = temp_Rear_DistanceY;*/
+								  /*
+								  ⚠️ WARNING: This code contains a highly condensed and extremely unreadable ternary expression.
+								  It works. It works *beautifully*. But it should never, under any circumstances, be written like this again.
+								  
+								  This is here for historical preservation only. Refactor pending.
+								  See commit [YOUR_COMMIT_HASH] for reference.
+
+								  Written during peak brainstorming + stubbornness mode. 
+								  R.I.P. readability. Long live the logic.
+								 */
+										this.setRearCarOnTargetLaneList(frontBlindSpotCarRearCar != null? (rearCarOnTargetLaneList == frontBlindSpotCarRearCar.getRearCar()? rearCarOnTargetLaneList :
+											                           (rearCarOnTargetLaneList == frontBlindSpotCarRearCar? (frontBlindSpotCarRearCar != null? frontBlindSpotCarRearCar.getRearCar(): 
+											                           (rearCarOnTargetLaneList == primaryBlindSpotCarRearCar? (primaryBlindSpotCarRearCar != null? primaryBlindSpotCarRearCar.getRearCar():
+											                           (rearCarOnTargetLaneList == rearBlindSpotCarRearCar? (rearBlindSpotCarRearCar != null? rearBlindSpotCarRearCar.getRearCar():null):null)):null)):rearCarOnTargetLaneList)): 
+											                           (car != null? (car.getRearCar() == null && car != primaryBlindSpotCar && car != frontBlindSpotCar && car != rearBlindSpotCar
+											                            && car!= primaryBlindSpotCarRearCar && car !=frontBlindSpotCarRearCar && car!= rearBlindSpotCarRearCar? car: (car != null? ((car == primaryBlindSpotCar || car == primaryBlindSpotCar || car == frontBlindSpotCar
+											                            		|| car== primaryBlindSpotCarRearCar || car ==frontBlindSpotCarRearCar || car== rearBlindSpotCarRearCar)? null: car.getRearCar())
+											                            		: car)): null ));
 										
-										IntersectionSimCar temp_FrontCar = (this.getRearCarOnTargetLaneList().getFrontCar() == frontBlindSpotCar? (frontBlindSpotCar == null? null:frontBlindSpotCar.getFrontCar()) :
-																	        this.getRearCarOnTargetLaneList().getFrontCar());
-									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) rearBlindSpotCar? (rearBlindSpotCar == null? null: (IntersectionSimCar) rearBlindSpotCar.getFrontCar()):
-									                    	                 temp_FrontCar);
-									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) rearBlindSpotCarFrontCar? (rearBlindSpotCarFrontCar == null? null : (IntersectionSimCar) rearBlindSpotCarFrontCar.getFrontCar()):
-									                    	   				 temp_FrontCar);
-									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) frontBlindSpotCar? (frontBlindSpotCar == null? null : (IntersectionSimCar) frontBlindSpotCar.getFrontCar()):
-									                    	                 temp_FrontCar);
+										/*IntersectionSimCar temp_FrontCar = (car.getFrontCar()  ==  rearBlindSpotCar? (rearBlindSpotCar == null? null:  rearBlindSpotCar.getFrontCar()) :
+																	        car.getFrontCar());
+										                   temp_FrontCar = (temp_FrontCar ==  frontBlindSpotCar? (frontBlindSpotCar == null? null :  frontBlindSpotCar.getFrontCar()):
+	                    	                                                   temp_FrontCar);
+									                  
+									                       temp_FrontCar = (temp_FrontCar ==  rearBlindSpotCarFrontCar? (rearBlindSpotCarFrontCar == null? null :  rearBlindSpotCarFrontCar.getFrontCar()):
+									                    	   			       temp_FrontCar);
+									                       temp_FrontCar = (temp_FrontCar ==   primaryBlindSpotCarFrontCar ? (primaryBlindSpotCarFrontCar == null? null:  primaryBlindSpotCarFrontCar.getFrontCar()):
+					                    	                                   temp_FrontCar);
+						                 
 									                      
-									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) frontBlindSpotCarFrontCar? (frontBlindSpotCarFrontCar == null? null:(IntersectionSimCar) frontBlindSpotCarFrontCar.getFrontCar()):
-									                    	                 temp_FrontCar);
-									                       temp_FrontCar = (temp_FrontCar == (IntersectionSimCar) primaryBlindSpotCarFrontCar ? (primaryBlindSpotCarFrontCar == null? null: (IntersectionSimCar) primaryBlindSpotCarFrontCar.getFrontCar()):
-									                    	                 temp_FrontCar);
-										                 
-										this.setFrontCarOnTargetLaneList(temp_FrontCar);
+									                       temp_FrontCar = (temp_FrontCar ==  frontBlindSpotCarFrontCar? (frontBlindSpotCarFrontCar == null? null:frontBlindSpotCarFrontCar.getFrontCar()):
+									                    	                   temp_FrontCar);
+									                       
+										this.setFrontCarOnTargetLaneList(temp_FrontCar == null ? null: (temp_FrontCar.getFrontCar() == null? temp_FrontCar : null));*/
+										
 										 System.out.println("\n\n--------------------------------------------------------------------------------------------------------------------------------------------------------------"+
 										            "\n isRearCar_HeadingDown(blah) accessed"+  
 												    "\n targetLaneListKey: " +this.getTargetLaneListKey()+ 
@@ -856,13 +897,12 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 													"\n --->this: " + this.getCarSkin() + "ID: " +this.getCarId()  + " ---->  rearCarOnTheOtherLane: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarSkin())+ " ID: " + (this.getRearCarOnTargetLaneList() == null ? null : this.getRearCarOnTargetLaneList().getCarId())
 										            +"\n  isRearCar_HeadingDown(blah) End---------------------------------------------------------------------------------------------------------------------------------------------------------------");
 									           }
-									}
-							  }
+							
 							  
 								
-					 }  
+				            	 }  
 						
-						
+				}
 						
 			    
 			
@@ -912,20 +952,20 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		
 		private boolean isPrimaryBlindSpotCar(IntersectionSimCar car) {
 			
-			return ((this.getFrontRightCornerPositionY() >= car.getFrontRightCornerPositionY() && this.getRearRightCornerPositionY() <= car.getRearRightCornerPositionY())||
-					(this.getFrontRightCornerPositionY() <= car.getFrontRightCornerPositionY() && this.getRearRightCornerPositionY() >= car.getRearRightCornerPositionY()));
+			return ((this.getFrontRightCornerPositionY() >= car.getFrontRightCornerPositionY()+5 && this.getRearRightCornerPositionY() <= car.getRearRightCornerPositionY()-5)||
+					(this.getFrontRightCornerPositionY() <= car.getFrontRightCornerPositionY()+5 && this.getRearRightCornerPositionY() >= car.getRearRightCornerPositionY()-5));
 		}
 		
 		
 		private boolean isFrontBlindSpotCar(IntersectionSimCar car) {
-			return (car!=null? ((this.getFrontRightCornerPositionY() > car.getRearLeftCornerPositionY()) && 
-					(this.getRearRightCornerPositionY() < car.getRearLeftCornerPositionY())): false);
+			return (car!=null? ((this.getFrontRightCornerPositionY() > car.getRearLeftCornerPositionY() - 3) && 
+					(this.getRearRightCornerPositionY() < car.getRearLeftCornerPositionY()- 3)): false);
 		}
 		
 		private boolean isRearBlindSpotCar(IntersectionSimCar car) {
 			
-			return (car!=null ?((this.getFrontRightCornerPositionY() > car.getFrontLeftCornerPositionY()) && 
-					(this.getRearRightCornerPositionY() < car.getFrontLeftCornerPositionY())): false);
+			return (car!=null ?((this.getFrontRightCornerPositionY() > car.getFrontLeftCornerPositionY()+6) && 
+					(this.getRearRightCornerPositionY() < car.getFrontLeftCornerPositionY()+6)): false);
 		}
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -953,7 +993,8 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 */
 		 
 		 private double getTemp_FrontDistanceY(LaneChangeDirection laneChangeDirection, IntersectionSimCar car, double temp_Front_Distance) {
-			 if(car != primaryBlindSpotCar && car != frontBlindSpotCar && car != rearBlindSpotCar) {
+			 if(car != primaryBlindSpotCar && car != frontBlindSpotCar && car != rearBlindSpotCar 
+					 && car!= primaryBlindSpotCarRearCar && car !=frontBlindSpotCarRearCar && car!= rearBlindSpotCarRearCar) {
 				 return (laneChangeDirection == LaneChangeDirection.RIGHT?
 						 Math.abs(this.getFrontLeftCornerPositionY() - car.getRearLeftCornerPositionY()):
 							 Math.abs(this.getFrontRightCornerPositionY() - car.getRearRightCornerPositionY()));
@@ -963,7 +1004,8 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		 }
 		 
 		 private double getTemp_RearDistanceY(LaneChangeDirection laneChangeDirection, IntersectionSimCar car, double temp_Rear_Distance) {
-			if(car != primaryBlindSpotCar && car != frontBlindSpotCar && car != rearBlindSpotCar) {
+			if(car != primaryBlindSpotCar && car != frontBlindSpotCar && car != rearBlindSpotCar 
+					&& car!= primaryBlindSpotCarFrontCar && car !=frontBlindSpotCarFrontCar && car!= rearBlindSpotCarFrontCar) {
 				 return (laneChangeDirection == LaneChangeDirection.RIGHT?
 						 Math.abs(this.getRearRightCornerPositionY() - car.getFrontRightCornerPositionY()):
 							 Math.abs(this.getRearLeftCornerPositionY() - car.getFrontLeftCornerPositionY()));
