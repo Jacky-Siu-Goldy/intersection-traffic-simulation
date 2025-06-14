@@ -486,7 +486,10 @@ public class Main extends Application {
 	            	Random random = new Random();
 	     		   	int randIn = random.nextInt(1000) + 500;
 	     		   	Thread.sleep(randIn);
-	     		   	
+	     		   	while(isToggled.get()) {
+	     		   		
+	     		   		Thread.sleep(500);
+	     		   	}
 	     		   	Platform.runLater((Runnable)()->{spawnCars(root, laneManagement,
 	     		   											   TOPTOBOTTOMCARRIGHTLANE_X, 
 	     		   											   TOPTOBOTTOMCARRIGHTLANE_Y 
@@ -503,26 +506,30 @@ public class Main extends Application {
 		executor.submit((Runnable)() -> {
             
             while (!Thread.currentThread().isInterrupted()) {
-            	 try {
-                     
-	            	Random random = new Random();
-	     		   	int randIn = random.nextInt(1400) + 1400;
-	     		   	Thread.sleep(randIn);
-	     		   	synchronized(spawnLock) {
-		     		   	Platform.runLater((Runnable)()->{
-		     		   										if( laneManagement.getHeadingDownLeftLaneList() != null && laneManagement.getHeadingDownLeftLaneList().size() < 1) {
-			     		   									
-		     		   											spawnCars(root, laneManagement,
-			     		   			                                   TOPTOBOTTOMCARLEFTLANE_X, 
-			     		   			                                   TOPTOBOTTOMCARLEFTLANE_Y 
-			     		   			                                   );
-		     		   										}
-		     		   									});
-	     		   	}
-            	 }catch (InterruptedException e) {
-            		 Thread.currentThread().interrupt();
-            	 }
-            }
+           
+            	try {
+            		
+		            	Random random = new Random();
+		     		   	int randIn = random.nextInt(1400) + 1400;
+		     		  
+		     		   	Thread.sleep(randIn);
+		     		   
+		     		   	synchronized(spawnLock) {
+			     		   	Platform.runLater((Runnable)()->{
+									if( laneManagement.getHeadingDownLeftLaneList() != null && laneManagement.getHeadingDownLeftLaneList().size() < 1) {
+   									
+										spawnCars(root, laneManagement,
+   			                                   TOPTOBOTTOMCARLEFTLANE_X, 
+   			                                   TOPTOBOTTOMCARLEFTLANE_Y 
+   			                                   );
+									 }
+			     		   	});
+		     		   	}
+	            	 }catch (InterruptedException e) {
+	            		 Thread.currentThread().interrupt();
+	            	 }
+            	}
+    
         });
 		//********************************************************************************************************************************************
 		// Thread for Removing Cars
@@ -584,7 +591,7 @@ public class Main extends Application {
 				((IntersectionSimCar)car).carOperation();
 				}
 			
-				
+	
 			//car.carOperation(root);
 			//Car Operation Stuff Ends
 			//**********************************************************************************************************************************************
@@ -1004,11 +1011,12 @@ public class Main extends Application {
 				
 				
 
-				 //PauseTransition delay = new PauseTransition(Duration.seconds(3));
+				
+				if (!isToggled.get()) {
+					// PauseTransition delay = new PauseTransition(Duration.seconds(3));
 					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
 			    
-					 //delay.setOnFinished(event -> {
-					if(!isToggled.get()) {
+					// delay.setOnFinished(event -> {
 					 IntersectionSimCar car =  new HeadedDownOrigCar(root, 
 									   laneManagement,
 									   carLaneX, 
@@ -1063,10 +1071,13 @@ public class Main extends Application {
 						        car.getObservableListCarIsOn().add(((IntersectionSimCar)car));
 						       // System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());
 						    	}
-						 // });
-					// delay.play();
-					car.setDistanceAdjusted(2.8);
+						    	//car.setDistanceAdjusted(2.8);
+						
+					 //      });
+				//	 delay.play();
+						
 				}
+			
 			});
 			
 	
