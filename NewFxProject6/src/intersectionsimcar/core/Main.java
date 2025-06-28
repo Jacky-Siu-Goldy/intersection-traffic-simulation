@@ -68,16 +68,16 @@ public class Main extends Application {
 	
 	
 	public final static double TOPTOBOTTOMCARRIGHTLANE_X = 494.5;//* v
-	public final static double TOPTOBOTTOMCARRIGHTLANE_Y = -20;//*   v
+	public final static double TOPTOBOTTOMCARRIGHTLANE_Y = -1000;//*   v
 	public final static double TOPTOBOTTOMCARLEFTLANE_X = 533.5;//*  v
-	public final static double TOPTOBOTTOMCARLEFTLANE_Y = -20;//*    v
+	public final static double TOPTOBOTTOMCARLEFTLANE_Y = -1000;//*    v
 	
 	
 	public final static double BOTTOMTOTOPCARLEFTLANE_X = 611.5;//* ^
 	public final static double BOTTOMTOTOPCARLEFTLANE_Y = 788;//* ^
 	public final static double BOTTOMTOTOPCARRIGHTLANE_X = 650.5;//* ^
 	public final static double BOTTOMTOTOPCARRIGHTLANE_Y = 788;//* ^
-	
+	public final static double BLOCKINGDISTANCESQUARE = 50000;
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	
 	
@@ -85,25 +85,10 @@ public class Main extends Application {
 	public static int trafficLightCounter = 0;
 	public static boolean running = true;
 	public LaneManagement laneManagement;
-	/*public final static ObservableList<Car> headingDownRightLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingDownLeftLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingDownLTBLaneList = FXCollections.observableArrayList();
-	
-	public final static ObservableList<Car> headingUpRightLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingUpLeftLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingUpLTBLaneList = FXCollections.observableArrayList();
-	
-	public final static ObservableList<Car> headingLeftRightLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingLeftLeftLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingLeftLTBLaneList = FXCollections.observableArrayList();
-	
-	public final static ObservableList<Car> headingRightRightLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingRightLeftLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> headingRightLTBLaneList = FXCollections.observableArrayList();
-	public final static ObservableList<Car> emptyList = FXCollections.observableArrayList();*/
+
 	
 	//***************************************************************************************************************************************************************************************************************
-	private final ExecutorService executor = Executors.newFixedThreadPool(3);
+	private final ExecutorService executor = Executors.newFixedThreadPool(4);
 	private final Object spawnLock = new Object();
 	private ImageView trafficLightRedImageView;
 	private  ImageView trafficLightRedImageView2;
@@ -121,10 +106,14 @@ public class Main extends Application {
 	private  ImageView trafficLightGreenImageView3;
 	private ImageView trafficLightGreenImageView4;
 	final SimpleBooleanProperty isToggled;
+	final SimpleBooleanProperty shouldNotSpawnCarHeadingDownOnRightLane;
+	final SimpleBooleanProperty shouldNotSpawnCarHeadingDownOnLeftLane;
 	//HeadedDownOrigCar car ; 
 	public Main() {
 		this.laneManagement = new LaneManagement();
 		this.isToggled = new SimpleBooleanProperty(false);
+		this.shouldNotSpawnCarHeadingDownOnRightLane = new SimpleBooleanProperty(false);
+		this.shouldNotSpawnCarHeadingDownOnLeftLane = new SimpleBooleanProperty(false);
 	}
 	
 	
@@ -485,15 +474,39 @@ public class Main extends Application {
                      
 	            	Random random = new Random();
 	     		   	int randIn = random.nextInt(1000) + 500;
-	     		   	Thread.sleep(randIn);
-	     		   	while(isToggled.get()) {
+	     		   	
+	     		   /*	while(isToggled.get()) {
 	     		   		
 	     		   		Thread.sleep(500);
-	     		   	}
-	     		   	Platform.runLater((Runnable)()->{spawnCars(root, laneManagement,
-	     		   											   TOPTOBOTTOMCARRIGHTLANE_X, 
-	     		   											   TOPTOBOTTOMCARRIGHTLANE_Y 
-	     		   											   );});
+	     		   	}*/
+	     		   Thread.sleep(randIn);
+	     		   /*	long pauseDuration = (2876 -1313) * 15 + 3000;
+	     		   	if(isToggled.get()) {
+	     		   		Thread.sleep(pauseDuration);
+	     		   	}else {
+	     		   		
+	     		   	}*/
+	     		   	Platform.runLater((Runnable)()->{
+	     		   	boolean isBlockingCar;
+	     		
+		     		   	for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
+	     		   			isBlockingCar =(car != null && (Math.pow((car.getPositionX() - TOPTOBOTTOMCARRIGHTLANE_X),2) + Math.pow((car.getPositionY() - TOPTOBOTTOMCARRIGHTLANE_Y),2)) <= BLOCKINGDISTANCESQUARE )? true : 
+	     		   				          (laneManagement.getHeadingDownRightLaneList().isEmpty() || laneManagement.getHeadingDownRightLaneList().size() < 4? false : true); 
+	     		   			if(isBlockingCar) {
+	     		   				shouldNotSpawnCarHeadingDownOnRightLane.set(true);
+	     		   				break;
+	     		   			}
+	     		   		}
+	     
+	     		    if(!shouldNotSpawnCarHeadingDownOnRightLane.get()) {
+	     		   		spawnCars(root, laneManagement,
+								  TOPTOBOTTOMCARRIGHTLANE_X, 
+								  TOPTOBOTTOMCARRIGHTLANE_Y 
+								  );
+	     		   	
+    		   		}
+	     		   shouldNotSpawnCarHeadingDownOnRightLane.set(false);
+	     		   });
 	            	
             	 }catch (InterruptedException e) {
             		 Thread.currentThread().interrupt();
@@ -516,13 +529,27 @@ public class Main extends Application {
 		     		   
 		     		   	synchronized(spawnLock) {
 			     		   	Platform.runLater((Runnable)()->{
+			     		   		double distanceSquareOfBlockingCar;
+			     		   		
+			     		   		for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
+			     		   			distanceSquareOfBlockingCar = Math.pow((car.getPositionX() - TOPTOBOTTOMCARLEFTLANE_X),2) + Math.pow((car.getPositionY() - TOPTOBOTTOMCARLEFTLANE_Y),2); 
+			     		   			if(distanceSquareOfBlockingCar <= BLOCKINGDISTANCESQUARE ) {
+			     		   				shouldNotSpawnCarHeadingDownOnLeftLane.set(true);
+			     		   				break;
+			     		   			}
+			     		   		}
+			     		   		
 									if( laneManagement.getHeadingDownLeftLaneList() != null && laneManagement.getHeadingDownLeftLaneList().size() < 1) {
-   									
-										spawnCars(root, laneManagement,
-   			                                   TOPTOBOTTOMCARLEFTLANE_X, 
-   			                                   TOPTOBOTTOMCARLEFTLANE_Y 
-   			                                   );
+										if(!shouldNotSpawnCarHeadingDownOnLeftLane.get()) {
+										    spawnCars(root, laneManagement,
+	   			                                   TOPTOBOTTOMCARLEFTLANE_X, 
+	   			                                   TOPTOBOTTOMCARLEFTLANE_Y 
+	   			                                   );
+										    
+					     		   		}
 									 }
+									
+									shouldNotSpawnCarHeadingDownOnLeftLane.set(false);
 			     		   	});
 		     		   	}
 	            	 }catch (InterruptedException e) {
@@ -531,6 +558,97 @@ public class Main extends Application {
             	}
     
         });
+		
+		//********************************************************************************************************************************************
+		//Thread for Car Operation
+		
+		executor.submit((Runnable)()->{
+			while(!Thread.currentThread().isInterrupted()) {
+				try {
+					Thread.sleep(15);
+					Platform.runLater(()->{
+						boolean redLightOn = true;
+						boolean redLightOff = false;
+						boolean yellowLightOn = true;
+						boolean yellowLightOff = false;
+						boolean greenLightOn = true;
+						boolean greenLightOff = false;
+						
+						trafficLightCounter++;
+						if(trafficLightCounter >= 1 & trafficLightCounter <125) {
+							
+							headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
+							headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+																  IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_RED_UPDOWN_RED);
+							
+						}else if (trafficLightCounter >= 125 & trafficLightCounter <1063){//938
+							
+							
+							headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
+							headingUpOrDownTrafficLightState(redLightOff, yellowLightOff, greenLightOn);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+									  IntersectionSimCar.TrafficLightSignal.HEADING_UPDOWN_GREEN_LEFTRIGHT_RED);
+							
+						}else if (trafficLightCounter >= 1063 & trafficLightCounter <1313){//250
+							
+							headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
+							headingUpOrDownTrafficLightState(redLightOff, yellowLightOn, greenLightOff);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+									  IntersectionSimCar.TrafficLightSignal.HEADING_UPDOWN_YELLOW_H1_LEFTRIGHT_RED);
+						
+						}else if (trafficLightCounter >= 1313 & trafficLightCounter <1438){
+							
+							headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
+							headingUpOrDownTrafficLightState(redLightOff, yellowLightOn, greenLightOff);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+									  IntersectionSimCar.TrafficLightSignal.HEADING_UPDOWN_YELLOW_H2_LEFTRIGHT_RED);
+							 isToggled.set(true);
+						}else if (trafficLightCounter >= 1438 & trafficLightCounter <1563){
+							
+							headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
+							headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+									  IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_RED_UPDOWN_RED);
+							
+						}else if (trafficLightCounter >= 1563 & trafficLightCounter <2501){
+						
+							headingRighOrLeftTrafficLightState(redLightOff, yellowLightOff,greenLightOn);
+							headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+									  IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_GREEN_UPDOWN_RED);
+						
+						}else if (trafficLightCounter >= 2501 & trafficLightCounter <2751){
+						
+							headingRighOrLeftTrafficLightState(redLightOff, yellowLightOn,greenLightOff);
+							headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+									  IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_YELLOW_H1_UPDOWN_RED);
+							
+						}else if (trafficLightCounter >= 2751 & trafficLightCounter <2876){
+						
+							headingRighOrLeftTrafficLightState(redLightOff, yellowLightOn,greenLightOff);
+							headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
+							trafficLightSignal_Alert_For_All_List(laneManagement,
+									  IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_YELLOW_H2_UPDOWN_RED);
+							 isToggled.set(false);
+							trafficLightCounter = 0;
+						}
+						for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
+							((IntersectionSimCar)car).carOperation();
+							}
+						
+						
+						
+						for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
+						((IntersectionSimCar)car).carOperation();
+						}
+					});
+				}catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+				}
+			}
+		});
 		//********************************************************************************************************************************************
 		// Thread for Removing Cars
 		
@@ -560,7 +678,7 @@ public class Main extends Application {
 			//********************************************************************************************************************************************
 			//Car Operation Stuff
 			
-			if (isToggled.get()) {
+			/*if (isToggled.get()) {
 				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
 					((IntersectionSimCar)car).setDistanceAdjusted(0);
 					}
@@ -580,16 +698,8 @@ public class Main extends Application {
 					for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
 					((IntersectionSimCar)car).setDistanceAdjusted(2.8);
 					}
-			}
-				for(IntersectionSimCar car : laneManagement.getHeadingDownLeftLaneList()) {
-				((IntersectionSimCar)car).carOperation();
-				}
-			
-			
-			
-				for(IntersectionSimCar car : laneManagement.getHeadingDownRightLaneList()) {
-				((IntersectionSimCar)car).carOperation();
-				}
+			}*/
+				
 			
 	
 			//car.carOperation(root);
@@ -619,161 +729,7 @@ public class Main extends Application {
 		   
 		   
 		})),*/new KeyFrame(Duration.millis(15), e ->{
-			boolean redLightOn = true;
-			boolean redLightOff = false;
-			boolean yellowLightOn = true;
-			boolean yellowLightOff = false;
-			boolean greenLightOn = true;
-			boolean greenLightOff = false;
 			
-			trafficLightCounter++;
-			if(trafficLightCounter >= 1 & trafficLightCounter <125) {
-				
-				headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
-				headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-													  headingDownLeftLaneList,
-													  headingDownLTBLaneList,
-													  headingUpRightLaneList,
-													  headingUpLeftLaneList,
-													  headingUpLTBLaneList,
-													  headingLeftRightLaneList,
-													  headingLeftLeftLaneList,
-													  headingLeftLTBLaneList,
-													  headingRightRightLaneList,
-													  headingRightLeftLaneList,
-													  headingRightLTBLaneList,
-													  CircleRpCar.TrafficLightSignal.HEADING_LEFTRIGHT_RED_UPDOWN_RED);*/
-				
-			}else if (trafficLightCounter >= 125 & trafficLightCounter <1063){//938
-				
-				
-				headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
-				headingUpOrDownTrafficLightState(redLightOff, yellowLightOff, greenLightOn);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-						  headingDownLeftLaneList,
-						  headingDownLTBLaneList,
-						  headingUpRightLaneList,
-						  headingUpLeftLaneList,
-						  headingUpLTBLaneList,
-						  headingLeftRightLaneList,
-						  headingLeftLeftLaneList,
-						  headingLeftLTBLaneList,
-						  headingRightRightLaneList,
-						  headingRightLeftLaneList,
-						  headingRightLTBLaneList,
-						  CircleRpCar.TrafficLightSignal.HEADING_UPDOWN_GREEN_LEFTRIGHT_RED);*/
-				
-			}else if (trafficLightCounter >= 1063 & trafficLightCounter <1313){//250
-				
-				headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
-				headingUpOrDownTrafficLightState(redLightOff, yellowLightOn, greenLightOff);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-						  headingDownLeftLaneList,
-						  headingDownLTBLaneList,
-						  headingUpRightLaneList,
-						  headingUpLeftLaneList,
-						  headingUpLTBLaneList,
-						  headingLeftRightLaneList,
-						  headingLeftLeftLaneList,
-						  headingLeftLTBLaneList,
-						  headingRightRightLaneList,
-						  headingRightLeftLaneList,
-						  headingRightLTBLaneList,
-						  CircleRpCar.TrafficLightSignal.HEADING_UPDOWN_YELLOW_H1_LEFTRIGHT_RED);*/
-			
-			}else if (trafficLightCounter >= 1313 & trafficLightCounter <1438){
-				
-				headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
-				headingUpOrDownTrafficLightState(redLightOff, yellowLightOn, greenLightOff);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-						  headingDownLeftLaneList,
-						  headingDownLTBLaneList,
-						  headingUpRightLaneList,
-						  headingUpLeftLaneList,
-						  headingUpLTBLaneList,
-						  headingLeftRightLaneList,
-						  headingLeftLeftLaneList,
-						  headingLeftLTBLaneList,
-						  headingRightRightLaneList,
-						  headingRightLeftLaneList,
-						  headingRightLTBLaneList,
-						  CircleRpCar.TrafficLightSignal.HEADING_UPDOWN_YELLOW_H2_LEFTRIGHT_RED);*/
-			
-			}else if (trafficLightCounter >= 1438 & trafficLightCounter <1563){
-				
-				headingRighOrLeftTrafficLightState(redLightOn, yellowLightOff,greenLightOff);
-				headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-						  headingDownLeftLaneList,
-						  headingDownLTBLaneList,
-						  headingUpRightLaneList,
-						  headingUpLeftLaneList,
-						  headingUpLTBLaneList,
-						  headingLeftRightLaneList,
-						  headingLeftLeftLaneList,
-						  headingLeftLTBLaneList,
-						  headingRightRightLaneList,
-						  headingRightLeftLaneList,
-						  headingRightLTBLaneList,
-						  CircleRpCar.TrafficLightSignal.HEADING_LEFTRIGHT_RED_UPDOWN_RED);*/
-				
-			}else if (trafficLightCounter >= 1563 & trafficLightCounter <2501){
-			
-				headingRighOrLeftTrafficLightState(redLightOff, yellowLightOff,greenLightOn);
-				headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-						  headingDownLeftLaneList,
-						  headingDownLTBLaneList,
-						  headingUpRightLaneList,
-						  headingUpLeftLaneList,
-						  headingUpLTBLaneList,
-						  headingLeftRightLaneList,
-						  headingLeftLeftLaneList,
-						  headingLeftLTBLaneList,
-						  headingRightRightLaneList,
-						  headingRightLeftLaneList,
-						  headingRightLTBLaneList,
-						  CircleRpCar.TrafficLightSignal.HEADING_LEFTRIGHT_GREEN_UPDOWN_RED);*/
-			
-			}else if (trafficLightCounter >= 2501 & trafficLightCounter <2751){
-			
-				headingRighOrLeftTrafficLightState(redLightOff, yellowLightOn,greenLightOff);
-				headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-						  headingDownLeftLaneList,
-						  headingDownLTBLaneList,
-						  headingUpRightLaneList,
-						  headingUpLeftLaneList,
-						  headingUpLTBLaneList,
-						  headingLeftRightLaneList,
-						  headingLeftLeftLaneList,
-						  headingLeftLTBLaneList,
-						  headingRightRightLaneList,
-						  headingRightLeftLaneList,
-						  headingRightLTBLaneList,
-						  CircleRpCar.TrafficLightSignal.HEADING_LEFTRIGHT_YELLOW_H1_UPDOWN_RED);*/
-				
-			}else if (trafficLightCounter >= 2751 & trafficLightCounter <2876){
-			
-				headingRighOrLeftTrafficLightState(redLightOff, yellowLightOn,greenLightOff);
-				headingUpOrDownTrafficLightState(redLightOn, yellowLightOff, greenLightOff);
-				/*trafficLightSignal_Alert_For_All_List(headingDownRightLaneList,
-						  headingDownLeftLaneList,
-						  headingDownLTBLaneList,
-						  headingUpRightLaneList,
-						  headingUpLeftLaneList,
-						  headingUpLTBLaneList,
-						  headingLeftRightLaneList,
-						  headingLeftLeftLaneList,
-						  headingLeftLTBLaneList,
-						  headingRightRightLaneList,
-						  headingRightLeftLaneList,
-						  headingRightLTBLaneList,
-						  CircleRpCar.TrafficLightSignal.HEADING_LEFTRIGHT_YELLOW_H2_UPDOWN_RED);*/
-				
-				trafficLightCounter = 0;
-			}
 			
 			
 		}));
@@ -808,12 +764,12 @@ public class Main extends Application {
 		});
 		
 		
-		scene.setOnMouseClicked((MouseEvent event)->{
+		/*scene.setOnMouseClicked((MouseEvent event)->{
 		    isToggled.set(!isToggled.get());
 			
 				
 		
-		});
+		});*/
 		//Circle Map-------------------------------------------------------------------------------------------------
 		
 		Circle topMakeRight = new Circle();
@@ -952,50 +908,39 @@ public class Main extends Application {
 	//*****************************************************************************************************************************************************************************************
 	//TRAFFIC SIGNAL LIGHT ALERT FOR ALL LIST FUNCTION PROBABLY GONNA HAVE TO ASSOCIATE THIS WITH THE LANEREGISTRY LATER ON
 	
-	/*public void trafficLightSignal_Alert_For_All_List (ObservableList<Car> headingDownRightLaneList_A, 
-			  ObservableList<Car> headingDownLeftLaneList_A,
-			  ObservableList<Car> headingDownLTBLaneList_A,
-		      ObservableList<Car> headingUpRightLaneList_A, 
-			  ObservableList<Car> headingUpLeftLaneList_A,
-			  ObservableList<Car> headingUpLTBLaneList_A,
-			  ObservableList<Car> headingLeftRightLaneList_A, 
-			  ObservableList<Car> headingLeftLeftLaneList_A,
-			  ObservableList<Car> headingLeftLTBLaneList_A,
-			  ObservableList<Car> headingRightRightLaneList_A, 
-			  ObservableList<Car> headingRightLeftLaneList_A,
-			  ObservableList<Car> headingRightLTBLaneList_A, CircleRpCar.TrafficLightSignal trafficLightSignal) {
+	public void trafficLightSignal_Alert_For_All_List (LaneManagement laneManagement, IntersectionSimCar.TrafficLightSignal trafficLightSignal) {
 		
-		trafficLightSignal_alert(headingDownLeftLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingDownRightLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingDownLTBLaneList_A, trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingDownLeftLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingDownRightLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingDownLTBLaneList(), trafficLightSignal);
 		
-		trafficLightSignal_alert(headingUpLeftLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingUpRightLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingUpLTBLaneList_A, trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingUpLeftLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingUpRightLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingUpLTBLaneList(), trafficLightSignal);
 		
-		trafficLightSignal_alert(headingRightLeftLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingRightRightLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingRightLTBLaneList_A, trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingRightLeftLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingRightRightLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingRightLTBLaneList(), trafficLightSignal);
 		
-		trafficLightSignal_alert(headingLeftLeftLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingLeftRightLaneList_A, trafficLightSignal);
-		trafficLightSignal_alert(headingLeftLTBLaneList_A, trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingLeftLeftLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingLeftRightLaneList(), trafficLightSignal);
+		trafficLightSignal_alert(laneManagement.getHeadingLeftLTBLaneList(), trafficLightSignal);
 		
-	}*/
+	}
 	//TRAFFIC SIGNAL LIGHT ALERT FOR ALL LIST FUNCTION ENDS
 	//*******************************************************************************************************************************************************************************************************
 	//TRAFFIC LIGHT SIGNAL FUNCTION
-	/*
-	public void trafficLightSignal_alert(ObservableList<Car> cars, CircleRpCar.TrafficLightSignal trafficLightSignal) {
+	
+	public void trafficLightSignal_alert(ObservableList<IntersectionSimCar> cars, IntersectionSimCar.TrafficLightSignal trafficLightSignal) {
 		if(cars == null || cars.isEmpty()) {
 			return;
 		}else {
-			for (Car car : cars) {
+			for (IntersectionSimCar car : cars) {
 				car.trafficLightSignal = trafficLightSignal;
 			}
 		}
 		
-	}*/
+	}
 	//TRAFFIC LIGHT SIGNAL FUNCTION ENDS
 	
 	//**********************************************************************************************************************************************************************************************************
@@ -1009,10 +954,10 @@ public class Main extends Application {
 			
 			Platform.runLater(() -> {
 				
-				
+				//!isToggled.get()
 
 				
-				if (!isToggled.get()) {
+				if (true) {
 					// PauseTransition delay = new PauseTransition(Duration.seconds(3));
 					 //System.out.println("OnWhichLane: " +  car.getCar_P().getOnWhichLaneListKey() + " ObservableList: " + car.getCar_P().getObservableListCarIsOn().contains(car));
 			    
@@ -1026,8 +971,8 @@ public class Main extends Application {
 					 
 					  	root.getChildren().add(car.getCarImageView_P());
 						root.getChildren().add(car.getCarImageView_brake_P());
-						car.getCarImageView_brake_P().setVisible(true);
-						car.getCarImageView_P().setVisible(false);
+						car.getCarImageView_brake_P().setVisible(false);
+						car.getCarImageView_P().setVisible(true);
 						
 						
 						root.getChildren().add(car.getFront_R_BlinkerImageView_P());
@@ -1056,7 +1001,10 @@ public class Main extends Application {
 						car.getRear_L_BlinkerImageView3_P().setVisible(false);
 						
 						
-					
+						/*System.out.println("🚗 Spawning car on RIGHT lane");
+						System.out.println("→ onWhichLane: " + car.getOnWhichLane());
+						System.out.println("→ onWhichLaneListKey: " + car.getOnWhichLaneListKey());
+						System.out.println("→ X: " + car.getPositionX() + " | Y: " + car.getPositionY());*/
 						
 	
 							car.drawCircleRpCorner(car.getCarCornerCoordinate());
@@ -1067,10 +1015,11 @@ public class Main extends Application {
 							}else {
 								System.out.println("SpawnCar: car.getCarCornerCircle() = null");
 							}
-						    	if( car.getObservableListCarIsOn() != null) {
+						    	//if( car.getObservableListCarIsOn() != null) {
+						    		//System.out.println("getObservableListCarIsOn(): " + car.getObservableListCarIsOn());
 						        car.getObservableListCarIsOn().add(((IntersectionSimCar)car));
 						       // System.out.println("spawnCar(...) --> car.getObersvableListCarIsOn " + ((IntersectionSimCar)car).getObservableListCarIsOn());
-						    	}
+						    	//}
 						    	//car.setDistanceAdjusted(2.8);
 						
 					 //      });

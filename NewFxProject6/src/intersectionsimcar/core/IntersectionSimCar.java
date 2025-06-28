@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 
 
 import intersectionsimcar.core.HeadedDownOrigCar.CarCornerCoordinate;
+import intersectionsimcar.core.IntersectionSimCar.HeadCar;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
@@ -30,6 +31,7 @@ public abstract class IntersectionSimCar {
 	protected double distanceAdjusted; // want ever distance you want beside the constant variable DISTANCEWANTED 
 	//private boolean afterLT_WantRightLaneChange;//boolean for indicating there is a desire to change to the right lane, not necessarily doing it right away, have to wait for the right moment
 	//private boolean afterLT_WantLeftLaneChange;// boolean for indicating there is a desire to change to the left lane, not necessarily doing it right away, have to wait for the right moment
+	protected double distanceToFrontCar;
 	
 	public void assignCarID() {
 		
@@ -601,8 +603,134 @@ public abstract class IntersectionSimCar {
 	protected CancelLaneChangePhase beforeInt_CancelLeftLaneChangePhase;
 	protected CancelLaneChangePhase afterInt_CancelRightLaneChangePhase;
 	protected CancelLaneChangePhase afterInt_CancelLeftLaneChangePhase;
+	//**********************************************************************************************************************************************************************
+	/**
+	 * Speed State---Different speedState they should point to each other base on condition kinda like an automatic transmission OVERRIDE_YIELD is a speedState set by the lane changing car
+	 *  The OVERRIDE_YIELD speedState in the setSpeedState() function should contain another switch function for overridedSpeedState and it's initial state everytime the lane changing car take 
+	 *  control is set by that car itself. 
+	 * 
+	 */
+	
+	public enum SpeedState {
+		MAXSPEED, 
+		NORMALSPEED, 
+		MATCHSPEED, 
+		LOW_SPEED,
+		LOWEST_SPEED,
+		DECOUPLESPEED, 
+		SLOWDOWN, 
+		SPEEDUP, 
+		FULLSTOP, 
+		OVERRIDE_YIELD
+	}
+	
+	protected SpeedState speedState;
+	
+	   /**
+	    * Overrided Speed State---similar to the SpeedState except it has a BlankState where it does nothing and a BACKTONORMAL state which set the SpeedState possibly to MATCHSPEED AS THE Entry Point for going back to normal 
+	    * and then set itself to the BLANKSTATE
+	    */
+	public enum OverridedSpeedState{
+		MAX_SPEED, 
+		NORMALSPEED, 
+		MATCHSPEED, 
+		LOW_SPEED,
+		LOWEST_SPEED,
+		DECOUPLESPEED, 
+		SLOWDOWN, 
+		SPEEDUP, 
+		FULLSTOP, 
+		BACKTONORMAL, 
+		BLANKSTATE
+	}
 	
 	
+	protected OverridedSpeedState overridedSpeedState;
+	
+	/**
+	 * MAX_SPEED-->MAX_TRUST
+	 * NORMALSPEED --> HIGHGEAR
+	 * SPEEDUP -->SHIFT_TO_UPPERGEAR
+	 * SLOWDOWN -->DOWNSHIFT
+	 * DECOUPLESPEED -->CLUTCH_IN
+	 * FULLSTOP --> NEUTRAL
+	 * LOWESTSPEED-->CRAWL
+	 * 
+	 */
+	public enum GearBox{
+		FULL_THROTTLE, 
+		HIGHGEAR, 
+		SHIFT_TO_UPPER_GEAR, 
+		MATCHSPEED,
+		DOWNSHIFT, 
+		CRAWL, 
+		NEUTRAL,
+		CLUTCH_IN
+	}
+	
+	protected GearBox gearBox;
+	
+	public GearBox getGearBox() {
+		return gearBox;
+	}
+
+	public void setGearBox(GearBox gearBox) {
+		this.gearBox = gearBox;
+	}
+	
+	
+	public static final double MAX_SPEED = 2.82;
+	public static final double NORMAL_SPEED = 2.8;
+	public static final double LOW_SPEED = 2.76;
+    public static final double CRAWL_SPEED = 0.8;
+	public static final double FULL_STOP = 0;
+	protected double targetSpeed;
+	public static final double ACCELERATION = 0.02;
+	public static final double DECCELERATION = 0.02;
+	
+	public enum HeadCar {
+		RIGHTTURN_HEADCAR, STRAIGHT_HEADCAR, LEFTTURN_HEADCAR, FOLLOWER, LEADCAR,BLANKSTATE
+	}
+	
+	
+
+	/**
+	 * The current head car being processed or evaluated in real-time.
+	 */
+	protected HeadCar headCar ;
+	
+	/**
+	 * A recorded snapshot of the head car for reference or comparison across frames.
+	 */
+	protected HeadCar headCarRecord;
+	
+	/**
+	 * A temporary flash state of the head car used for short-lived logic or display triggers.
+	 */
+	protected HeadCar headCarFlash;
+	
+	public HeadCar getHeadCarFlash() {
+		return headCarFlash;
+	}
+
+	public void setHeadCarFlash(HeadCar headCarFlash) {
+		this.headCarFlash = headCarFlash;
+	}
+    protected boolean needToBrakeAndStopForRedLight;
+	public boolean isNeedToBrakeAndStopForRedLight() {
+		return needToBrakeAndStopForRedLight;
+	}
+    
+	public static final double HEADINGSTRAIGHTTRAFFICSTOP = 290;
+	public void setNeedToBrakeAndStopForRedLight() {
+		this.needToBrakeAndStopForRedLight = (trafficLightSignal == IntersectionSimCar.TrafficLightSignal.HEADING_UPDOWN_YELLOW_H2_LEFTRIGHT_RED && this.getFrontRightCornerPositionY() < HEADINGSTRAIGHTTRAFFICSTOP )|| 
+				(trafficLightSignal == IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_RED_UPDOWN_RED && this.getFrontRightCornerPositionY() < HEADINGSTRAIGHTTRAFFICSTOP)||
+				(trafficLightSignal == IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_YELLOW_H1_UPDOWN_RED && this.getFrontRightCornerPositionY() < HEADINGSTRAIGHTTRAFFICSTOP)||
+				(trafficLightSignal == IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_YELLOW_H2_UPDOWN_RED && this.getFrontRightCornerPositionY() < HEADINGSTRAIGHTTRAFFICSTOP)||
+				(trafficLightSignal == IntersectionSimCar.TrafficLightSignal.HEADING_LEFTRIGHT_GREEN_UPDOWN_RED && this.getFrontRightCornerPositionY() < HEADINGSTRAIGHTTRAFFICSTOP);
+	}
+
+	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	public static final double HEADING_UP_CARDINAL_ANGLE = 90;
 	public static final double HEADING_LEFT_CARDINAL_ANGLE = 0;
 	public static final double HEADING_RIGHT_CARDINAL_ANGLE = 180;
@@ -1041,6 +1169,7 @@ public abstract class IntersectionSimCar {
 			this.positionY = positionY;   //where the car will spawn
 			this.setOnWhichLaneEnum();
 			this.setOnWhichLaneListKey(onWhichLane);
+			this.targetSpeed = 0;
 			rise = 0;
 			run = 0 ;
 			riseOverRun = 0;
@@ -1088,8 +1217,13 @@ public abstract class IntersectionSimCar {
 			afterInt_CancelRightLaneChangePhase = CancelLaneChangePhase.NONE;
 			afterInt_CancelLeftLaneChangePhase = CancelLaneChangePhase.NONE;
 	//-----------------------------------------------------------------------------------------------------------------------------------------------
-	        
-	  
+			distanceAdjusted= NORMAL_SPEED;
+	        speedState = SpeedState.NORMALSPEED;
+	        gearBox = GearBox.HIGHGEAR;
+	        overridedSpeedState = OverridedSpeedState.BLANKSTATE;
+	        this.headCar = IntersectionSimCar.HeadCar.BLANKSTATE;
+	        this.headCarRecord = this.headCar;
+	        setHeadCarFlash(headCarRecord);
 	
 
 		
@@ -1732,5 +1866,14 @@ public abstract class IntersectionSimCar {
 			public abstract CarCornerCoordinate[] getCarCornerCoordinate();
 			
 			public abstract void drawCircleRpCorner (CarCornerCoordinate[] carCornerCoordinate);
+			
+			public abstract void setDistanceToFrontCar();
+			
+			public abstract void setActionBasedOnHeadCarState();
+			
+			public abstract void setOverridedSpeedState();
+
+			public abstract void updateSpeedState() ;
+			
 }
 

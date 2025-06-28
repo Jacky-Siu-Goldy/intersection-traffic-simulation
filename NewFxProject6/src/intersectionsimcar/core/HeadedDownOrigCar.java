@@ -15,6 +15,7 @@ import application.config.GreenCarSpriteConfig;
 import application.config.RedCarSpriteConfig;
 import application.config.RedCorrollaConfig;
 import application.config.YellowCarSprite3Config;
+import intersectionsimcar.core.IntersectionSimCar.HeadCar;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -351,7 +352,8 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	 */
 	public static final double HEADINGDOWNLEFTTURNY = 297.5;// Coordinate in the X axis of when the car should start
 															// making a left turn to successfully make a Left turn
-
+    
+	
 	/**
 	 * The exit angle for canceling lane is not a final static variable because it
 	 * can be different every time
@@ -361,7 +363,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	public double getR_AltCancelRight_LaneChangeExitAngle() {
 		return r_AltCancelRight_LaneChangeExitAngle;
 	}
-
+  
 	public void setR_AltCancelRight_LaneChangeExitAngle() {
 		this.r_AltCancelRight_LaneChangeExitAngle = (this.getlAltrightLanechangeexitangle()
 				- this.getlAltrightLanechangeexitangle() - 180) * 2;
@@ -537,6 +539,10 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 
 		}
 	}
+	
+	
+
+	
 
 	// Car Brain Working on Target Lane "Direction Class Dependent" -->Need to Tweak
 
@@ -827,7 +833,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 						}
 								
 
-						debuggerForTargetLaneCarsDetection(nameOfMethodCalled, nameOfConditionAccessedFrontCar);
+						//debuggerForTargetLaneCarsDetection(nameOfMethodCalled, nameOfConditionAccessedFrontCar);
 					}
 
 				
@@ -840,7 +846,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 							targetLane_Nearest_Rear_Car_Base_On_DistanceHeadingDownY = temp_Rear_DistanceY;	
 								temp_TargetLaneListRearCar = car;
 							}
-							debuggerForTargetLaneCarsDetection(nameOfMethodCalled, nameOfConditionAccessedRearCar);
+						//	debuggerForTargetLaneCarsDetection(nameOfMethodCalled, nameOfConditionAccessedRearCar);
 					
 					}
 
@@ -851,7 +857,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	         this.setFrontCarOnTargetLaneList(temp_TargetLaneListFrontCar);
 	         this.setRearCarOnTargetLaneList(temp_TargetLaneListRearCar);
 	         if (this.carIntention == CarIntention.BI_ONLLWANTRLC) {
-					debuggerForTargetLaneCarsDetection(nameOfMethodCalled, usedInPlaceOfConditionNameForDebugger);
+				//	debuggerForTargetLaneCarsDetection(nameOfMethodCalled, usedInPlaceOfConditionNameForDebugger);
 			 }
 
 	}
@@ -1271,11 +1277,342 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		}
 
 	}
+    @Override
+    public void setDistanceToFrontCar() {
+    	double gap;
+    	switch(this.getOnWhichLaneListKey()){
+    		
+    		case IntersectionSimCar.OnWhichLane.HEADING_DOWN_ON_LEFT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionY() - (frontCar != null? frontCar.getRearRightCornerPositionY() : 768));
+    		    distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_DOWN_ON_RIGHT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionY() - (frontCar != null? frontCar.getRearRightCornerPositionY() : 768));
+    			distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_DOWN_IN_LEFTTURNBOX_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionY() - (frontCar != null? frontCar.getRearRightCornerPositionY() : this.getFrontRightCornerPositionY()));
+    			distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_UP_ON_LEFT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionY() - (frontCar != null? frontCar.getRearRightCornerPositionY() : 0));
+    		    distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_UP_ON_RIGHT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionY() - (frontCar != null? frontCar.getRearRightCornerPositionY() : 0));
+    			distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_UP_IN_LEFTTURNBOX_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionY() - (frontCar != null? frontCar.getRearRightCornerPositionY() : this.getFrontRightCornerPositionY()));
+    			distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_LEFT_ON_LEFT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionX() - (frontCar != null? frontCar.getRearRightCornerPositionX() : 0));
+    		    distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_LEFT_ON_RIGHT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionX() - (frontCar != null? frontCar.getRearRightCornerPositionX() : 0));
+    			distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_LEFT_IN_LEFTTURNBOX_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionX() - (frontCar != null? frontCar.getRearRightCornerPositionX() : this.getFrontRightCornerPositionX()));
+    			distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_RIGHT_ON_LEFT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionX() - (frontCar != null? frontCar.getRearRightCornerPositionX() : 1153));
+    		    distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_RIGHT_ON_RIGHT_LANE_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionX() - (frontCar != null? frontCar.getRearRightCornerPositionX() : 1153));
+    			distanceToFrontCar = gap;
+    			break;
+    		case IntersectionSimCar.OnWhichLane.HEADING_RIGHT_IN_LEFTTURNBOX_LIST:
+    			gap = Math.abs(this.getFrontRightCornerPositionX() - (frontCar != null? frontCar.getRearRightCornerPositionX() : this.getFrontRightCornerPositionX()));
+    			distanceToFrontCar = gap;
+    			break;
+    		default:
+    			distanceToFrontCar = 10000;
+    			break;
+    	}
+    	
+    	 
+    }
+	
+   @Override
+    public void setActionBasedOnHeadCarState() {
+	   if( headCarRecord != headCar) {
+			headCarRecord = headCar;
+			setHeadCarFlash(headCarRecord);
+		}
+    	switch(headCarFlash) {
+    	case HeadCar.RIGHTTURN_HEADCAR:
+    		break;
+    		
+    	case HeadCar.STRAIGHT_HEADCAR:
+    		 
+    		 speedState = IntersectionSimCar.SpeedState.FULLSTOP;
+    		 headCarFlash = IntersectionSimCar.HeadCar.BLANKSTATE;
+    		break;
+    	
+    	case HeadCar.LEFTTURN_HEADCAR:
+    		break;
+    	case HeadCar.FOLLOWER:
+    		System.out.println("setActionBasedOnHeadCarState().....Follower accessed");
+    		//double distanceToFrontCar = (frontCar != null && frontCar.isAlive()? this.distanceToFrontCar : 51);
+    		
+    			speedState = IntersectionSimCar.SpeedState.MATCHSPEED;
+    			headCarFlash = IntersectionSimCar.HeadCar.BLANKSTATE;
+    		
+    		break;
+    	case HeadCar.LEADCAR:
+    		speedState = IntersectionSimCar.SpeedState.NORMALSPEED;
+    		 headCarFlash = IntersectionSimCar.HeadCar.BLANKSTATE;
+    		break;
+    	case HeadCar.BLANKSTATE:
+    		break;
+    	default:
+    		break;
+    	}
+    }
+    
+    @Override
+    public void updateSpeedState() {
+    	
+    	
+    	switch(speedState) {
+    	case IntersectionSimCar.SpeedState.MAXSPEED:
+    		 setGearBox(IntersectionSimCar.GearBox.FULL_THROTTLE);
+    	    break;
+    	case IntersectionSimCar.SpeedState.NORMALSPEED:
+    		 setGearBox(IntersectionSimCar.GearBox.HIGHGEAR);
+    		  
+    		break;
+    	case IntersectionSimCar.SpeedState.MATCHSPEED:
+    		System.out.println("updateSpeedState: MATCHSPEED");
+    		setGearBox(IntersectionSimCar.GearBox.MATCHSPEED);
+    		 break;
+    	case IntersectionSimCar.SpeedState.LOW_SPEED:
+    		setGearBox(IntersectionSimCar.GearBox.DOWNSHIFT);
+    		break;
+    	case IntersectionSimCar.SpeedState.LOWEST_SPEED:
+    		setGearBox(IntersectionSimCar.GearBox.CRAWL);
+    		break;
+    		
+    	case IntersectionSimCar.SpeedState.DECOUPLESPEED:
+    		setGearBox(IntersectionSimCar.GearBox.CLUTCH_IN);
+    		
+    		break;
+    	case IntersectionSimCar.SpeedState.SLOWDOWN:
+    	     setGearBox(IntersectionSimCar.GearBox.DOWNSHIFT);
+    		
+    		break;
+    	case IntersectionSimCar.SpeedState.SPEEDUP:
+    		setGearBox(IntersectionSimCar.GearBox.SHIFT_TO_UPPER_GEAR);
+    		
+    		break;
+    	case IntersectionSimCar.SpeedState.FULLSTOP:
+    		setGearBox(IntersectionSimCar.GearBox.NEUTRAL);
+    	
+    		break;
+    	case IntersectionSimCar.SpeedState.OVERRIDE_YIELD:
+    		
+    		break;
+    	default:
+    		break;
+    	}
+    }
+    
+    
+    public void updateGearBox() {
+    	switch(gearBox) {
+    	case IntersectionSimCar.GearBox.FULL_THROTTLE:
+    		maintainMaxSpeed();
+    		break;
+    	case IntersectionSimCar.GearBox.HIGHGEAR:
+    		maintainNormalSpeed();
+    		break;
+    	case IntersectionSimCar.GearBox.CLUTCH_IN:
+    		 adjustSpeedBaseOnDistanceToFrontCar();
+    		break;
+    	case IntersectionSimCar.GearBox.MATCHSPEED:
+    		 maintainProperDistanceMatchSpeed();
+    		break;
+    	case IntersectionSimCar.GearBox.DOWNSHIFT:
+    		boolean isSpeedStateLowSpeed = (speedState == IntersectionSimCar.SpeedState.LOW_SPEED);
+    		boolean isSpeedStateSlowDown = (speedState == IntersectionSimCar.SpeedState.SLOWDOWN);
+	    		if(isSpeedStateLowSpeed) { 
+	    				maintainLowSpeed();
+	    	    }else if (isSpeedStateSlowDown){
+	    				 slowDown();
+	    		}
+	    	    break;
+    	case IntersectionSimCar.GearBox.CRAWL:
+    		specialCaseCrawlBecauseOfRedLight();
+    		break;
+    	case IntersectionSimCar.GearBox.SHIFT_TO_UPPER_GEAR:
+    		speedUp();
+    		break;
+    	case IntersectionSimCar.GearBox.NEUTRAL:
+    		fullStop();
+    		break;
+    	default:
+    		System.out.println("updateGearBox: error");
+    		break;
+    	}
+    }
+    //----------------------------------------------------------------------------------------------------------------------------
+    //Helper function for setSpeedState()
+    
+    public void maintainMaxSpeed() {
+    	
+    	maintainTargetSpeed(MAX_SPEED);
+    }
+    
+    public void maintainNormalSpeed() {
 
-	// note remember to setCarskinlength 2025-05-29 2:37am -->DONE
+    	maintainTargetSpeed(NORMAL_SPEED);
+    	
+    }
+    
+    public void maintainLowSpeed() {
+	
+		maintainTargetSpeed(LOW_SPEED);
+	
+    	
+    }
+    
+    public void specialCaseCrawlBecauseOfRedLight() {
+    	if(needToBrakeAndStopForRedLight && frontRightCornerPositionY <= HEADINGSTRAIGHTTRAFFICSTOP) {
+    		
+    		 carImageView_P.setVisible(false);
+     		 carImageView_brake_P.setVisible(true);
+    		maintainTargetSpeed(CRAWL_SPEED);
+    	}
+    }
+    
+    public void maintainTargetSpeed(double targetSpeed) {
+    	this.targetSpeed = targetSpeed;
+		if (distanceAdjusted < this.targetSpeed) {
+			speedState = IntersectionSimCar.SpeedState.SPEEDUP;
+		}else if(distanceAdjusted > this.targetSpeed){
+			speedState = IntersectionSimCar.SpeedState.SLOWDOWN;
+		}else if(distanceAdjusted == this.targetSpeed) {
+			speedState = IntersectionSimCar.SpeedState.DECOUPLESPEED;
+		}
+    }
+    public void maintainProperDistanceMatchSpeed() {
+    	
+    	 System.out.println("maintainProperDistanceMatchSpeed      accessed frontCar.targetSpeed: " + (frontCar != null? frontCar.targetSpeed : NORMAL_SPEED));
+    	    maintainTargetSpeed(frontCar != null? frontCar.targetSpeed : NORMAL_SPEED);
+    		
+    	
+    }
+    
+    public void adjustSpeedBaseOnDistanceToFrontCar() {
+    	double distanceToFrontCar = (frontCar != null && frontCar.isAlive()? this.distanceToFrontCar : 768);
+	    if(distanceToFrontCar == 768) {	
+	    }else if(distanceToFrontCar > 700 && distanceToFrontCar < 768) {
+	    
+               speedState = IntersectionSimCar.SpeedState.MAXSPEED;
+	    		
+	    }else if(distanceToFrontCar >= 550 && distanceToFrontCar < 700) {
+	    	
+	    	
+               speedState = IntersectionSimCar.SpeedState.NORMALSPEED;
+	    	
+	    }else if(distanceToFrontCar >=80 && distanceToFrontCar < 200 ) {
+    		
+    			speedState = needToBrakeAndStopForRedLight? IntersectionSimCar.SpeedState.LOWEST_SPEED:
+    				                                        IntersectionSimCar.SpeedState.MATCHSPEED;
+    				
+    			
+    	}else if(distanceToFrontCar >=60 && distanceToFrontCar < 80) {
+    	    	speedState = IntersectionSimCar.SpeedState.LOW_SPEED;
+    	    	 specialCaseCrawlBecauseOfRedLight();
+    	}else if(distanceToFrontCar >=40 && distanceToFrontCar <=50) {
+    		
+    		speedState = IntersectionSimCar.SpeedState.SLOWDOWN;
+    	}
+    }
+    
+   
+    public void slowDown() {
+    	double distanceToFrontCar = (frontCar != null && frontCar.isAlive()? this.distanceToFrontCar : 768);
+    	//System.out.println("slowDown() ---> carSkin: " + this.carSkin + " carId: " + this.carId + " distanceToFrontCar: " + distanceToFrontCar + "\n");
+    	   if (distanceAdjusted > targetSpeed && !(distanceToFrontCar >= 20 && distanceToFrontCar <= 30)) {
+    		   carImageView_P.setVisible(false);
+       		   carImageView_brake_P.setVisible(true);
+    		   distanceAdjusted -= DECCELERATION;
+    		   if(distanceAdjusted <  targetSpeed){
+    			   distanceAdjusted = targetSpeed;
+    		   }
+    	   }else if (distanceToFrontCar >= 20 && distanceToFrontCar <= 30 ) {
+    		   speedState = IntersectionSimCar.SpeedState.FULLSTOP;
+    	   }/*else if(headCar == HeadedDownOrigCar.HeadCar.STRAIGHT_HEADCAR) {
+    		   speedState = IntersectionSimCar.SpeedState.FULLSTOP;
+    	   }*/
+    }
+    
+    public void speedUp() {
+    	double distanceToFrontCar = (frontCar != null && frontCar.isAlive()? this.distanceToFrontCar : 768);
+ 	   //System.out.println("speedUp() ---> carSkin: " + this.carSkin + " carId: " + this.carId + " distanceToFrontCar: " + distanceToFrontCar + "\n");
+       if (distanceAdjusted < targetSpeed && !(distanceToFrontCar >= 20 && distanceToFrontCar <= 30)) {
+    	   carImageView_P.setVisible(true);
+   		   carImageView_brake_P.setVisible(false);
+ 		   distanceAdjusted += ACCELERATION;
+ 		  if(distanceAdjusted >  targetSpeed){
+			   distanceAdjusted = targetSpeed;
+		   }
+ 	   }else if (distanceToFrontCar >= 20 && distanceToFrontCar <= 30 ) {
+ 		   speedState = IntersectionSimCar.SpeedState.FULLSTOP;
+ 	   }/*else if (headCar == HeadCar.STRAIGHT_HEADCAR) {
+ 		  speedState = IntersectionSimCar.SpeedState.FULLSTOP;
+ 	   }*/
+    }
+    
+    public void fullStop() {
+    	System.out.println("fullStop() accessed");
+    	
+    	    carImageView_P.setVisible(false);
+		    carImageView_brake_P.setVisible(true);
+    		distanceAdjusted = FULL_STOP;
+    		if(frontCar != null && distanceToFrontCar >60) {
+    			speedState = IntersectionSimCar.SpeedState.MATCHSPEED;
+    		}
+    	
+    		
+    		
+    }
+    //----------------------------------------------------------------------------------------------------------------------------
+    
+    @Override
+    public void setOverridedSpeedState() {
+    	switch(overridedSpeedState) {
+    	case IntersectionSimCar.OverridedSpeedState.NORMALSPEED:
+    		break;
+    	case IntersectionSimCar.OverridedSpeedState.MATCHSPEED:
+    		break;
+    	case IntersectionSimCar.OverridedSpeedState.DECOUPLESPEED:
+    		break;
+    	case IntersectionSimCar.OverridedSpeedState.SLOWDOWN:
+    		break;
+    	case IntersectionSimCar.OverridedSpeedState.SPEEDUP:
+    		break;
+    	case IntersectionSimCar.OverridedSpeedState.FULLSTOP:
+    		break;
+    	case IntersectionSimCar.OverridedSpeedState.BACKTONORMAL:
+    		break;
+    	case IntersectionSimCar.OverridedSpeedState.BLANKSTATE:
+    		break;
+    	default:
+    		break;
+    	}
+    }
+    
+    
 	public HeadedDownOrigCar(Pane root, LaneManagement laneManagement, double spawnPositionX, double spawnPositionY) {
 		super(laneManagement, spawnPositionX, spawnPositionY);
-		this.setGeneralPlacementOfCarBasedOnGeneralLocation();
+	
 		carCornerCoordinate = new CarCornerCoordinate[4];
 		r_BiCancelRight_LaneChangeExitAngle = rotationAngle;
 
@@ -1452,9 +1789,19 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
 		calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
 		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
-
+        
 		this.setCustomCarLengthBaseOnCarSkin();
 		this.positionCarCorners();
+		this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		setDistanceToFrontCar();
+		this.headCar = (this.frontCar != null ? IntersectionSimCar.HeadCar.FOLLOWER : IntersectionSimCar.HeadCar.LEADCAR);
+		//***************************************************************************************************************************
+		//See if Distance to front Car is working
+		/*System.out.println("\n\n"+
+		                   "In Child Heading Down Constructor: carSkin: "+ this.getCarSkin() + " Car ID: " + this.getCarId() + " front Car Distance: " + distanceToFrontCar +
+						   "\n                                 carSkin: "+ this.getCarSkin() + " Car ID: " + this.getCarId() + "          front Car: " + (frontCar == null? null: frontCar.getCarSkin() + " FrontCar ID: " + frontCar.getCarId()+ "\n\n"));*/
+		
+		//****************************************************************************************************************************
 		this.setCarCornerCircle();
 		this.initializeBlinkersSetsAll4();
 		this.initializeLeftBlinkersSets();
@@ -1466,8 +1813,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		double normalizedImageViewAngle = (imageViewsAngle + 360) % 360;
 		imageViewsAngle = normalizedImageViewAngle;
 
-		this.carImageView_P.setPreserveRatio(true);
-		this.carImageView_brake_P.setPreserveRatio(true);
+	
 		double fixedX2 = this.getPositionX();
 
 		double fixedY2 = this.getPositionY();
@@ -1573,12 +1919,53 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 	// make sure if wantToMakeALeft is true then the car i start turning when It hit
 	// the Y coordinate UPLEFTTURNY so that the leftTurn() function can be called at
 	// that critical point
+	
+
 	public void positionManipulationFormula(double startLaneChangeTurnX, double startLaneChangeTurnY,
 			double straightEndingX, double straightEndingY) {
-
+		
 		setRise(Math.sin(getRotationAngle() * (Math.PI / 180)));// * orY;
 
 		setRun(Math.cos(getRotationAngle() * (Math.PI / 180)));// * orX;
+		
+		calculateAndSetAllBlinkersAngle(this.angle_Diff_Front_Blinkers, this.angle_Diff_Rear_Blinkers);
+		calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
+		calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
+		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
+		this.positionCarCorners();
+		this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		this.setDistanceToFrontCar();
+		
+		
+		setNeedToBrakeAndStopForRedLight();
+		
+			if (needToBrakeAndStopForRedLight) {
+				
+				
+				
+					//System.out.println("carSkin:" + this.carSkin +" carId: "+ this.carId + " positionManipulationFormula(...) distanceFromBeingTheHeadCar: " + distanceFromBeingTheHeadCar + " distanceAdjusted: " + distanceAdjusted + "\n" +
+						//				"carSkin:" + this.carSkin +" carId: " + this.carId + " positionY: " + positionY + " HEADINGSTRAIGHTHEADCAR: "+ HEADINGSTRAIGHTHEADCAR+ "\n");
+					if(onWhichLaneListKey == OnWhichLane.HEADING_DOWN_ON_RIGHT_LANE_LIST) {
+					    
+						//System.out.println("carSkin:" + this.carSkin +" carId: "+ this.carId + " positionManipulationFormula(...) headCar: " + headCarFlash + "\n");
+						this.headCar = (this.getFrontRightCornerPositionY() >= 270 && this.getFrontRightCornerPositionY() <= HEADINGSTRAIGHTTRAFFICSTOP? IntersectionSimCar.HeadCar.STRAIGHT_HEADCAR:(this.frontCar == null ? IntersectionSimCar.HeadCar.LEADCAR : IntersectionSimCar.HeadCar.FOLLOWER));
+						if(this.headCar == IntersectionSimCar.HeadCar.STRAIGHT_HEADCAR ) {
+							this.speedState = IntersectionSimCar.SpeedState.FULLSTOP;
+						}
+						
+					}
+			}else {
+				this.headCar = (this.frontCar != null ? IntersectionSimCar.HeadCar.FOLLOWER : IntersectionSimCar.HeadCar.LEADCAR);
+				//this.setActionBasedOnHeadCarState();
+			}
+			
+			System.out.println("carSkin:" + this.carSkin +" carId: "+ this.carId + " positionManipulationFormula(...) headCarFlash: " + headCarFlash + "\n");	
+		
+		this.setActionBasedOnHeadCarState();
+		this.updateSpeedState();
+		this.updateGearBox();
+		
+		
 		setVelocityWanted(getDistanceAdjusted() / 60);
 		setRiseOverRun(getRise() / getRun());
 		setRunOverRise(getRun() / getRise());
@@ -1641,11 +2028,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 					* remainingDistanceXab);
 		}
 
-		calculateAndSetAllBlinkersAngle(this.angle_Diff_Front_Blinkers, this.angle_Diff_Rear_Blinkers);
-		calculateAllBlinkersPosition(this.length_For_Front_Blinkers, this.length_For_Rear_Blinkers);
-		calculateAndSetAllCornersAngle(this.angle_Diff_Front_Corners, this.angle_Diff_Rear_Corners);
-		calculateAllCornersPosition(this.length_For_Front_Corners, this.length_For_Rear_Corners);
-		this.positionCarCorners();
+		
 		// this.setCarCornerCircle();
 		// this.initialize();
 		double imageViewsAngle = 0;
@@ -1806,8 +2189,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 
 		this.rightBlinkersOnOffBasedOnToggleState();
 		this.leftBlinkersOnOffBasedOnToggleState();
-		carImageView.setVisible(false);
-		carImageView_Brake.setVisible(true);
+		
 		// System.out.println("actionBaseOnCarState: " + this.carAction);
 		switch (carAction) {
 		case CarAction.LEFTTURN:
@@ -1864,7 +2246,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 		this.drawCircleRpCorner(carCornerCoordinate);
 		// this.setGeneralPlacementOfCar();//still need to ensure all lane are accounted
 		// for
-		this.needToDoThisEverytimeSetFrontCarAndRearCar();
+		
 		if (this.getFrontCar() != null && this.getFrontCar().isAlive() == false)
 			this.setFrontCar(null);
 		this.needToDoThisEverytimeSetTargetFrontCarBlindSpotCarRearCar();
@@ -2902,7 +3284,7 @@ public class HeadedDownOrigCar extends IntersectionSimCar implements LaneManagem
 			// System.out.println("bI_RightLaneChangePhaseState()-->shouldBeginBI_RLC_Phase1()
 			// -->accessed");
 		} else if (shouldBeginBI_RLC_Phase2()) {// tweak here
-			System.out.println("bI_RightLaneChangePhaseState() carIntention: " + this.carIntention);
+			//System.out.println("bI_RightLaneChangePhaseState() carIntention: " + this.carIntention);
 			beforeInt_RightLaneChangePhase = LaneChangePhase.PHASE_2;// tweak here
 			this.phase2CalculationBI_RLC();// tweak here
 
